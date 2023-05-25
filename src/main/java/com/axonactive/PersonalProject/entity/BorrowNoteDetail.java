@@ -19,8 +19,8 @@ public class BorrowNoteDetail {
     @ManyToOne
     @JoinColumn(name = "bookID")
     private Book book;
-    @Column(name = "quantityOfBooks")
-    private Long quantityOfBooks;
+//    @Column(name = "quantityOfBooks")
+//    private Long quantityOfBooks;
 
     @ManyToOne
     @JoinColumn(name = "borrowID")

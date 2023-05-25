@@ -3,12 +3,14 @@ package com.axonactive.PersonalProject.service.imple;
 import com.axonactive.PersonalProject.entity.Author;
 import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.PublishingHouse;
+import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.AuthorRepository;
 import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.BookService;
 import com.axonactive.PersonalProject.service.dto.AuthorDTO;
+import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
@@ -76,6 +79,36 @@ public class BookServiceImplement implements BookService {
     public BookDTO getBookById(Long bookID) {
         return bookMapper.toDto(bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound));
     }
+    // 1. Tim sach co chua ki tu gan giong
+    @Override
+    public List<BookDTO> getByBookNameContainingIgnoreCase(String keyword) {
+        return bookMapper.toDtos(bookRepository.findByBookNameContainingIgnoreCase(keyword));
+    }
+    // 2. Tim sach boi trang thai (available or unavailable)
+
+    public List<BookDTO> getByStatus (Status status){
+        return bookMapper.toDtos(bookRepository.findByStatus(status));
+    }
+    // 3. Tim sach boi ten nha xuat ban
+    @Override
+    public List<BookDTO> getBookByPublishingHouseName(String publishingHouseName) {
+        return bookMapper.toDtos(bookRepository.findBookByPublishingHouseName(publishingHouseName));
+    }
+    // 4. Tim sach boi ten tac gia
+    @Override
+    public List<BookDTO> getBookByAuthorFirstName (String authorFirstName) {
+        return bookMapper.toDtos(bookRepository.findBookByAuthorFirstName(authorFirstName));
+    }
+    //5 .Tim sach boi ho tac gia
+    @Override
+    public List<BookDTO> getBookByAuthorLastName(String authorLastName) {
+        return bookMapper.toDtos(bookRepository.findBookByAuthorLastName(authorLastName));
+    }
+
+    @Override
+    public BookContentDTO findContentSummaryByBookName(String bookName) {
+        return bookRepository.findContentSummaryByBookName(bookName);
+    }
 
     private void bookException(BookDTO bookDTO) {
         if (bookDTO.getBookName().isBlank() || !isAlpha(bookDTO.getBookName()))
@@ -101,5 +134,15 @@ public class BookServiceImplement implements BookService {
         || !isAlpha(authorDTO.getAuthorLastName()) || !isAlpha(authorDTO.getAuthorFirstName())){
             throw LibraryException.badRequest("WrongNameFormat","Name Of Author Must Contains Only Letters And Cannot Be Empty");
         }
+    }
+    public double calculateFine(LocalDate returnDate, LocalDate dueDate) {
+        if (returnDate.isBefore(dueDate)) {
+            return 0; // No fine if returned before the due date
+        }
+
+        long daysOverdue = ChronoUnit.DAYS.between(dueDate, returnDate);
+        double finePerDay = 0.50; // Define your fine rate per day
+
+        return daysOverdue * finePerDay;
     }
 }

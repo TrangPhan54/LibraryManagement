@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/publishingHouses")
+@RequestMapping(value = "/auth/publishingHouses")
 @RequiredArgsConstructor
 public class PublishingHouseResource {
     @Autowired

@@ -28,11 +28,7 @@ public class CustomerServiceImplement implements CustomerService {
         return customerMapper.toDtos(customers);
     }
 
-    @Override
-    public CustomerDTO getCustomerById(Long customerID) {
-        Customer cus =  customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
-        return customerMapper.toDto(cus);
-    }
+
 
     @Override
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
@@ -73,6 +69,22 @@ public class CustomerServiceImplement implements CustomerService {
     public CustomerDTO getCustomerByID(Long customerID) {
         return customerMapper.toDto(customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound));
     }
+
+    @Override
+    public List<CustomerDTO> getCustomerByCustomerFirstName(String customerFirstName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByCustomerFirstName(customerFirstName));
+    }
+    @Override
+    public List<CustomerDTO> getCustomerByCustomerLastName(String customerLastName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByCustomerLastName(customerLastName));
+    }
+
+    @Override
+    public List<CustomerDTO> getCustomerByCustomerEmail(String customerEmail) {
+        return customerMapper.toDtos(customerRepository.findCustomerByCustomerEmail(customerEmail));
+    }
+
+
     private void customerException (CustomerDTO customerDTO){
         if(!isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName()) ||
                 customerDTO.getCustomerFirstName().isBlank() || customerDTO.getCustomerLastName().isBlank()){

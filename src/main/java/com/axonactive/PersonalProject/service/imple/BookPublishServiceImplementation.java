@@ -62,6 +62,13 @@ public class BookPublishServiceImplementation implements BookPublishService {
         bookPublishRepository.delete(bookPublish);
 
     }
+
+//    @Override
+//    public List<BookPublishDTO> findByPublishingHouse(PublishingHouse publishingHouse) {
+//        return bookPublishMapper.toDtos(bookPublishRepository.findByPublishingHouse(publishingHouse));
+//
+//    }
+
     private void bookException(BookDTO bookDTO) {
         if (bookDTO.getBookName().isBlank() || !isAlpha(bookDTO.getBookName()))
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
@@ -86,4 +93,7 @@ public class BookPublishServiceImplementation implements BookPublishService {
             throw LibraryException.badRequest("WrongNameFormat","Publishing House Name Should Contains Only Letters");
         }
     }
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.axonactive.PersonalProject.service;
 
+import com.axonactive.PersonalProject.entity.PublishingHouse;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.BookPublishDTO;
 
@@ -12,5 +13,7 @@ public interface BookPublishService {
 
     BookPublishDTO updateBookPublish (Long bookPublishID, BookPublishDTO bookPublishDTO);
     void deleteBookPublishById (Long bookPublishID);
+
+//    List<BookPublishDTO> findByPublishingHouse (PublishingHouse publishingHouse);
 
 }

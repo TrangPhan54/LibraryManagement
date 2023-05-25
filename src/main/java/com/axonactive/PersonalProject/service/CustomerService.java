@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CustomerService {
     List<CustomerDTO> getAllCustomer ();
-    CustomerDTO getCustomerById (Long customerID);
+//    CustomerDTO getCustomerById (Long customerID);
 
     CustomerDTO createCustomer (CustomerDTO customerDTO);
 
@@ -15,5 +15,11 @@ public interface CustomerService {
     void deleteCustomerByID (Long customerID);
 
     CustomerDTO getCustomerByID (Long customerID);
+
+    List<CustomerDTO> getCustomerByCustomerFirstName (String customerFirstName);
+    List<CustomerDTO> getCustomerByCustomerLastName (String customerLastName);
+
+    List<CustomerDTO> getCustomerByCustomerEmail (String customerEmail);
+
 
 }

@@ -14,30 +14,30 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/orderDetails")
+@RequestMapping(value = "/auth/orderDetails")
 public class BorrowNoteDetailResource {
     @Autowired
     private final BorrowNoteDetailService borrowNoteDetailService;
 
     @GetMapping
-    public ResponseEntity<List<BorrowNoteDetailDTO>> getAllOrderBookdetail() {
-        return ResponseEntity.ok(borrowNoteDetailService.getAllOrderDetail());
+    public ResponseEntity<List<BorrowNoteDetailDTO>> getAllBorrowNotedetail() {
+        return ResponseEntity.ok(borrowNoteDetailService.getAllBorrowNoteDetail());
     }
 
 
     @PostMapping(value = "/{orderId}/{bookId}")
-    public ResponseEntity<BorrowNoteDetailDTO> createOrderBookDetail(@PathVariable("orderId") Long orderID,
+    public ResponseEntity<BorrowNoteDetailDTO> createBorrowNoteDetail(@PathVariable("orderId") Long orderID,
                                                                      @PathVariable ("bookId") Long bookID,
                                                                      @RequestBody BorrowNoteDetailDTO borrowNoteDetailDTO) {
-        BorrowNoteDetailDTO book = borrowNoteDetailService.createOrderDetail(borrowNoteDetailDTO,bookID,orderID);
+        BorrowNoteDetailDTO book = borrowNoteDetailService.createBorrowNoteDetail(borrowNoteDetailDTO,bookID,orderID);
         return ResponseEntity.created(URI.create("/api/orderDetails" + book.getBorrowDetailID())).body(book);
     }
 
 
     @DeleteMapping(value = "/{orderDetailId}")
 
-    public ResponseEntity<BorrowNoteDetailDTO> deleteOrderBookDetail(@PathVariable("orderDetailId") Long orderDetailID) {
-        borrowNoteDetailService.deleteOrderDetailByID(orderDetailID);
+    public ResponseEntity<BorrowNoteDetailDTO> deleteBorrowNoteDetail(@PathVariable("orderDetailId") Long orderDetailID) {
+        borrowNoteDetailService.deleteBorrowNoteDetailByID(orderDetailID);
         return ResponseEntity.noContent().build();
     }
 }
