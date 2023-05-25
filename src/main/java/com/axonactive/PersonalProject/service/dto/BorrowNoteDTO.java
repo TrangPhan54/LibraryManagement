@@ -14,10 +14,10 @@ import java.time.LocalDate;
 public class BorrowNoteDTO {
     @JsonIgnore
     private Long borrowID;
+    private Long customerID;
+    private String address;
     private LocalDate borrowDate;
     private LocalDate dueDate;
-    private String address;
-    private Status statusDeliver;
 
-    private Long customerID;
+
 }

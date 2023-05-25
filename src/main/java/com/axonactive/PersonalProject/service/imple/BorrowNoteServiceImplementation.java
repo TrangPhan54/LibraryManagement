@@ -71,9 +71,6 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
         if (borrowNoteDTO.getAddress().isBlank()){
             throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
         }
-        if (borrowNoteDTO.getStatusDeliver().equals("")){
-            throw LibraryException.badRequest("WrongStatusFormat","Status Cannot Be Empty");
-        }
 
     }
     private void customerException (CustomerDTO customerDTO){
