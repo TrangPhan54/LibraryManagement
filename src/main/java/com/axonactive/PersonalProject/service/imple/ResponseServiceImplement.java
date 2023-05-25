@@ -8,6 +8,7 @@ import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.repository.ResponseRepository;
 import com.axonactive.PersonalProject.service.ResponseService;
+import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.ResponseDTO;
 import com.axonactive.PersonalProject.service.mapper.ResponseMapper;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 
 @Service
 @Transactional
@@ -40,6 +43,7 @@ public class ResponseServiceImplement implements ResponseService {
         Book book = bookRepository.findById(bookID).orElseThrow();
         response.setBook(book);
         response.setCustomer(customer);
+        response.setResponseContent(responseDTO.getResponseContent());
         response = responseRepository.save(response);
         return responseMapper.toDto(response);
 
@@ -50,13 +54,27 @@ public class ResponseServiceImplement implements ResponseService {
         Response response = responseRepository.findById(responseID).orElseThrow(BookStoreException::ResponseNotFound);
         response.setCustomer(customerRepository.findById(responseDTO.getCustomerID()).orElseThrow());
         response.setBook(bookRepository.findById(responseDTO.getBookID()).orElseThrow());
+        response.setResponseContent(responseDTO.getResponseContent());
 
         return responseMapper.toDto(response);
     }
 
     @Override
     public void deleteResponseByID(Long responseID) {
-        responseRepository.deleteById(responseID);
+        Response response = responseRepository.findById(responseID).orElseThrow(BookStoreException::ResponseNotFound);
+        responseRepository.delete(response);
 
     }
+    private void responseException (ResponseDTO responseDTO){
+        if (responseDTO.getResponseContent().isBlank()){
+            throw BookStoreException.badRequest("WrongResponseFormat"," Response Cannot Be Empty");
+        }
+    }
+    private void customerException (CustomerDTO customerDTO){
+        if (customerDTO.getCustomerFirstName().isBlank() || customerDTO.getCustomerLastName().isBlank()
+        || !isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName())){
+            throw BookStoreException.badRequest("WrongNameFormat","Name Cannot Be Empty And Should Contain Only Letters");
+        }
+    }
+
 }

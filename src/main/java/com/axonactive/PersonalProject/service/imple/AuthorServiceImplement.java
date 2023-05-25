@@ -49,7 +49,8 @@ public class AuthorServiceImplement implements AuthorService {
 
     @Override
     public void deleteAuthorByID(Long authorID) {
-        authorRepository.deleteById(authorID);
+        Author author = authorRepository.findById(authorID).orElseThrow(BookStoreException::AuthorNotFound);
+        authorRepository.delete(author);
 
     }
 
@@ -57,7 +58,7 @@ public class AuthorServiceImplement implements AuthorService {
     public AuthorDTO getAuthorByID(Long authorID) {
         return authorMapper.toDto(authorRepository.findById(authorID).orElseThrow(BookStoreException::AuthorNotFound));
     }
-    private static void exception (AuthorDTO authorDTO){
+    private static void authorException (AuthorDTO authorDTO){
         if (authorDTO.getAuthorLastName().isBlank() || !isAlpha(authorDTO.getAuthorLastName())||
         authorDTO.getAuthorFirstName().isBlank() || !isAlpha(authorDTO.getAuthorFirstName()))
             throw BookStoreException.badRequest("Wrong format name", "Name should contain only letters");

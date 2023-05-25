@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -42,7 +45,8 @@ public class GenreServiceImplement implements GenreService {
 
     @Override
     public void deleteGenreByID(Long genreID) {
-        genreRepository.deleteById(genreID);
+        Genre genre = genreRepository.findById(genreID).orElseThrow(BookStoreException:: GenreNotFound);
+        genreRepository.delete(genre);
 
     }
 
@@ -54,5 +58,10 @@ public class GenreServiceImplement implements GenreService {
     @Override
     public GenreDTO getGenreById(Long genreID) {
         return genreMapper.toDto(genreRepository.findById(genreID).orElseThrow(BookStoreException::GenreNotFound));
+    }
+    private void genreException (GenreDTO genreDTO){
+        if (!isAlpha(genreDTO.getGenreName()) || genreDTO.getGenreName().isBlank()){
+            throw BookStoreException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
+        }
     }
 }

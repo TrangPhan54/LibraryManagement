@@ -8,6 +8,7 @@ import com.axonactive.PersonalProject.repository.AuthorRepository;
 import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.BookService;
+import com.axonactive.PersonalProject.service.dto.AuthorDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class BookServiceImplement implements BookService {
 
     @Override
     public BookDTO updateBook(Long bookID, BookDTO bookDTO) {
-        Book book = bookRepository.findById(bookID).orElseThrow();
+        Book book = bookRepository.findById(bookID).orElseThrow(BookStoreException::BookNotFound);
         book.setBookName(bookDTO.getBookName());
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
@@ -68,7 +69,8 @@ public class BookServiceImplement implements BookService {
 
     @Override
     public void deleteBookById(Long bookID) {
-        bookRepository.deleteById(bookID);
+        Book book = bookRepository.findById(bookID).orElseThrow(BookStoreException::BookNotFound);
+        bookRepository.delete(book);
 
     }
 
@@ -95,5 +97,11 @@ public class BookServiceImplement implements BookService {
         if (bookDTO.getDatePublish().isAfter(LocalDate.now()))
             throw BookStoreException.badRequest("WrongDate","Date Publish Must Be Before Now");
 
+    }
+    private void authorException (AuthorDTO authorDTO){
+        if (authorDTO.getAuthorLastName().isBlank() || authorDTO.getAuthorFirstName().isBlank()
+        || !isAlpha(authorDTO.getAuthorLastName()) || !isAlpha(authorDTO.getAuthorFirstName())){
+            throw BookStoreException.badRequest("WrongNameFormat","Name Of Author Must Contains Only Letters And Cannot Be Empty");
+        }
     }
 }

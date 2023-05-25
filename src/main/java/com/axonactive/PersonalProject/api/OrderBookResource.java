@@ -43,7 +43,7 @@ public class OrderBookResource {
 
     @DeleteMapping(value = "/{orderAndBookId}")
 
-    public ResponseEntity<GenreBookDTO> deleteGenreBook(@PathVariable("orderAndBookId") Long orderAndBookID) {
+    public ResponseEntity<GenreBookDTO> deleteOrderBook(@PathVariable("orderAndBookId") Long orderAndBookID) {
         orderBookService.deleteOrderByID(orderAndBookID);
         return ResponseEntity.noContent().build();
     }

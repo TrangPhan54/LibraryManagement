@@ -64,7 +64,8 @@ public class CustomerServiceImplement implements CustomerService {
 
     @Override
     public void deleteCustomerByID(Long customerID) {
-        customerRepository.deleteById(customerID);
+        Customer customer = customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound);
+        customerRepository.delete(customer);
 
     }
 
@@ -72,13 +73,16 @@ public class CustomerServiceImplement implements CustomerService {
     public CustomerDTO getCustomerByID(Long customerID) {
         return customerMapper.toDto(customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound));
     }
-    private void CustomerException (CustomerDTO customerDTO){
+    private void customerException (CustomerDTO customerDTO){
         if(!isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName()) ||
                 customerDTO.getCustomerFirstName().isBlank() || customerDTO.getCustomerLastName().isBlank()){
             throw BookStoreException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
         }
-        if (isNumberOnly(customerDTO.getCustomerPhoneNumber())){
+        if (!isNumberOnly(customerDTO.getCustomerPhoneNumber())){
             throw BookStoreException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
+        }
+        if (customerDTO.getCustomerAddress().isBlank()){
+            throw BookStoreException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
         }
     }
 

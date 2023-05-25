@@ -6,13 +6,18 @@ import com.axonactive.PersonalProject.exception.BookStoreException;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.repository.OrderBookRepository;
 import com.axonactive.PersonalProject.service.OrderBookService;
+import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.OrderBookDTO;
 import com.axonactive.PersonalProject.service.mapper.OrderBookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
+
+import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -54,12 +59,31 @@ public class OrderBookServiceImplementation implements OrderBookService {
 
     @Override
     public void deleteOrderByID(Long orderID) {
-        orderBookRepository.deleteById(orderID);
+        OrderBook orderBook = orderBookRepository.findById(orderID).orElseThrow(BookStoreException::OrderNotFound);
+        orderBookRepository.delete(orderBook);
 
     }
 
     @Override
     public OrderBookDTO getOrderById(Long orderID) {
         return orderBookMapper.toDto(orderBookRepository.findById(orderID).orElseThrow(BookStoreException::OrderNotFound));
+    }
+    private void orderException (OrderBookDTO orderBookDTO){
+        if (orderBookDTO.getOrderingDate().isBefore(LocalDate.now())){
+            throw BookStoreException.badRequest("WrongTime","Ordering Date Must Be After Now");
+        }
+        if (orderBookDTO.getAddress().isBlank()){
+            throw BookStoreException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
+        }
+        if (orderBookDTO.getStatusDeliver().equals("")){
+            throw BookStoreException.badRequest("WrongStatusFormat","Status Cannot Be Empty");
+        }
+
+    }
+    private void customerException (CustomerDTO customerDTO){
+        if (customerDTO.getCustomerLastName().isBlank() || customerDTO.getCustomerFirstName().isBlank()
+        || !isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName())){
+            throw BookStoreException.badRequest("WrongNameFormat","Name Cannot Be Empty And Should Contains Only Letters");
+        }
     }
 }

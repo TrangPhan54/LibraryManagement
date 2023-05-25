@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -41,7 +44,8 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
 
     @Override
     public void deletePublishingHouseByID(Long publishingHouseID) {
-        publishingHouseRepository.deleteById(publishingHouseID);
+        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow(BookStoreException::PublishingHouseNotFound);
+        publishingHouseRepository.delete(publishingHouse);
 
     }
 
@@ -53,5 +57,10 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
     @Override
     public PublishingHouseDTO getPublishingHouseById(Long publishingHouseID) {
         return publishingHouseMapper.toDto(publishingHouseRepository.findById(publishingHouseID).orElseThrow(BookStoreException::PublishingHouseNotFound));
+    }
+    private void publishingHouseException (PublishingHouseDTO publishingHouseDTO){
+        if (publishingHouseDTO.getPublishingHouseName().isBlank() || !isAlpha(publishingHouseDTO.getPublishingHouseName())){
+            throw BookStoreException.badRequest("WrongNameFormat","Publishing House Name Should Contains Only Letters");
+        }
     }
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -15,9 +16,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/authors")
+@RequestMapping(value = "/auth/authors")
 @RequiredArgsConstructor
+//@PreAuthorize("hasRole('ADMIN')")
 public class AuthorResource {
+
     @Autowired
     private final AuthorService authorService;
     @GetMapping
@@ -45,10 +48,4 @@ public class AuthorResource {
         authorService.deleteAuthorByID(authorID);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
-
 }

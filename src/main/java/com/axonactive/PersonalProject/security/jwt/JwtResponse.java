@@ -9,12 +9,12 @@ import java.util.List;
 public class JwtResponse implements Serializable {
     private String token;
     private String type = "Bearer";
-    private String username;
+    private String customerEmail;
     private List<String> roles;
 
-    public JwtResponse(String token, String username, List<String> roles) {
+    public JwtResponse(String token, String customerEmail, List<String> roles) {
         this.token = token;
-        this.username = username;
+        this.customerEmail = customerEmail;
         this.roles = roles;
     }
 }

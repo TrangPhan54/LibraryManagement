@@ -61,6 +61,9 @@ public class OrderBookDetailServiceImplementation implements OrderBookDetailServ
 
     @Override
     public void deleteOrderDetailByID(Long orderDetailID) {
+        OrderDetail orderDetail = orderDetailRepository.findById(orderDetailID).orElseThrow(BookStoreException::OrderDetailNotFound);
+
+        orderDetailRepository.delete(orderDetail);
 
     }
 }
