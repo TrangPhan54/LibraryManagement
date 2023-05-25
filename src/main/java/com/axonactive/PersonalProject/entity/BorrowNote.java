@@ -11,22 +11,24 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table (name = "orderBook")
-public class OrderBook {
+@Table (name = "borrow_note")
+public class BorrowNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "order_id")
-    private Long orderID;
-    @Column (name = "ordering_date")
-    private LocalDate orderingDate;
-    @Column (name = "address")
-    private String address;
-    @Column (name = "status_deliver")
-    @Enumerated(EnumType.STRING)
-    private Status statusDeliver;
+    @Column (name = "borrow_id")
+    private Long borrowID;
     @ManyToOne
     @JoinColumn (name = "customer_id")
     private Customer customer;
+    @Column (name = "address")
+    private String address;
+    @Column (name = "borrow_date")
+    private LocalDate borrowDate;
+    @Column (name = "due_date")
+    private LocalDate dueDate;
+
+
+
 
 
 }

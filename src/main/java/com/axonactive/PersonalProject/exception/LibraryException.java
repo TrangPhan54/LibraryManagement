@@ -2,7 +2,7 @@ package com.axonactive.PersonalProject.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BookStoreException {
+public class LibraryException {
     private static final String CUSTOMER_NOT_FOUND_MSG_KEY = "CustomerNotExisted";
     private static final String CUSTOMER_NOT_FOUND_MSG = "Customer Not Found";
     private static final String AUTHOR_NOT_FOUND_MSG_KEY = "AuthorNotExisted";

@@ -1,8 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.entity.Genre;
-import com.axonactive.PersonalProject.exception.BookStoreException;
+import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.GenreRepository;
 import com.axonactive.PersonalProject.service.GenreService;
 import com.axonactive.PersonalProject.service.dto.GenreDTO;
@@ -37,7 +36,7 @@ public class GenreServiceImplement implements GenreService {
 
     @Override
     public GenreDTO updateGenre (Long genreID, GenreDTO genreDTO) {
-        Genre genre = genreRepository.findById(genreID).orElseThrow(BookStoreException:: GenreNotFound);
+        Genre genre = genreRepository.findById(genreID).orElseThrow(LibraryException:: GenreNotFound);
         genre.setGenreName(genre.getGenreName());
         genre = genreRepository.save(genre);
         return genreMapper.toDto(genre);
@@ -45,7 +44,7 @@ public class GenreServiceImplement implements GenreService {
 
     @Override
     public void deleteGenreByID(Long genreID) {
-        Genre genre = genreRepository.findById(genreID).orElseThrow(BookStoreException:: GenreNotFound);
+        Genre genre = genreRepository.findById(genreID).orElseThrow(LibraryException:: GenreNotFound);
         genreRepository.delete(genre);
 
     }
@@ -57,11 +56,11 @@ public class GenreServiceImplement implements GenreService {
 
     @Override
     public GenreDTO getGenreById(Long genreID) {
-        return genreMapper.toDto(genreRepository.findById(genreID).orElseThrow(BookStoreException::GenreNotFound));
+        return genreMapper.toDto(genreRepository.findById(genreID).orElseThrow(LibraryException::GenreNotFound));
     }
     private void genreException (GenreDTO genreDTO){
         if (!isAlpha(genreDTO.getGenreName()) || genreDTO.getGenreName().isBlank()){
-            throw BookStoreException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
+            throw LibraryException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
         }
     }
 }

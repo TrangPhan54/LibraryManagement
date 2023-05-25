@@ -1,7 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
 import com.axonactive.PersonalProject.entity.Customer;
-import com.axonactive.PersonalProject.exception.BookStoreException;
+import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.CustomerService;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
@@ -30,7 +30,7 @@ public class CustomerServiceImplement implements CustomerService {
 
     @Override
     public CustomerDTO getCustomerById(Long customerID) {
-        Customer cus =  customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound);
+        Customer cus =  customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
         return customerMapper.toDto(cus);
     }
 
@@ -49,7 +49,7 @@ public class CustomerServiceImplement implements CustomerService {
 
     @Override
     public CustomerDTO updateCustomer(Long customerID, CustomerDTO customerDTO) {
-        Customer customer = customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound);
+        Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
         customer.setCustomerFirstName(customerDTO.getCustomerFirstName());
         customer.setCustomerLastName(customerDTO.getCustomerLastName());
         customer.setCustomerPhoneNumber(customerDTO.getCustomerPhoneNumber());
@@ -64,25 +64,25 @@ public class CustomerServiceImplement implements CustomerService {
 
     @Override
     public void deleteCustomerByID(Long customerID) {
-        Customer customer = customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound);
+        Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
         customerRepository.delete(customer);
 
     }
 
     @Override
     public CustomerDTO getCustomerByID(Long customerID) {
-        return customerMapper.toDto(customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound));
+        return customerMapper.toDto(customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound));
     }
     private void customerException (CustomerDTO customerDTO){
         if(!isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName()) ||
                 customerDTO.getCustomerFirstName().isBlank() || customerDTO.getCustomerLastName().isBlank()){
-            throw BookStoreException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
+            throw LibraryException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
         }
         if (!isNumberOnly(customerDTO.getCustomerPhoneNumber())){
-            throw BookStoreException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
+            throw LibraryException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
         }
         if (customerDTO.getCustomerAddress().isBlank()){
-            throw BookStoreException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
+            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
         }
     }
 

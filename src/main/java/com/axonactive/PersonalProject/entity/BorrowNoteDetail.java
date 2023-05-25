@@ -10,20 +10,19 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orderDetail")
-public class OrderDetail {
+@Table(name = "borrow_note_detail")
+public class BorrowNoteDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderDetailID;
-    @Column(name = "quantityOfBooks")
-    private Long quantityOfBooks;
+    private Long borrowDetailID;
 
-//    @Column(name = "priceOfAllBooks")
-//    private Double priceOfAllBooks = this.book.getPricePerBook() * quantityOfBooks;
     @ManyToOne
     @JoinColumn(name = "bookID")
     private Book book;
+    @Column(name = "quantityOfBooks")
+    private Long quantityOfBooks;
+
     @ManyToOne
-    @JoinColumn(name = "orderID")
-    private OrderBook orderBook;
+    @JoinColumn(name = "borrowID")
+    private BorrowNote borrowNote;
 }

@@ -3,7 +3,7 @@ package com.axonactive.PersonalProject.service.imple;
 import com.axonactive.PersonalProject.entity.Author;
 import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.PublishingHouse;
-import com.axonactive.PersonalProject.exception.BookStoreException;
+import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.AuthorRepository;
 import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
@@ -42,7 +42,6 @@ public class BookServiceImplement implements BookService {
         book.setBookName(bookDTO.getBookName());
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
-        book.setPricePerBook(bookDTO.getPricePerBook());
         book.setDatePublish(bookDTO.getDatePublish());
         Author author = authorRepository.findById(authorID).orElseThrow();
         PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow();
@@ -55,13 +54,12 @@ public class BookServiceImplement implements BookService {
 
     @Override
     public BookDTO updateBook(Long bookID, BookDTO bookDTO) {
-        Book book = bookRepository.findById(bookID).orElseThrow(BookStoreException::BookNotFound);
+        Book book = bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound);
         book.setBookName(bookDTO.getBookName());
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
-        book.setPricePerBook(bookDTO.getPricePerBook());
         book.setDatePublish(bookDTO.getDatePublish());
-        book.setPublishingHouse(publishingHouseRepository.findById(bookDTO.getPublishingHouseID()).orElseThrow(BookStoreException::PublishingHouseNotFound));
+        book.setPublishingHouse(publishingHouseRepository.findById(bookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
         book.setAuthor(authorRepository.findById(bookDTO.getBookID()).orElseThrow());
         book = bookRepository.save(book);
         return bookMapper.toDto(book);
@@ -69,39 +67,39 @@ public class BookServiceImplement implements BookService {
 
     @Override
     public void deleteBookById(Long bookID) {
-        Book book = bookRepository.findById(bookID).orElseThrow(BookStoreException::BookNotFound);
+        Book book = bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound);
         bookRepository.delete(book);
 
     }
 
     @Override
     public BookDTO getBookById(Long bookID) {
-        return bookMapper.toDto(bookRepository.findById(bookID).orElseThrow(BookStoreException::BookNotFound));
+        return bookMapper.toDto(bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound));
     }
 
     private void bookException(BookDTO bookDTO) {
         if (bookDTO.getBookName().isBlank() || !isAlpha(bookDTO.getBookName()))
-            throw BookStoreException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
+            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
         if (bookDTO.getPricePerBook() < 0 || bookDTO.getPricePerBook().isNaN())
-            throw BookStoreException.badRequest("WrongValue","Price Must Be A Number And More Than 0");
+            throw LibraryException.badRequest("WrongValue","Price Must Be A Number And More Than 0");
 
         if (bookDTO.getBookImage().isBlank()){
-            throw BookStoreException.badRequest("WrongImage","Book Must Have An Image To Describe");
+            throw LibraryException.badRequest("WrongImage","Book Must Have An Image To Describe");
         }
         if (bookDTO.getContentSummary().isBlank()){
-            throw BookStoreException.badRequest("EmptySummary","Summary Must Have At Least 255 Characters");
+            throw LibraryException.badRequest("EmptySummary","Summary Must Have At Least 255 Characters");
         }
         if (bookDTO.getPricePerBook()<0){
-            throw BookStoreException.badRequest("WrongValue","Price Per Book Must Be More Than 0");
+            throw LibraryException.badRequest("WrongValue","Price Per Book Must Be More Than 0");
         }
         if (bookDTO.getDatePublish().isAfter(LocalDate.now()))
-            throw BookStoreException.badRequest("WrongDate","Date Publish Must Be Before Now");
+            throw LibraryException.badRequest("WrongDate","Date Publish Must Be Before Now");
 
     }
     private void authorException (AuthorDTO authorDTO){
         if (authorDTO.getAuthorLastName().isBlank() || authorDTO.getAuthorFirstName().isBlank()
         || !isAlpha(authorDTO.getAuthorLastName()) || !isAlpha(authorDTO.getAuthorFirstName())){
-            throw BookStoreException.badRequest("WrongNameFormat","Name Of Author Must Contains Only Letters And Cannot Be Empty");
+            throw LibraryException.badRequest("WrongNameFormat","Name Of Author Must Contains Only Letters And Cannot Be Empty");
         }
     }
 }

@@ -27,9 +27,9 @@ public class Book {
     private String contentSummary;
     @Column (name = "datePublish")
     private LocalDate datePublish;
-    @Column (name = "pricePerBook")
-    private Double pricePerBook;
-
+    @Column (name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
     @ManyToOne
     @JoinColumn (name = "publishingHouseID")
     private PublishingHouse publishingHouse;
