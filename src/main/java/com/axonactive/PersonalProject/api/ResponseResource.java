@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/responses")
+@RequestMapping(value = "/auth/responses")
 @RequiredArgsConstructor
 public class ResponseResource {
     @Autowired

@@ -1,7 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
 import com.axonactive.PersonalProject.entity.Author;
-import com.axonactive.PersonalProject.exception.BookStoreException;
+import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.AuthorRepository;
 import com.axonactive.PersonalProject.service.AuthorService;
 import com.axonactive.PersonalProject.service.dto.AuthorDTO;
@@ -40,7 +40,7 @@ public class AuthorServiceImplement implements AuthorService {
 
     @Override
     public AuthorDTO updateAuthor(Long authorID, AuthorDTO authorDTO) {
-        Author author = authorRepository.findById(authorID).orElseThrow(BookStoreException::AuthorNotFound);
+        Author author = authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound);
         author.setAuthorFirstName(authorDTO.getAuthorFirstName());
         author.setAuthorLastName(authorDTO.getAuthorLastName());
         author = authorRepository.save(author);
@@ -49,17 +49,18 @@ public class AuthorServiceImplement implements AuthorService {
 
     @Override
     public void deleteAuthorByID(Long authorID) {
-        authorRepository.deleteById(authorID);
+        Author author = authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound);
+        authorRepository.delete(author);
 
     }
 
     @Override
     public AuthorDTO getAuthorByID(Long authorID) {
-        return authorMapper.toDto(authorRepository.findById(authorID).orElseThrow(BookStoreException::AuthorNotFound));
+        return authorMapper.toDto(authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound));
     }
-    private static void exception (AuthorDTO authorDTO){
+    private static void authorException (AuthorDTO authorDTO){
         if (authorDTO.getAuthorLastName().isBlank() || !isAlpha(authorDTO.getAuthorLastName())||
         authorDTO.getAuthorFirstName().isBlank() || !isAlpha(authorDTO.getAuthorFirstName()))
-            throw BookStoreException.badRequest("Wrong format name", "Name should contain only letters");
+            throw LibraryException.badRequest("Wrong format name", "Name should contain only letters");
     }
 }

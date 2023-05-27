@@ -1,7 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
 import com.axonactive.PersonalProject.entity.Customer;
-import com.axonactive.PersonalProject.exception.BookStoreException;
+import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.CustomerService;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
@@ -28,11 +28,7 @@ public class CustomerServiceImplement implements CustomerService {
         return customerMapper.toDtos(customers);
     }
 
-    @Override
-    public CustomerDTO getCustomerById(Long customerID) {
-        Customer cus =  customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound);
-        return customerMapper.toDto(cus);
-    }
+
 
     @Override
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
@@ -49,7 +45,7 @@ public class CustomerServiceImplement implements CustomerService {
 
     @Override
     public CustomerDTO updateCustomer(Long customerID, CustomerDTO customerDTO) {
-        Customer customer = customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound);
+        Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
         customer.setCustomerFirstName(customerDTO.getCustomerFirstName());
         customer.setCustomerLastName(customerDTO.getCustomerLastName());
         customer.setCustomerPhoneNumber(customerDTO.getCustomerPhoneNumber());
@@ -64,21 +60,41 @@ public class CustomerServiceImplement implements CustomerService {
 
     @Override
     public void deleteCustomerByID(Long customerID) {
-        customerRepository.deleteById(customerID);
+        Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
+        customerRepository.delete(customer);
 
     }
 
     @Override
     public CustomerDTO getCustomerByID(Long customerID) {
-        return customerMapper.toDto(customerRepository.findById(customerID).orElseThrow(BookStoreException::CustomerNotFound));
+        return customerMapper.toDto(customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound));
     }
-    private void CustomerException (CustomerDTO customerDTO){
+
+    @Override
+    public List<CustomerDTO> getCustomerByCustomerFirstName(String customerFirstName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByCustomerFirstName(customerFirstName));
+    }
+    @Override
+    public List<CustomerDTO> getCustomerByCustomerLastName(String customerLastName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByCustomerLastName(customerLastName));
+    }
+
+    @Override
+    public List<CustomerDTO> getCustomerByCustomerEmail(String customerEmail) {
+        return customerMapper.toDtos(customerRepository.findCustomerByCustomerEmail(customerEmail));
+    }
+
+
+    private void customerException (CustomerDTO customerDTO){
         if(!isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName()) ||
                 customerDTO.getCustomerFirstName().isBlank() || customerDTO.getCustomerLastName().isBlank()){
-            throw BookStoreException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
+            throw LibraryException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
         }
-        if (isNumberOnly(customerDTO.getCustomerPhoneNumber())){
-            throw BookStoreException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
+        if (!isNumberOnly(customerDTO.getCustomerPhoneNumber())){
+            throw LibraryException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
+        }
+        if (customerDTO.getCustomerAddress().isBlank()){
+            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
         }
     }
 

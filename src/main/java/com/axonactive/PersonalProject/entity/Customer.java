@@ -32,6 +32,4 @@ public class Customer {
     @Column (name = "roleName")
     @Enumerated(EnumType.STRING)
     private Role roleName;
-
-
 }

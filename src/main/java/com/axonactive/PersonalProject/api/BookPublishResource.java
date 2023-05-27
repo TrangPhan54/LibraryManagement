@@ -1,5 +1,6 @@
 package com.axonactive.PersonalProject.api;
 
+import com.axonactive.PersonalProject.entity.PublishingHouse;
 import com.axonactive.PersonalProject.service.BookPublishService;
 import com.axonactive.PersonalProject.service.BookService;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
@@ -16,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/bookPublishes")
+@RequestMapping(value = "/auth/bookPublishes")
 public class BookPublishResource {
     @Autowired
     private final BookPublishService bookPublishService;
@@ -46,4 +47,9 @@ public class BookPublishResource {
         bookPublishService.deleteBookPublishById(bookPubID);
         return ResponseEntity.noContent().build();
     }
+//
+//    @GetMapping("/book_publish")
+//    public ResponseEntity <List<BookPublishDTO>> findByPublishingHouse (@RequestParam ("publishingHouse") PublishingHouse publishingHouse){
+//        return ResponseEntity.ok(bookPublishService.findByPublishingHouse(publishingHouse));
+//    }
 }

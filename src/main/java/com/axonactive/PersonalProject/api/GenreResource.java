@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/genres")
+@RequestMapping(value = "/auth/genres")
 @RequiredArgsConstructor
 public class GenreResource {
     @Autowired

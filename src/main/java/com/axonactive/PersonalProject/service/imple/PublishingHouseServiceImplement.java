@@ -1,7 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
 import com.axonactive.PersonalProject.entity.PublishingHouse;
-import com.axonactive.PersonalProject.exception.BookStoreException;
+import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.PublishingHouseService;
 import com.axonactive.PersonalProject.service.dto.PublishingHouseDTO;
@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
 
     @Override
     public PublishingHouseDTO updatePublishingHouse(Long publishingHouseID, PublishingHouseDTO publishingHouseDTO) {
-        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow(BookStoreException::PublishingHouseNotFound);
+        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow(LibraryException::PublishingHouseNotFound);
         publishingHouse.setPublishingHouseName(publishingHouseDTO.getPublishingHouseName());
         publishingHouse = publishingHouseRepository.save(publishingHouse);
         return publishingHouseMapper.toDto(publishingHouse);
@@ -41,7 +44,8 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
 
     @Override
     public void deletePublishingHouseByID(Long publishingHouseID) {
-        publishingHouseRepository.deleteById(publishingHouseID);
+        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow(LibraryException::PublishingHouseNotFound);
+        publishingHouseRepository.delete(publishingHouse);
 
     }
 
@@ -52,6 +56,11 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
 
     @Override
     public PublishingHouseDTO getPublishingHouseById(Long publishingHouseID) {
-        return publishingHouseMapper.toDto(publishingHouseRepository.findById(publishingHouseID).orElseThrow(BookStoreException::PublishingHouseNotFound));
+        return publishingHouseMapper.toDto(publishingHouseRepository.findById(publishingHouseID).orElseThrow(LibraryException::PublishingHouseNotFound));
+    }
+    private void publishingHouseException (PublishingHouseDTO publishingHouseDTO){
+        if (publishingHouseDTO.getPublishingHouseName().isBlank() || !isAlpha(publishingHouseDTO.getPublishingHouseName())){
+            throw LibraryException.badRequest("WrongNameFormat","Publishing House Name Should Contains Only Letters");
+        }
     }
 }

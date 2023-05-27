@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/customers")
+@RequestMapping(value = "/auth/customers")
 @RequiredArgsConstructor
 public class CustomerResource {
     @Autowired
@@ -40,6 +40,23 @@ public class CustomerResource {
     public ResponseEntity<CustomerDTO> deleteCustomerById (@PathVariable("customerID") Long customerID){
         customerService.deleteCustomerByID(customerID);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/customer_id")
+    public ResponseEntity<CustomerDTO> getCustomerById (@RequestParam ("customerID") Long customerID){
+         return ResponseEntity.ok(customerService.getCustomerByID(customerID));
+    }
+    @GetMapping("/customer_first_name")
+    public ResponseEntity <List<CustomerDTO>> getCustomerByCustomerFirstName (@RequestParam ("customerFirstName") String customerFirstName){
+         return ResponseEntity.ok(customerService.getCustomerByCustomerFirstName(customerFirstName));
+    }
+
+    @GetMapping("/customer_last_name")
+    public ResponseEntity <List<CustomerDTO>> getCustomerByCustomerLastName (@RequestParam ("customerLastName") String customerLastName){
+        return ResponseEntity.ok(customerService.getCustomerByCustomerLastName(customerLastName));
+    }
+    @GetMapping("/customer_email")
+    public ResponseEntity<List<CustomerDTO>> getCustomerByCustomerEmail (@RequestParam ("customerEmail") String customerEmail){
+         return ResponseEntity.ok(customerService.getCustomerByCustomerEmail(customerEmail));
     }
 
 
