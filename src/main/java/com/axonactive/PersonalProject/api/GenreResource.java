@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/genres")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class GenreResource {
     @Autowired
     private final GenreService genreService;
@@ -31,24 +33,32 @@ public class GenreResource {
 
     @PostMapping
     public ResponseEntity<GenreDTO> createGenre(@RequestBody GenreDTO genreDTO) {
+        log.info ("create genre");
         GenreDTO genre = genreService.createGenre(genreDTO);
-        return ResponseEntity.created(URI.create("/api/genres/" + genre.getGenreID())).body(genre);
+        return ResponseEntity.created(URI.create("/api/genres/" + genre.getId())).body(genre);
 
 
     }
 
     @PutMapping(value = "/{genreID}")
     public ResponseEntity<GenreDTO> updateGenre (@PathVariable("genreDTO") Long genreID, @RequestBody GenreDTO genreDTO) {
+        log.info ("update genre by id {}",genreID);
         GenreDTO genre = genreService.updateGenre(genreID,genreDTO);
-        return ResponseEntity.created(URI.create("/api/genres/" + genre.getGenreID())).body(genre);
+        return ResponseEntity.created(URI.create("/api/genres/" + genre.getId())).body(genre);
 
 
     }
 
     @DeleteMapping(value = "/{genreId}")
     public ResponseEntity<GenreDTO> deleteGenre(@PathVariable("genreId") Long genreID) {
+        log.info ("delete genre by id {}",genreID);
         genreService.deleteGenreByID(genreID);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{genreId}")
+    public ResponseEntity<GenreDTO> getGenreById (@PathVariable ("genreId") Long genreId){
+        log.info ("get genre by id {}",genreId);
+        return ResponseEntity.ok(genreService.getGenreById(genreId));
     }
 
 

@@ -14,13 +14,12 @@ import javax.persistence.*;
 public class GenreBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name ="genreBookID")
-    private Long genreBookID;
+    @Column (name ="id")
+    private Long id;
     @ManyToOne
-    @JoinColumn (name = "bookID")
+    @JoinColumn (name = "book_id")
     private Book book;
     @ManyToOne
-    @JoinColumn (name = "genreID")
+    @JoinColumn (name = "genre_id")
     private Genre genre;
-
 }

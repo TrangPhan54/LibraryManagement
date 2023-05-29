@@ -28,15 +28,15 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(Customer customer) {
-        Role role = customer.getRoleName();
+        Role role = customer.getRole();
         List<GrantedAuthority> authorities = new ArrayList<>();
         GrantedAuthority roles = new SimpleGrantedAuthority(role.name());
         authorities.add(roles);
 
         return new UserDetailsImpl(
-                customer.getCustomerID(),
-                customer.getCustomerEmail(),
-                customer.getCustomerPassword(),
+                customer.getId(),
+                customer.getEmail(),
+                customer.getPassword(),
                 authorities);
     }
     @Override

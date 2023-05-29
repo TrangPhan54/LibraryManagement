@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BorrowNoteDetailDTO {
     @JsonIgnore
-    private Long borrowDetailID;
+    private Long id;
     private Long bookID;
     private Long borrowNoteID;
 }

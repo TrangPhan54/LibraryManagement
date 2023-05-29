@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BorrowNoteBookMapper {
-    @Mapping(target = "customerID",source ="borrowNote.customer.customerID")
+    @Mapping(target = "customerID",source ="borrowNote.customer.id")
     BorrowNoteDTO toDto (BorrowNote borrowNote);
     List<BorrowNoteDTO> toDtos (List <BorrowNote> borrowNotes);
 }

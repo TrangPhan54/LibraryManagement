@@ -29,9 +29,12 @@ public class AuthorServiceImplement implements AuthorService {
 
     @Override
     public AuthorDTO createAuthor(AuthorDTO authorDTO) {
+        if (authorDTO.getLastName().isBlank() || !isAlpha(authorDTO.getLastName()) ||
+                authorDTO.getFirstName().isBlank() || !isAlpha(authorDTO.getFirstName()))
+            throw LibraryException.badRequest("Wrong format name", "Name should contain only letters");
         Author author = new Author();
-        author.setAuthorFirstName(authorDTO.getAuthorFirstName());
-        author.setAuthorLastName(authorDTO.getAuthorLastName());
+        author.setFirstName(authorDTO.getFirstName());
+        author.setLastName(authorDTO.getLastName());
         author = authorRepository.save(author);
         return authorMapper.toDto(author);
 
@@ -41,8 +44,8 @@ public class AuthorServiceImplement implements AuthorService {
     @Override
     public AuthorDTO updateAuthor(Long authorID, AuthorDTO authorDTO) {
         Author author = authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound);
-        author.setAuthorFirstName(authorDTO.getAuthorFirstName());
-        author.setAuthorLastName(authorDTO.getAuthorLastName());
+        author.setFirstName(authorDTO.getFirstName());
+        author.setLastName(authorDTO.getLastName());
         author = authorRepository.save(author);
         return authorMapper.toDto(author);
     }
@@ -58,9 +61,9 @@ public class AuthorServiceImplement implements AuthorService {
     public AuthorDTO getAuthorByID(Long authorID) {
         return authorMapper.toDto(authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound));
     }
-    private static void authorException (AuthorDTO authorDTO){
-        if (authorDTO.getAuthorLastName().isBlank() || !isAlpha(authorDTO.getAuthorLastName())||
-        authorDTO.getAuthorFirstName().isBlank() || !isAlpha(authorDTO.getAuthorFirstName()))
-            throw LibraryException.badRequest("Wrong format name", "Name should contain only letters");
+
+    @Override
+    public AuthorDTO getAuthorByFirstName(String firstName) {
+        return authorMapper.toDto(authorRepository.findAuthorByFirstName(firstName));
     }
 }

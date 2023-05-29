@@ -14,15 +14,15 @@ import javax.persistence.*;
 public class BorrowNoteDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long borrowDetailID;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "bookID")
+    @JoinColumn(name = "book_id")
     private Book book;
 //    @Column(name = "quantityOfBooks")
 //    private Long quantityOfBooks;
 
     @ManyToOne
-    @JoinColumn(name = "borrowID")
+    @JoinColumn(name = "borrow_id")
     private BorrowNote borrowNote;
 }

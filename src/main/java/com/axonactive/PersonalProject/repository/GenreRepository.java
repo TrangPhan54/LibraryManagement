@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface GenreRepository extends JpaRepository <Genre,Long> {
-    @Query("select g from Genre g where g.genreName <> ?1")
+    @Query("select g from Genre g where g.name <> ?1")
     List<Genre> getGenreNotLike (String name);
 }

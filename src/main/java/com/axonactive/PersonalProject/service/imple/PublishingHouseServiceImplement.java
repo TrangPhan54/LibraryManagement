@@ -28,8 +28,11 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
 
     @Override
     public PublishingHouseDTO createPublishingHouse(PublishingHouseDTO publishingHouseDTO) {
+        if (publishingHouseDTO.getName().isBlank() || !isAlpha(publishingHouseDTO.getName())){
+            throw LibraryException.badRequest("WrongNameFormat","Publishing House Name Should Contains Only Letters");
+        }
         PublishingHouse publishingHouse = new PublishingHouse();
-        publishingHouse.setPublishingHouseName(publishingHouseDTO.getPublishingHouseName());
+        publishingHouse.setName(publishingHouseDTO.getName());
         publishingHouse = publishingHouseRepository.save(publishingHouse);
         return publishingHouseMapper.toDto(publishingHouse);
     }
@@ -37,7 +40,10 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
     @Override
     public PublishingHouseDTO updatePublishingHouse(Long publishingHouseID, PublishingHouseDTO publishingHouseDTO) {
         PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow(LibraryException::PublishingHouseNotFound);
-        publishingHouse.setPublishingHouseName(publishingHouseDTO.getPublishingHouseName());
+        if (publishingHouseDTO.getName().isBlank() || !isAlpha(publishingHouseDTO.getName())){
+            throw LibraryException.badRequest("WrongNameFormat","Publishing House Name Should Contains Only Letters");
+        }
+        publishingHouse.setName(publishingHouseDTO.getName());
         publishingHouse = publishingHouseRepository.save(publishingHouse);
         return publishingHouseMapper.toDto(publishingHouse);
     }
@@ -58,9 +64,5 @@ public class PublishingHouseServiceImplement implements PublishingHouseService {
     public PublishingHouseDTO getPublishingHouseById(Long publishingHouseID) {
         return publishingHouseMapper.toDto(publishingHouseRepository.findById(publishingHouseID).orElseThrow(LibraryException::PublishingHouseNotFound));
     }
-    private void publishingHouseException (PublishingHouseDTO publishingHouseDTO){
-        if (publishingHouseDTO.getPublishingHouseName().isBlank() || !isAlpha(publishingHouseDTO.getPublishingHouseName())){
-            throw LibraryException.badRequest("WrongNameFormat","Publishing House Name Should Contains Only Letters");
-        }
-    }
+
 }

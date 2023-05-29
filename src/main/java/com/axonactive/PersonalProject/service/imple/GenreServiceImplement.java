@@ -28,8 +28,11 @@ public class GenreServiceImplement implements GenreService {
 
     @Override
     public GenreDTO createGenre(GenreDTO genreDTO) {
+        if (!isAlpha(genreDTO.getName()) || genreDTO.getName().isBlank()){
+            throw LibraryException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
+        }
         Genre genre = new Genre();
-        genre.setGenreName(genre.getGenreName());
+        genre.setName(genre.getName());
         genre =  genreRepository.save(genre);
         return genreMapper.toDto(genre);
     }
@@ -37,7 +40,10 @@ public class GenreServiceImplement implements GenreService {
     @Override
     public GenreDTO updateGenre (Long genreID, GenreDTO genreDTO) {
         Genre genre = genreRepository.findById(genreID).orElseThrow(LibraryException:: GenreNotFound);
-        genre.setGenreName(genre.getGenreName());
+        if (!isAlpha(genreDTO.getName()) || genreDTO.getName().isBlank()){
+            throw LibraryException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
+        }
+        genre.setName(genre.getName());
         genre = genreRepository.save(genre);
         return genreMapper.toDto(genre);
     }
@@ -58,9 +64,9 @@ public class GenreServiceImplement implements GenreService {
     public GenreDTO getGenreById(Long genreID) {
         return genreMapper.toDto(genreRepository.findById(genreID).orElseThrow(LibraryException::GenreNotFound));
     }
-    private void genreException (GenreDTO genreDTO){
-        if (!isAlpha(genreDTO.getGenreName()) || genreDTO.getGenreName().isBlank()){
-            throw LibraryException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
-        }
-    }
+//    private void genreException (GenreDTO genreDTO){
+//        if (!isAlpha(genreDTO.getName()) || genreDTO.getName().isBlank()){
+//            throw LibraryException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
+//        }
+//    }
 }

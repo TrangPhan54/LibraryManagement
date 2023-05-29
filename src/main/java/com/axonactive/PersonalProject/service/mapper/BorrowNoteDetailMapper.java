@@ -9,8 +9,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BorrowNoteDetailMapper {
-    @Mapping(target = "bookID", source = "borrowNoteDetail.book.bookID")
-    @Mapping(target = "borrowNoteID", source ="borrowNoteDetail.borrowNote.borrowID")
+    @Mapping(target = "bookID", source = "borrowNoteDetail.book.id")
+    @Mapping(target = "borrowNoteID", source ="borrowNoteDetail.borrowNote.id")
     BorrowNoteDetailDTO toDto (BorrowNoteDetail borrowNoteDetail);
     List<BorrowNoteDetailDTO> toDtos (List <BorrowNoteDetail> borrowNoteDetails);
 }

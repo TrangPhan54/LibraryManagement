@@ -13,8 +13,8 @@ import javax.persistence.*;
 public class PublishingHouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long publishingHouseID;
-    @Column (name = "publishingHouseName")
-    private String publishingHouseName;
+    private Long id;
+    @Column (name = "publishing_house_name")
+    private String name;
 
 }

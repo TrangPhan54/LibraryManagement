@@ -15,11 +15,11 @@ import javax.persistence.*;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long authorID;
-    @Column (name = "authorFirstName")
-    private String authorFirstName;
-    @Column (name = "authorLastName")
-    private String authorLastName;
+    private Long id;
+    @Column (name = "first_name")
+    private String firstName;
+    @Column (name = "last_name")
+    private String lastName;
 
 
 }

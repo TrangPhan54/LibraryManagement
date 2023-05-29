@@ -10,11 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CustomerDTO {
     @JsonIgnore
-    private Long customerID;
-    private String customerFirstName;
-    private String customerLastName;
-    private String customerAddress;
-    private String customerPhoneNumber;
-
-
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String phoneNumber;
 }

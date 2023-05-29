@@ -10,8 +10,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
-    @Mapping(target= "publishingHouseID", source = "book.publishingHouse.publishingHouseID")
-    @Mapping(target= "authorID", source = "book.author.authorID")
+    @Mapping(target= "publishingHouseID", source = "book.publishingHouse.id")
+    @Mapping(target= "authorID", source = "book.author.id")
     BookDTO toDto (Book book);
     List<BookDTO> toDtos (List <Book> books);
 }

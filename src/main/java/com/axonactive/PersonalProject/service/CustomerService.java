@@ -1,25 +1,31 @@
 package com.axonactive.PersonalProject.service;
 
-import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 
 import java.util.List;
 
 public interface CustomerService {
-    List<CustomerDTO> getAllCustomer ();
+    List<CustomerDTO> getAllCustomer();
 //    CustomerDTO getCustomerById (Long customerID);
 
-    CustomerDTO createCustomer (CustomerDTO customerDTO);
+    CustomerDTO createCustomer(CustomerDTO customerDTO);
 
-    CustomerDTO updateCustomer (Long customerID, CustomerDTO customerDTO);
-    void deleteCustomerByID (Long customerID);
+    CustomerDTO updateCustomer(Long customerID, CustomerDTO customerDTO);
 
-    CustomerDTO getCustomerByID (Long customerID);
+    void deleteCustomerByID(Long customerID);
 
-    List<CustomerDTO> getCustomerByCustomerFirstName (String customerFirstName);
-    List<CustomerDTO> getCustomerByCustomerLastName (String customerLastName);
+    CustomerDTO getCustomerByID(Long customerID);
 
-    List<CustomerDTO> getCustomerByCustomerEmail (String customerEmail);
+    List<CustomerDTO> getCustomerByFirstName(String firstName);
+
+    List<CustomerDTO> getCustomerByLastName(String lastName);
+
+    List<CustomerDTO> getCustomerByEmail(String email);
+
+    List<CustomerDTO> getCustomerByFirstNameContaining(String partOfName);
+
+    List<CustomerDTO> getCustomerByLastNameContaining (String partOfName);
+
 
 
 }

@@ -28,15 +28,23 @@ public class CustomerServiceImplement implements CustomerService {
         return customerMapper.toDtos(customers);
     }
 
-
-
     @Override
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
+        if(!isAlpha(customerDTO.getFirstName()) || !isAlpha(customerDTO.getLastName()) ||
+                customerDTO.getFirstName().isBlank() || customerDTO.getLastName().isBlank()){
+            throw LibraryException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
+        }
+        if (!isNumberOnly(customerDTO.getPhoneNumber())){
+            throw LibraryException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
+        }
+        if (customerDTO.getAddress().isBlank()){
+            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
+        }
         Customer customer = Customer.builder()
-                .customerFirstName(customerDTO.getCustomerFirstName())
-                .customerLastName(customerDTO.getCustomerLastName())
-                .customerAddress(customerDTO.getCustomerAddress())
-                .customerPhoneNumber(customerDTO.getCustomerPhoneNumber())
+                .firstName(customerDTO.getFirstName())
+                .lastName(customerDTO.getLastName())
+                .address(customerDTO.getAddress())
+                .phoneNumber(customerDTO.getPhoneNumber())
                 .build();
 
         customer = customerRepository.save(customer);
@@ -46,15 +54,22 @@ public class CustomerServiceImplement implements CustomerService {
     @Override
     public CustomerDTO updateCustomer(Long customerID, CustomerDTO customerDTO) {
         Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
-        customer.setCustomerFirstName(customerDTO.getCustomerFirstName());
-        customer.setCustomerLastName(customerDTO.getCustomerLastName());
-        customer.setCustomerPhoneNumber(customerDTO.getCustomerPhoneNumber());
-        customer.setCustomerAddress(customerDTO.getCustomerAddress());
+        if(!isAlpha(customerDTO.getFirstName()) || !isAlpha(customerDTO.getLastName()) ||
+                customerDTO.getFirstName().isBlank() || customerDTO.getLastName().isBlank()){
+            throw LibraryException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
+        }
+        if (!isNumberOnly(customerDTO.getPhoneNumber())){
+            throw LibraryException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
+        }
+        if (customerDTO.getAddress().isBlank()){
+            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
+        }
+        customer.setFirstName(customerDTO.getFirstName());
+        customer.setLastName(customerDTO.getLastName());
+        customer.setPhoneNumber(customerDTO.getPhoneNumber());
+        customer.setAddress(customerDTO.getAddress());
         customer = customerRepository.save(customer);
         return customerMapper.toDto(customer);
-
-
-
 
     }
 
@@ -71,31 +86,27 @@ public class CustomerServiceImplement implements CustomerService {
     }
 
     @Override
-    public List<CustomerDTO> getCustomerByCustomerFirstName(String customerFirstName) {
-        return customerMapper.toDtos(customerRepository.findCustomerByCustomerFirstName(customerFirstName));
+    public List<CustomerDTO> getCustomerByFirstName(String firstName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByFirstName(firstName));
     }
     @Override
-    public List<CustomerDTO> getCustomerByCustomerLastName(String customerLastName) {
-        return customerMapper.toDtos(customerRepository.findCustomerByCustomerLastName(customerLastName));
+    public List<CustomerDTO> getCustomerByLastName(String lastName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByLastName(lastName));
     }
 
     @Override
-    public List<CustomerDTO> getCustomerByCustomerEmail(String customerEmail) {
-        return customerMapper.toDtos(customerRepository.findCustomerByCustomerEmail(customerEmail));
+    public List<CustomerDTO> getCustomerByEmail(String email) {
+        return customerMapper.toDtos(customerRepository.findCustomerByEmail(email));
     }
 
+    @Override
+    public List<CustomerDTO> getCustomerByFirstNameContaining(String partOfName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByFirstNameContaining(partOfName));
+    }
 
-    private void customerException (CustomerDTO customerDTO){
-        if(!isAlpha(customerDTO.getCustomerFirstName()) || !isAlpha(customerDTO.getCustomerLastName()) ||
-                customerDTO.getCustomerFirstName().isBlank() || customerDTO.getCustomerLastName().isBlank()){
-            throw LibraryException.badRequest("WrongNameFormat","Name Of Customer Should Contain Only Letters And Must Not Be Empty");
-        }
-        if (!isNumberOnly(customerDTO.getCustomerPhoneNumber())){
-            throw LibraryException.badRequest("WrongNumberFormat","Phone Number Should Contains Only Numbers");
-        }
-        if (customerDTO.getCustomerAddress().isBlank()){
-            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
-        }
+    @Override
+    public List<CustomerDTO> getCustomerByLastNameContaining(String partOfName) {
+        return customerMapper.toDtos(customerRepository.findCustomerByLastNameContaining(partOfName));
     }
 
 

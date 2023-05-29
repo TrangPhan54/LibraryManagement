@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenreDTO {
-    @JsonIgnore
-    private Long id;
-    private String name;
-
+public class ResponseContentDTO {
+    private String responseContent;
 }

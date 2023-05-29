@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PublishingHouseDTO {
     @JsonIgnore
-    private Long publishingHouseID;
-    private String publishingHouseName;
+    private Long id;
+    private String name;
 }

@@ -10,4 +10,5 @@ public interface AuthorService {
     AuthorDTO updateAuthor (Long authorID, AuthorDTO authorDTO);
     void deleteAuthorByID (Long authorID);
     AuthorDTO getAuthorByID (Long authorID);
+    AuthorDTO getAuthorByFirstName (String firstName);
 }

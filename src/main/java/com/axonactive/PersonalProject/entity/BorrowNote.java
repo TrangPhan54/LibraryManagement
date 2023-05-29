@@ -17,7 +17,7 @@ public class BorrowNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "borrow_id")
-    private Long borrowID;
+    private Long id;
     @ManyToOne
     @JoinColumn (name = "customer_id")
     private Customer customer;

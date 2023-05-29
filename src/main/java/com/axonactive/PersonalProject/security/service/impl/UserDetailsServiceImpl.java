@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String customerEmail) throws UsernameNotFoundException {
-        Customer customer = customerSecurityRepository.findByCustomerEmail(customerEmail)
+        Customer customer = customerSecurityRepository.findByEmail(customerEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + customerEmail));
 
         return UserDetailsImpl.build(customer);
@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 
     @org.springframework.transaction.annotation.Transactional
     public UserDetails validateUser(String customerEmail) {
-        Customer customer = customerSecurityRepository.findByCustomerEmail(customerEmail)
+        Customer customer = customerSecurityRepository.findByEmail(customerEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + customerEmail));
 
         return UserDetailsImpl.build(customer);

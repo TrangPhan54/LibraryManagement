@@ -11,6 +11,7 @@ import com.axonactive.PersonalProject.service.GenreBookService;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.GenreBookDTO;
 import com.axonactive.PersonalProject.service.dto.GenreDTO;
+import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import com.axonactive.PersonalProject.service.mapper.GenreBookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlphaOrNumeric;
@@ -31,6 +33,7 @@ public class GenreBookServiceImplementation implements GenreBookService {
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
     private final GenreBookMapper genreBookMapper;
+    private final BookMapper bookMapper;
 
     @Override
     public List<GenreBookDTO> getAllGenreBook() {
@@ -69,28 +72,24 @@ public class GenreBookServiceImplementation implements GenreBookService {
 
     }
 
-    private void genreException(GenreDTO genreDTO) {
-        if (genreDTO.getGenreName().isBlank() || !isAlpha(genreDTO.getGenreName())) {
-            throw LibraryException.badRequest("WrongNameFormat", "Genre Name Must Contains Only Letters And Cannot Be Empty");
-        }
+    @Override
+    public GenreBookDTO getGenreBookById(Long genreBookId) {
+        return genreBookMapper.toDto(genreBookRepository.findById(genreBookId).orElseThrow(LibraryException::GenreBookNotFound));
     }
 
-    private void bookException(BookDTO bookDTO) {
-        if (bookDTO.getBookName().isBlank() || !isAlphaOrNumeric(bookDTO.getBookName())) {
-            throw LibraryException.badRequest("WrongNameFormat", "Book Name Must Contains Letters Or Number And Cannot Be Empty");
-        }
-        if (bookDTO.getBookImage().isBlank()) {
-            throw LibraryException.badRequest("WrongImageFormat", "Book Must Have Images To Describe");
-        }
-        if (bookDTO.getPricePerBook() < 0){
-            throw LibraryException.badRequest("WrongPriceValue","The Price Of Book Must Be More Than 0");
-        }
-        if (bookDTO.getContentSummary().isBlank()){
-            throw LibraryException.badRequest("WrongContentFormat","Content Summary Cannot Be Empty");
-        }
-        if (bookDTO.getDatePublish().isAfter(LocalDate.now())){
-            throw LibraryException.badRequest("WrongDateValue"," Date Publish Must Be Before Now");
-        }
+    // 1. Tim sach boi ten the loai
+    @Override
+    public List<String> getByGenreNameContaining(String name) {
+//        List<String> tempList = genreBookRepository.findByGenreNameContaining("Classic").stream().map(gb -> gb.getBook().getName()).collect(Collectors.toList());
+//        tempList.forEach(System.out::println);
 
+        return genreBookRepository.findByGenreNameContaining(name).stream().map(gb -> gb.getBook().getName()).collect(Collectors.toList());
     }
+
+    @Override
+    public List<BookDTO> getByGenreNameContainingAndBookNameContaining(String genreName, String bookName) {
+        return bookMapper.toDtos(genreBookRepository.findByGenreNameContainingAndBookNameContaining(genreName, bookName).stream().map(GenreBook::getBook).collect(Collectors.toList()));
+    }
+
+
 }

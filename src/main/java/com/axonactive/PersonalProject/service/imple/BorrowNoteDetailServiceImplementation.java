@@ -8,23 +8,25 @@ import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.BorrowNoteRepository;
 import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
+import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
-import com.axonactive.PersonalProject.service.BorrowNoteService;
-import com.axonactive.PersonalProject.service.dto.BookDTO;
-import com.axonactive.PersonalProject.service.dto.BorrowNoteDTO;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailService {
     private final BorrowNoteDetailRepository borrowNoteDetailRepository;
     private final BookRepository bookRepository;
@@ -32,7 +34,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     private final BorrowNoteDetailMapper borrowNoteDetailMapper;
 
+    private final CustomerRepository customerRepository;
+
     private final BookMapper bookMapper;
+
     @Override
     public List<BorrowNoteDetailDTO> getAllBorrowNoteDetail() {
         List<BorrowNoteDetail> borrowNoteDetails = borrowNoteDetailRepository.findAll();
@@ -60,7 +65,11 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     public void deleteBorrowNoteDetailByID(Long borrowNoteDetailID) {
         BorrowNoteDetail borrowNoteDetail = borrowNoteDetailRepository.findById(borrowNoteDetailID).orElseThrow(LibraryException::BorrowNoteDetailNotFound);
         borrowNoteDetailRepository.delete(borrowNoteDetail);
+    }
 
+    @Override
+    public BorrowNoteDetailDTO getBorrowNoteDetailId(Long borrowNoteDetailId) {
+        return borrowNoteDetailMapper.toDto(borrowNoteDetailRepository.findById(borrowNoteDetailId).orElseThrow(LibraryException::BorrowNoteDetailNotFound));
     }
     //1. Danh sách số lượng sách mà khách hàng cụ thể hiện tại đang mượn
 
@@ -68,9 +77,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     public Long getNumberOfBookByCustomerId(Long customerId) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         Long numberOfBorrowedBooks = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getCustomerID() == customerId).count();
-//                .mapToLong(brd -> brd.getQuantityOfBooks())
-//                .sum();
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId).count();
 
         return numberOfBorrowedBooks;
     }
@@ -78,18 +85,13 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     @Override
     public Long customerReturnBook(Long customerId, Long numberOfBooksReturned) {
+        log.info("request the number of return books by customer id {}",customerId);
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         List<BorrowNoteDetail> tempList = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getCustomerID() == customerId)
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
                 .collect(Collectors.toList());
-//        for(int i = 0; i< tempList.size(); i++) {
-//            BorrowNoteDetail borrowNoteDetail = borrowNoteDetailRepository.findById(tempList.get(i).getBorrowDetailID()).orElseThrow();
-//            if(borrowNoteDetail.getBook().getBookID() == bookId) {
-//                borrowNoteDetail.setQuantityOfBooks(borrowNoteDetail.getQuantityOfBooks() - numberOfBooksReturned);
-//            }
-//        }
         Long numberOfRemainingBooks = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getCustomerID() == customerId).count() - numberOfBooksReturned;
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId).count() - numberOfBooksReturned;
 
         tempList.forEach(System.out::println);
         return numberOfRemainingBooks;
@@ -101,27 +103,87 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     public List<String> nameOfBookRemaining(Long customerId, Long bookId) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getCustomerID() == customerId)
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
                 .collect(Collectors.toList());
-//        for (BorrowNoteDetail borrowNoteDetail : bookListOfCustomer){
-//            if (borrowNoteDetail.getBook().getBookID() == bookId){
-//                borrowNoteDetailRepository.deleteAllById();
-//            }
-//        }
+
         for (int i = 0; i < bookListOfCustomer.size(); i++) {
-            if (bookListOfCustomer.get(i).getBook().getBookID() == bookId) {
-                borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getBorrowDetailID());
+            if (bookListOfCustomer.get(i).getBook().getId() == bookId) {
+                borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
             }
         }
         borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         return borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getCustomerID() == customerId)
-                .map(brd -> brd.getBook().getBookName())
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
+                .map(brd -> brd.getBook().getName())
                 .collect(Collectors.toList());
     }
 
 
+    @Override
+    public void returnBookByCustomer(Long customerId, Long bookId) {
+        List<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
+                .collect(Collectors.toList());
+        List<Book> bookOfCustomer = borrowNoteDetailListOfCustomer
+                .stream().map(BorrowNoteDetail::getBook)
+                .collect(Collectors.toList());
+        Customer customer = customerRepository.findById(customerId).orElseThrow(LibraryException::CustomerNotFound);
 
+        for (int i = 0; i < borrowNoteDetailListOfCustomer.size(); i++) {
+            if (borrowNoteDetailListOfCustomer.get(i).getBook().getId() == bookId) {
+                if (LocalDate.now().isAfter(borrowNoteDetailListOfCustomer.get(i).getBorrowNote().getDueDate())) {
+                    if (customer.getNumberOfTimeReturnLate() < 5) {
+                        customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
+                        if (customer.getNumberOfTimeReturnLate() == 5) {
+                            customer.setActive(false);
+                        }
+                    } else {
+                        System.out.println("Customer is banned because you have exceeded 5 overdue returns.");
+                    }
+                }
+                System.out.println(customer.getNumberOfTimeReturnLate());
+            }
+        }
+//
+    }
 
+    @Override
+    public Long countNumberMaxBorrowBook(Long bookId) {
+        return borrowNoteDetailRepository.countNumberMaxBorrowBook(bookId);
+    }
+
+    @Override
+    public String getBookNameByBoodId(Long bookId) {
+        Optional<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+                .filter(brd -> brd.getBook().getId() == bookId).findFirst();
+        List<Book> bookOfCustomer = borrowNoteDetailListOfCustomer
+                .stream().map(BorrowNoteDetail::getBook)
+                .collect(Collectors.toList());
+        String bookName = bookOfCustomer.stream()
+                .map(Book::getName)
+                .collect(Collectors.joining(","));
+        return bookName;
+    }
+    // Tim id nhung sach duoc muon nhieu nhat
+    @Override
+    public List<Long> maxBorrowBook() {
+        return borrowNoteDetailRepository.maxBorrowBook();
+    }
+    // Tim ten nhung cuon sach duoc muon nhieu nhat
+
+    @Override
+    public List<Book> nameOfMaxBorrowBook() {
+        return borrowNoteDetailRepository.nameOfMaxBorrowBook(maxBorrowBook());
+    }
+    // Tim id nhung sach duoc muon it nhat
+    @Override
+    public List<Long> minBorrowBook() {
+        return borrowNoteDetailRepository.minBorrowBook();
+    }
+    // Tim ten nhung cuon sach duoc muon it nhat
+    @Override
+    public List<Book> nameOfMinBorrowBook() {
+        return borrowNoteDetailRepository.nameOfMinBorrowBook(minBorrowBook());
+    }
 
 }

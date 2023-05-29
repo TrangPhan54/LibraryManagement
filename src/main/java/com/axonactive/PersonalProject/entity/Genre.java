@@ -14,9 +14,8 @@ import javax.persistence.*;
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "genreID")
-    private Long genreID;
-    @Column (name = "genreName")
-    private String genreName;
-
+    @Column (name = "id")
+    private Long id;
+    @Column (name = "genre_name")
+    private String name;
 }

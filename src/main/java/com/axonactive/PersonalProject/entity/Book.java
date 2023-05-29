@@ -15,26 +15,26 @@ import java.time.LocalDate;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "bookID")
-    private Long bookID;
+    @Column (name = "id")
+    private Long id;
 
-    @Column (name = "bookName")
-    private String bookName;
+    @Column (name = "name")
+    private String name;
 
-    @Column (name = "bookImage", length = 1000)
+    @Column (name = "image", length = 1000)
     private String bookImage;
-    @Column (name = "contentSummary", length = 1000)
+    @Column (name = "content_summary", length = 1000)
     private String contentSummary;
-    @Column (name = "datePublish")
+    @Column (name = "date_publish")
     private LocalDate datePublish;
     @Column (name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne
-    @JoinColumn (name = "publishingHouseID")
+    @JoinColumn (name = "publishing_house_id")
     private PublishingHouse publishingHouse;
 
     @ManyToOne
-    @JoinColumn (name = "authorID")
+    @JoinColumn (name = "author_id")
     private Author author;
 }

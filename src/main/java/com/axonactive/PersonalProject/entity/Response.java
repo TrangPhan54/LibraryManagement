@@ -14,15 +14,15 @@ import javax.persistence.*;
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "responseID")
-    private Long responseID;
-    @Column (name = "responseContent", length = 5000)
+    @Column (name = "id")
+    private Long id;
+    @Column (name = "response_content", length = 5000)
     private String responseContent;
     @ManyToOne
-    @JoinColumn (name = "customerID")
+    @JoinColumn (name = "customer_id")
     private Customer customer;
     @ManyToOne
-    @JoinColumn (name = "bookID")
+    @JoinColumn (name = "book_id")
     private Book book;
 
 

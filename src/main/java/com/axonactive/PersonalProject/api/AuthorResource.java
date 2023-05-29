@@ -18,34 +18,44 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/authors")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 public class AuthorResource {
 
     @Autowired
     private final AuthorService authorService;
     @GetMapping
      public ResponseEntity<List<AuthorDTO>> getAllAuthor() {
+        log.info("get all author");
         return ResponseEntity.ok(authorService.getAllAuthor());
     }
 
 
     @PostMapping
     public ResponseEntity<AuthorDTO> createAuthor (@RequestBody AuthorDTO authorDTO){
+        log.info("create author");
         AuthorDTO author = authorService.createAuthor(authorDTO);
-        return ResponseEntity.created(URI.create("/api/authors/" + author.getAuthorID())).body(author);
+        return ResponseEntity.created(URI.create("/api/authors/" + author.getId())).body(author);
 
 
     }
     @PutMapping(value = "/{authorID}")
     public ResponseEntity<AuthorDTO> updateAuthor (@PathVariable ("authorID") Long authorID ,@RequestBody AuthorDTO authorDTO){
+        log.info("update author by id {}",authorID);
         AuthorDTO author = authorService.updateAuthor(authorID,authorDTO);
-        return ResponseEntity.created(URI.create("/api/authors/" + author.getAuthorID())).body(author);
+        return ResponseEntity.created(URI.create("/api/authors/" + author.getId())).body(author);
 
 
     }
     @DeleteMapping(value = "/{authorID}")
     public ResponseEntity<AuthorDTO> deleteAuthor (@PathVariable("authorID") Long authorID){
+        log.info("delete author by id {}",authorID);
         authorService.deleteAuthorByID(authorID);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping (value = "/author_first_name")
+    public ResponseEntity<AuthorDTO> getAuthorByFirstName (@RequestParam ("firstName") String firstName){
+        log.info("get author by first name {}",firstName);
+
+        return ResponseEntity.ok(authorService.getAuthorByFirstName(firstName));
     }
 }
