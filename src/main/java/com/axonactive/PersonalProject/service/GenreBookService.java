@@ -20,4 +20,6 @@ public interface GenreBookService {
     List<String> getByGenreNameContaining(String name);
 
     List<BookDTO> getByGenreNameContainingAndBookNameContaining(String genreName, String bookName);
+
+    List<BookDTO> getBookHaveRelation (String bookName);
 }

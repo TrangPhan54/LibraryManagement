@@ -10,7 +10,7 @@ import java.util.List;
 public interface BookService {
     List<BookDTO> getAllBook();
 
-    BookDTO createBook(BookDTO bookDTO, Long publishingHouseID, Long authorID);
+    BookDTO createBook(BookDTO bookDTO, Long authorID);
 
     BookDTO updateBook(Long bookID, BookDTO bookDTO);
 
@@ -27,7 +27,7 @@ public interface BookService {
     List<BookDTO> getByStatus(Status status);
     // 3. Tim sach boi ten nha xuat ban
 
-    List<BookDTO> getBookByPublishingHouseName(String publishingHouseName);
+//    List<BookDTO> getBookByPublishingHouseName(String publishingHouseName);
 
     // 4. Tim sach boi ten tac gia
     List<BookDTO> getBookByAuthorFirstName(String authorFirstName);
@@ -43,7 +43,7 @@ public interface BookService {
     BookContentDTO findContentSummaryByBookNameContaining (String bookName);
 
 
-    List<BookDTO> getByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName);
+//    List<BookDTO> getByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName);
 
     List<BookDTO> getBookByAuthorLastNameContaining(String partOfName);
 

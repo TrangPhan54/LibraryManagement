@@ -1,5 +1,6 @@
 package com.axonactive.PersonalProject.service.imple;
 
+import com.axonactive.PersonalProject.entity.GenreBook;
 import com.axonactive.PersonalProject.service.GenreBookService;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import org.junit.jupiter.api.Test;
@@ -30,5 +31,12 @@ class GenreBookServiceImplementationTest {
     void getByGenreNameContaining() {
         List<String> re = genreBookService.getByGenreNameContaining("Classic");
         re.forEach(System.out::println);
+    }
+
+    @Test
+    void getBookHaveRelation() {
+        List<BookDTO> re = genreBookService.getBookHaveRelation("Gone with the wind");
+        System.out.println(re);
+
     }
 }

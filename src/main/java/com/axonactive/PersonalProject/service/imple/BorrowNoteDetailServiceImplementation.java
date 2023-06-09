@@ -124,9 +124,9 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()
                 .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
                 .collect(Collectors.toList());
-        List<Book> bookOfCustomer = borrowNoteDetailListOfCustomer
-                .stream().map(BorrowNoteDetail::getBook)
-                .collect(Collectors.toList());
+//        List<Book> bookOfCustomer = borrowNoteDetailListOfCustomer
+//                .stream().map(BorrowNoteDetail::getBook)
+//                .collect(Collectors.toList());
         Customer customer = customerRepository.findById(customerId).orElseThrow(LibraryException::CustomerNotFound);
 
         for (int i = 0; i < borrowNoteDetailListOfCustomer.size(); i++) {

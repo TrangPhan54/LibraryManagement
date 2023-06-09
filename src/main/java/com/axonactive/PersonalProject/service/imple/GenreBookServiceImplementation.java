@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
@@ -89,6 +90,18 @@ public class GenreBookServiceImplementation implements GenreBookService {
     @Override
     public List<BookDTO> getByGenreNameContainingAndBookNameContaining(String genreName, String bookName) {
         return bookMapper.toDtos(genreBookRepository.findByGenreNameContainingAndBookNameContaining(genreName, bookName).stream().map(GenreBook::getBook).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<BookDTO> getBookHaveRelation(String bookName) {
+
+        List<GenreBook> relationalBook = genreBookRepository.findAll().stream().filter(gb -> gb.getBook().getName().equalsIgnoreCase(bookName)).collect(Collectors.toList());
+
+
+        Optional<String> getGenre = relationalBook.stream().map(GenreBook::getGenre).map(Genre::getName).findFirst();
+
+        List<Book> result = genreBookRepository.findAll().stream().filter(gb-> gb.getGenre().getName().equalsIgnoreCase(getGenre.get())).map(gb-> gb.getBook()).collect(Collectors.toList());
+        return bookMapper.toDtos(result);
     }
 
 

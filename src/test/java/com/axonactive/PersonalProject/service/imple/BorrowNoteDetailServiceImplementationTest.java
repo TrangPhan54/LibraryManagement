@@ -94,9 +94,5 @@ class BorrowNoteDetailServiceImplementationTest {
         tempList.forEach(System.out::println);
     }
 
-//    @Test
-//    void getBookNameById() {
-//        String name = borrowNoteDetailService.getBookNameById(1L);
-//        System.out.println(name);
-//    }
+
 }

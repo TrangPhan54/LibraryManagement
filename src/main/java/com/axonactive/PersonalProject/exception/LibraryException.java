@@ -24,6 +24,8 @@ public class LibraryException {
     private static final String GENREBOOK_NOT_FOUND_MSG = "Genre Book Not Found";
     private static final String BORROW_NOTE_DETAIL_NOT_FOUND_MSG_KEY = "BorrowNoteDetailNotExisted";
     private static final String BORROW_NOTE_DETAIL_NOT_FOUND_MSG = " Borrow Note Detail Not Found";
+    private static final String PHYSICAL_BOOK_NOT_FOUND_MSG_KEY = "PhysicalBookNotExisted";
+    private static final String PHYSICAL_BOOK_NOT_FOUND_MSG = " Physical Book Not Found";
 
     public static ResponseException notFound(String messageKey, String message) {
         return new ResponseException(messageKey, message, HttpStatus.NOT_FOUND);
@@ -68,11 +70,11 @@ public class LibraryException {
     public static ResponseException GenreBookNotFound (){
         return notFound(GENREBOOK_NOT_FOUND_MSG_KEY,GENREBOOK_NOT_FOUND_MSG);
     }
-    public static ResponseException BookPublishNotFound (){
-        return notFound(BOOKPUBLISH_NOT_FOUND_MSG_KEY, BOOKPUBLISH_NOT_FOUND_MSG);
-    }
     public static ResponseException BorrowNoteDetailNotFound (){
         return notFound(BORROW_NOTE_DETAIL_NOT_FOUND_MSG_KEY,BORROW_NOTE_DETAIL_NOT_FOUND_MSG);
+    }
+    public static ResponseException PhysicalBookNotFound (){
+        return notFound(PHYSICAL_BOOK_NOT_FOUND_MSG_KEY,PHYSICAL_BOOK_NOT_FOUND_MSG);
     }
 
 }

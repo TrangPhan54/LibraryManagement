@@ -17,8 +17,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByStatus(Status status);
 
-    @Query("Select b from Book b where b.publishingHouse.name = ?1")
-    List<Book> findBookByPublishingHouseName(String publishingHouseName);
+//    @Query("Select b from Book b where b.publishingHouse.name = ?1")
+//    List<Book> findBookByPublishingHouseName(String publishingHouseName);
 
     @Query("Select b from Book b where b.author.firstName = ?1")
     List<Book> findBookByAuthorFirstName(String authorFirstName);
@@ -34,8 +34,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     BookContentDTO findContentSummaryByBookNameContaining (String bookName);
 
 
-    @Query("select b from Book b where b.name  like ?1 and b.publishingHouse.name like ?2")
-    List<Book> findByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName);
+//    @Query("select b from Book b where b.name  like ?1 and b.publishingHouse.name like ?2")
+//    List<Book> findByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName);
 
     @Query("select b from Book b where b.author.lastName like ?1")
     List<Book> findBookByAuthorLastNameContaining (String partOfName);

@@ -28,7 +28,6 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 public class BookServiceImplement implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
-    private final PublishingHouseRepository publishingHouseRepository;
     private final BookMapper bookMapper;
 
     @Override
@@ -38,7 +37,7 @@ public class BookServiceImplement implements BookService {
     }
 
     @Override
-    public BookDTO createBook(BookDTO bookDTO, Long publishingHouseID, Long authorID) {
+    public BookDTO createBook(BookDTO bookDTO, Long authorID) {
         if (bookDTO.getName().isBlank() || !isAlpha(bookDTO.getName()))
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
 
@@ -59,9 +58,9 @@ public class BookServiceImplement implements BookService {
         book.setBookImage(bookDTO.getBookImage());
         book.setDatePublish(bookDTO.getDatePublish());
         Author author = authorRepository.findById(authorID).orElseThrow();
-        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow();
+//        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow();
         book.setAuthor(author);
-        book.setPublishingHouse(publishingHouse);
+//        book.setPublishingHouse(publishingHouse);
         book = bookRepository.save(book);
         return bookMapper.toDto(book);
     }
@@ -88,8 +87,8 @@ public class BookServiceImplement implements BookService {
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
         book.setDatePublish(bookDTO.getDatePublish());
-        book.setPublishingHouse(publishingHouseRepository.findById(bookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
-        book.setAuthor(authorRepository.findById(bookDTO.getId()).orElseThrow());
+//        book.setPublishingHouse(publishingHouseRepository.findById(bookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
+        book.setAuthor(authorRepository.findById(bookDTO.getAuthorID()).orElseThrow(LibraryException::AuthorNotFound));
         book = bookRepository.save(book);
         return bookMapper.toDto(book);
     }
@@ -123,10 +122,10 @@ public class BookServiceImplement implements BookService {
     }
 
     // 3. Tim sach boi ten nha xuat ban
-    @Override
-    public List<BookDTO> getBookByPublishingHouseName(String publishingHouseName) {
-        return bookMapper.toDtos(bookRepository.findBookByPublishingHouseName(publishingHouseName));
-    }
+//    @Override
+//    public List<BookDTO> getBookByPublishingHouseName(String publishingHouseName) {
+//        return bookMapper.toDtos(bookRepository.findBookByPublishingHouseName(publishingHouseName));
+//    }
 
     // 4. Tim sach boi ten tac gia
     @Override
@@ -152,12 +151,12 @@ public class BookServiceImplement implements BookService {
         return bookRepository.findContentSummaryByBookNameContaining("%" + bookName + "%");
     }
 
-    //7. Tim sach thong qua ten sach va ten nha xuat ban
-    @Override
-    public List<BookDTO> getByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName) {
-        return bookMapper.toDtos(bookRepository.findByBookNameContainingAndPublishingHouseNameContaining("%" + bookName + "%", "%" + publishingHouseName + "%"));
-
-    }
+//    //7. Tim sach thong qua ten sach va ten nha xuat ban
+//    @Override
+//    public List<BookDTO> getByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName) {
+//        return bookMapper.toDtos(bookRepository.findByBookNameContainingAndPublishingHouseNameContaining("%" + bookName + "%", "%" + publishingHouseName + "%"));
+//
+//    }
     //8. Tim ten sach dua vao ho tac gia co chua ki tu nao do
 
     @Override

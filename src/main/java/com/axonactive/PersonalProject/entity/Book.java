@@ -30,9 +30,6 @@ public class Book {
     @Column (name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
-    @ManyToOne
-    @JoinColumn (name = "publishing_house_id")
-    private PublishingHouse publishingHouse;
 
     @ManyToOne
     @JoinColumn (name = "author_id")
