@@ -81,9 +81,6 @@ public class GenreBookServiceImplementation implements GenreBookService {
     // 1. Tim sach boi ten the loai
     @Override
     public List<String> getByGenreNameContaining(String name) {
-//        List<String> tempList = genreBookRepository.findByGenreNameContaining("Classic").stream().map(gb -> gb.getBook().getName()).collect(Collectors.toList());
-//        tempList.forEach(System.out::println);
-
         return genreBookRepository.findByGenreNameContaining(name).stream().map(gb -> gb.getBook().getName()).collect(Collectors.toList());
     }
 
@@ -92,15 +89,12 @@ public class GenreBookServiceImplementation implements GenreBookService {
         return bookMapper.toDtos(genreBookRepository.findByGenreNameContainingAndBookNameContaining(genreName, bookName).stream().map(GenreBook::getBook).collect(Collectors.toList()));
     }
 
+    // tim sach co the loai tuong tu
     @Override
     public List<BookDTO> getBookHaveRelation(String bookName) {
-
         List<GenreBook> relationalBook = genreBookRepository.findAll().stream().filter(gb -> gb.getBook().getName().equalsIgnoreCase(bookName)).collect(Collectors.toList());
-
-
         Optional<String> getGenre = relationalBook.stream().map(GenreBook::getGenre).map(Genre::getName).findFirst();
-
-        List<Book> result = genreBookRepository.findAll().stream().filter(gb-> gb.getGenre().getName().equalsIgnoreCase(getGenre.get())).map(gb-> gb.getBook()).collect(Collectors.toList());
+        List<Book> result = genreBookRepository.findAll().stream().filter(gb -> gb.getGenre().getName().equalsIgnoreCase(getGenre.get())).map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(result);
     }
 

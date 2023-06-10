@@ -49,6 +49,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findBookByAuthorFirstNameContainingIgnoreCase (String partOfName);
 
+    List<Book> findAllById (Iterable<Long> bookIds);
+
 
 
 }

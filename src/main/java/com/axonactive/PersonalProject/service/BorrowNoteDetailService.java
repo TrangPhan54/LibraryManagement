@@ -8,7 +8,7 @@ import java.util.List;
 public interface BorrowNoteDetailService {
     List<BorrowNoteDetailDTO> getAllBorrowNoteDetail();
 
-    BorrowNoteDetailDTO createBorrowNoteDetail(BorrowNoteDetailDTO borrowNoteDetailDTO, Long bookID, Long orderID);
+    BorrowNoteDetailDTO createBorrowNoteDetail(BorrowNoteDetailDTO borrowNoteDetailDTO, Long physicalBookID, Long orderID);
 
     void deleteBorrowNoteDetailByID(Long borrowNoteDetailID);
 
@@ -19,12 +19,12 @@ public interface BorrowNoteDetailService {
 
     Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
 
-    List<String> nameOfBookRemaining (Long customerId, Long bookId);
+    List<String> nameOfBookRemaining (Long customerId, List<Long> physicalBookIds);
 
-    void returnBookByCustomer(Long customerId, Long bookId);
+    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
     Long countNumberMaxBorrowBook (Long bookId);
 
-    String getBookNameByBoodId (Long bookId);
+    String getBookNameByBookId (Long bookId);
 
     List<Long> maxBorrowBook ();
 
@@ -33,6 +33,8 @@ public interface BorrowNoteDetailService {
     List<Book> nameOfMaxBorrowBook();
 
     List<Book> nameOfMinBorrowBook();
+
+    void feeFineForReturningBookLate(Long customerId,List<Long> bookIds);
 
 
 

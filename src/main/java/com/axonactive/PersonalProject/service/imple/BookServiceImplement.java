@@ -182,5 +182,14 @@ public class BookServiceImplement implements BookService {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstNameContainingIgnoreCase(partOfName));
     }
 
+    @Override
+    public List<BookDTO> findAllById(Iterable<Long> bookIds) {
+        List<Book> books = bookRepository.findAllById(bookIds);
+        for (Book book: books){
+            System.out.println(book.getName());
+        }
+        return bookMapper.toDtos(books);
+    }
+
 
 }

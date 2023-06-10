@@ -54,7 +54,6 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
         PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookID).orElseThrow();
         physicalBook.setBook(bookRepository.findById(physicalBookDTO.getBookID()).orElseThrow(LibraryException::BookNotFound));
         physicalBook.setPublishingHouse(publishingHouseRepository.findById(physicalBookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
-
         physicalBook.setImportPrice(physicalBookDTO.getImportPrice());
         physicalBook.setImportDate(physicalBookDTO.getImportDate());
 

@@ -22,7 +22,6 @@ public class PhysicalBook {
     @ManyToOne
     @JoinColumn(name = "publishing_house_id")
     private PublishingHouse publishingHouse;
-
     @ManyToOne
     @JoinColumn (name = "book_id")
     private Book book;

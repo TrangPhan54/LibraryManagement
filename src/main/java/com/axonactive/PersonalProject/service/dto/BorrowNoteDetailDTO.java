@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class BorrowNoteDetailDTO {
     @JsonIgnore
     private Long id;
-    private Long bookID;
+    private Long physicalBookID;
     private Long borrowNoteID;
 }

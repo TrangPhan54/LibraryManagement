@@ -36,23 +36,21 @@ class BorrowNoteDetailServiceImplementationTest {
     @Test
     void customerReturnBook() {
         System.out.println(borrowNoteDetailService.customerReturnBook(1L, 2L));
-
-
-
     }
 
 
     @Test
     void nameOfBookRemaining() {
-//        System.out.println(borrowNoteDetailService.nameOfBookRemaining(1L,3L));
-        List<String> tempList = borrowNoteDetailService.nameOfBookRemaining(1L, 3L);
+        List<Long> ids = List.of(1L);
+        List<String> tempList = borrowNoteDetailService.nameOfBookRemaining(1L, ids);
         tempList.forEach(System.out::println);
     }
 
     @Test
     void returnBookByCustomer() {
-        borrowNoteDetailService.returnBookByCustomer(1L, 12L);
-        Customer customer = customerRepository.findById(1L).get();
+        List<Long> ids = List.of(17L);
+        borrowNoteDetailService.returnBookByCustomer(12L, ids);
+        Customer customer = customerRepository.findById(12L).get();
         System.out.println(customer.isActive());
     }
 
@@ -64,8 +62,8 @@ class BorrowNoteDetailServiceImplementationTest {
     }
 
     @Test
-    void getBookNameByBoodId() {
-        String books = borrowNoteDetailService.getBookNameByBoodId(2L);
+    void getBookNameByBookId() {
+        String books = borrowNoteDetailService.getBookNameByBookId(2L);
         System.out.println(books);
 
     }
@@ -95,4 +93,9 @@ class BorrowNoteDetailServiceImplementationTest {
     }
 
 
+    @Test
+    void feeFineForReturningBookLate() {
+        List<Long> ids = List.of(6L,7L,8L);
+        borrowNoteDetailService.feeFineForReturningBookLate(16L,ids);
+    }
 }

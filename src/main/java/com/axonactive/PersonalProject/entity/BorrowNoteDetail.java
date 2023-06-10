@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -15,12 +16,13 @@ public class BorrowNoteDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @JoinColumn(name = "physical_book_id")
+    private PhysicalBook physicalBook;
     @Column(name = "fine_fee")
     private Double fineFee;
+    @Column (name = "return_date")
+    private LocalDate returnDate;
 
     @ManyToOne
     @JoinColumn(name = "borrow_id")

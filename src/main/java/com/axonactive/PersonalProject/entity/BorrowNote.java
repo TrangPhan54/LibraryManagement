@@ -25,8 +25,6 @@ public class BorrowNote {
     private String address;
     @Column (name = "borrow_date")
     private LocalDate borrowDate;
-    @Column (name = "return_date")
-    private LocalDate returnDate;
     @Column (name = "due_date")
     private LocalDate dueDate;
 

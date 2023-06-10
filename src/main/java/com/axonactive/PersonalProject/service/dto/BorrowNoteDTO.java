@@ -17,7 +17,6 @@ public class BorrowNoteDTO {
     private Long customerID;
     private String address;
     private LocalDate borrowDate;
-    private LocalDate returnDate;
     private LocalDate dueDate;
 
 

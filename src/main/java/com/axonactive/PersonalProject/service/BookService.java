@@ -54,4 +54,7 @@ public interface BookService {
     List<BookDTO> getBookByAuthorFirstNameContainingIgnoreCase(String partOfName);
 
 
+    List<BookDTO> findAllById (Iterable<Long> bookIds);
+
+
 }
