@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -42,6 +43,9 @@ public interface BorrowNoteDetailRepository extends JpaRepository<BorrowNoteDeta
             "from borrow_note_detail bnd  " +
             "group by bnd.book_id ) as a)", nativeQuery = true)
     List<Long> minBorrowBook();
+
+
+    List<BorrowNoteDetail> findByBorrowNoteBorrowDateBetween(LocalDate date1, LocalDate date2);
 
 
 }

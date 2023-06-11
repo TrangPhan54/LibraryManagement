@@ -18,4 +18,6 @@ public interface PhysicalBookRepository extends JpaRepository <PhysicalBook,Long
 
     @Query (value = "select count(pb.book_id) from physical_book pb join book b on b.name like ?1 and pb.book_id = b.id ", nativeQuery = true)
     Long countBookBaseOnBookName (String bookName);
+
+
 }

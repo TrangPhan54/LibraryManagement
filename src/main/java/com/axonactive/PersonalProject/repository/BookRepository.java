@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -53,6 +54,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query (value = "select count (b.name) from physical_book pb join book b on pb.book_id = b.id where b.name like ?1 ", nativeQuery = true)
     Long numberOfBookBaseOnTitle (String bookName);
+
+
+
+
 
 
 

@@ -11,7 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,5 +100,22 @@ class BorrowNoteDetailServiceImplementationTest {
     void feeFineForReturningBookLate() {
         List<Long> ids = List.of(6L,7L,8L);
         borrowNoteDetailService.feeFineForReturningBookLate(16L,ids);
+    }
+
+    @Test
+    void getMaxBorrowBook() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String date1String = "2022/09/03";
+        String date2String = "2023/09/01";
+        LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
+        LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
+        Map<Book,Long> re = borrowNoteDetailService.getMaxBorrowBook(date1,date2);
+        for (Map.Entry <Book,Long> entry:re.entrySet()){
+            Book bk = entry.getKey();
+            Long pk = entry.getValue();
+            System.out.println(bk.getName());
+            System.out.println(pk);
+        }
+
     }
 }

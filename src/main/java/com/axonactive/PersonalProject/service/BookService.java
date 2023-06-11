@@ -5,7 +5,9 @@ import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BookService {
     List<BookDTO> getAllBook();
@@ -57,6 +59,10 @@ public interface BookService {
     List<BookDTO> findAllById (Iterable<Long> bookIds);
 
     Long numberOfBookBaseOnTitle (String bookName);
+//
+//    List<Book> getBestBorrowBooksBetweenDate (LocalDate date1, LocalDate date2);
+//
+//
 
 
 }

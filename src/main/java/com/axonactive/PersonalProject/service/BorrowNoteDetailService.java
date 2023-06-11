@@ -1,9 +1,12 @@
 package com.axonactive.PersonalProject.service;
 
 import com.axonactive.PersonalProject.entity.Book;
+import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BorrowNoteDetailService {
     List<BorrowNoteDetailDTO> getAllBorrowNoteDetail();
@@ -35,6 +38,8 @@ public interface BorrowNoteDetailService {
     List<Book> nameOfMinBorrowBook();
 
     void feeFineForReturningBookLate(Long customerId,List<Long> bookIds);
+
+    Map<Book, Long> getMaxBorrowBook (LocalDate date1 , LocalDate date2);
 
 
 

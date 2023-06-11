@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,6 +88,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return numberOfRemainingBooks;
 
     }
+
     //3. Liệt kê tên các cuốn sách mà 1 khách hàng vẫn còn mượn sau khi trả trước những cuốn đọc rồi.
     @Override
     public List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds) {
@@ -108,6 +109,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .map(brd -> brd.getPhysicalBook().getBook().getName())
                 .collect(Collectors.toList());
     }
+
     // 4. Dịch vụ trả sách. Nếu trả trễ từ 5 cuốn trở lên thì tiến hành khóa tài khoản
     @Override
     public void returnBookByCustomer(Long customerId, List<Long> physicalBookIds) {
@@ -164,10 +166,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                     }
                 }
             }
-            totalFee+=bookListOfCustomer.get(i).getFineFee();
+            totalFee += bookListOfCustomer.get(i).getFineFee();
 //            borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
         }
-        System.out.println("You have to pay $"+totalFee+" for returning book late.");
+        System.out.println("You have to pay $" + totalFee + " for returning book late.");
 
 
     }
@@ -211,6 +213,34 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     @Override
     public List<Book> nameOfMinBorrowBook() {
         return borrowNoteDetailRepository.nameOfMinBorrowBook(minBorrowBook());
+    }
+
+
+    @Override
+    public Map<Book, Long> getMaxBorrowBook(LocalDate date1, LocalDate date2) {
+        List<BorrowNoteDetail> brdListBetweenDates = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
+        List<Book> temporaryBookList = brdListBetweenDates.stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook).collect(Collectors.toList());
+        Map<Book, Long> booksWithPhysicalCopiedBorrowed = new HashMap<>();
+        for (Book book : temporaryBookList) {
+            booksWithPhysicalCopiedBorrowed.put(book, 0L);
+        }
+        for (Map.Entry<Book, Long> entry : booksWithPhysicalCopiedBorrowed.entrySet()) {
+            Book key = entry.getKey();
+            Long value = entry.getValue();
+            for (Book book : temporaryBookList) {
+                if (Objects.equals(book.getId(), key.getId())) {
+                    value++;
+                    entry.setValue(value);
+                }
+            }
+        }
+
+        Map<Book, Long> result = booksWithPhysicalCopiedBorrowed.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+//                .limit(3)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        return result;
     }
 
 
