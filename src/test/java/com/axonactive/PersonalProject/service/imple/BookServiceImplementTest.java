@@ -26,4 +26,10 @@ class BookServiceImplementTest {
         System.out.println(re);
 
     }
+
+    @Test
+    void numberOfBookBaseOnTitle() {
+        Long numOfBooks = bookService.numberOfBookBaseOnTitle("Nang cao va phat trien toan 8 Tap 1");
+        System.out.println(numOfBooks);
+    }
 }

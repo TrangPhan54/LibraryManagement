@@ -51,6 +51,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findAllById (Iterable<Long> bookIds);
 
+    @Query (value = "select count (b.name) from physical_book pb join book b on pb.book_id = b.id where b.name like ?1 ", nativeQuery = true)
+    Long numberOfBookBaseOnTitle (String bookName);
+
 
 
 }

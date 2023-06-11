@@ -190,6 +190,11 @@ public class BookServiceImplement implements BookService {
         }
         return bookMapper.toDtos(books);
     }
+    //10. Thống kê số lượng sách dựa vào tên sách
+    @Override
+    public Long numberOfBookBaseOnTitle(String bookName) {
+        return bookRepository.numberOfBookBaseOnTitle(bookName);
+    }
 
 
 }

@@ -56,5 +56,7 @@ public interface BookService {
 
     List<BookDTO> findAllById (Iterable<Long> bookIds);
 
+    Long numberOfBookBaseOnTitle (String bookName);
+
 
 }
