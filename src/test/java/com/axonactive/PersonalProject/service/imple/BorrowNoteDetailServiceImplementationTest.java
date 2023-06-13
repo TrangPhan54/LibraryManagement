@@ -4,6 +4,7 @@ import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
+import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,15 +99,15 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void feeFineForReturningBookLate() {
-        List<Long> ids = List.of(6L,7L,8L);
-        borrowNoteDetailService.feeFineForReturningBookLate(16L,ids);
+        List<Long> ids = List.of(2L,3L);
+        borrowNoteDetailService.feeFineForReturningBookLate(1L,ids);
     }
 
     @Test
     void getMaxBorrowBook() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        String date1String = "2022/09/03";
-        String date2String = "2023/09/01";
+        String date1String = "2022/01/01";
+        String date2String = "2024/01/01";
         LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
         LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
         Map<Book,Long> re = borrowNoteDetailService.getMaxBorrowBook(date1,date2);
@@ -117,5 +118,33 @@ class BorrowNoteDetailServiceImplementationTest {
             System.out.println(pk);
         }
 
+    }
+
+//    @Test
+//    void getMaxBorrowCustomer() {
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+//        String date1String = "2022/01/01";
+//        String date2String = "2024/01/01";
+//        LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
+//        LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
+//        List<CustomerDTO> re = borrowNoteDetailService.getMaxBorrowCustomer(date1,date2);
+//        System.out.println(re);
+//    }
+
+    @Test
+    void getMaxCustomer() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String date1String = "2022/01/01";
+        String date2String = "2022/08/17";
+        LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
+        LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
+        Map<Customer,Long> re = borrowNoteDetailService.getMaxCustomer(date1,date2);
+        for (Map.Entry <Customer,Long> entry:re.entrySet()){
+            Customer cus = entry.getKey();
+            Long pk = entry.getValue();
+            System.out.println(cus.getFirstName());
+            System.out.println(cus.getLastName());
+            System.out.println(pk);
+        }
     }
 }

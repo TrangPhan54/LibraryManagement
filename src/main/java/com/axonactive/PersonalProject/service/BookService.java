@@ -45,7 +45,6 @@ public interface BookService {
     BookContentDTO findContentSummaryByBookNameContaining (String bookName);
 
 
-//    List<BookDTO> getByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName);
 
     List<BookDTO> getBookByAuthorLastNameContaining(String partOfName);
 

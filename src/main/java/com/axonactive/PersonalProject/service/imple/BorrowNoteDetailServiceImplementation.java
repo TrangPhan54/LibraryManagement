@@ -5,8 +5,10 @@ import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.*;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
+import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
+import com.axonactive.PersonalProject.service.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     private final CustomerRepository customerRepository;
 
     private final BookMapper bookMapper;
+    private final CustomerMapper customerMapper;
 
     @Override
     public List<BorrowNoteDetailDTO> getAllBorrowNoteDetail() {
@@ -120,7 +123,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         Customer customer = customerRepository.findById(customerId).orElseThrow(LibraryException::CustomerNotFound);
         for (int i = 0; i < bookListOfCustomer.size(); i++) {
             for (Long j : physicalBookIds) {
-                if (bookListOfCustomer.get(i).getPhysicalBook().getBook().getId() == j) {
+                if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
                     if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
                         if (customer.getNumberOfTimeReturnLate() < 5) {
                             customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
@@ -152,7 +155,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
             double baseFee = 2.0; // Base fee for overdue books
             double finePerDay = 0.5;
             for (Long j : bookIds) {
-                if (bookListOfCustomer.get(i).getPhysicalBook().getBook().getId() == j) {
+                if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
                     if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
                         Long overdueDays = ChronoUnit.DAYS.between(bookListOfCustomer.get(i).getBorrowNote().getDueDate(), bookListOfCustomer.get(i).getReturnDate());
                         double fine = baseFee + finePerDay * overdueDays;
@@ -165,13 +168,12 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                         }
                     }
                 }
+//                totalFee += bookListOfCustomer.get(i).getFineFee();
             }
             totalFee += bookListOfCustomer.get(i).getFineFee();
 //            borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
         }
         System.out.println("You have to pay $" + totalFee + " for returning book late.");
-
-
     }
 
     @Override
@@ -219,29 +221,56 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     @Override
     public Map<Book, Long> getMaxBorrowBook(LocalDate date1, LocalDate date2) {
         List<BorrowNoteDetail> brdListBetweenDates = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
-        List<Book> temporaryBookList = brdListBetweenDates.stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook).collect(Collectors.toList());
+        List<Book> bookList = brdListBetweenDates.stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook).collect(Collectors.toList());
         Map<Book, Long> booksWithPhysicalCopiedBorrowed = new HashMap<>();
-        for (Book book : temporaryBookList) {
+        for (Book book : bookList) {
             booksWithPhysicalCopiedBorrowed.put(book, 0L);
         }
         for (Map.Entry<Book, Long> entry : booksWithPhysicalCopiedBorrowed.entrySet()) {
             Book key = entry.getKey();
             Long value = entry.getValue();
-            for (Book book : temporaryBookList) {
+            for (Book book : bookList) {
                 if (Objects.equals(book.getId(), key.getId())) {
                     value++;
                     entry.setValue(value);
                 }
             }
         }
-
         Map<Book, Long> result = booksWithPhysicalCopiedBorrowed.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-//                .limit(3)
+                .limit(5)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         return result;
     }
+
+    @Override
+    public Map<Customer, Long> getMaxCustomer(LocalDate date1, LocalDate date2) {
+        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1,date2);
+        List<Customer> customers = borrowNoteDetailList.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).collect(Collectors.toList());
+        Map<Customer,Long> customersWithNumOfTimeBorrow = new HashMap<>();
+        for (Customer customer: customers){
+            customersWithNumOfTimeBorrow.put(customer,0L);
+        }
+        for (Map.Entry<Customer,Long> entry: customersWithNumOfTimeBorrow.entrySet()){
+            Customer key = entry.getKey();
+            Long value = entry.getValue();
+            for (Customer customer: customers){
+                if (Objects.equals(customer.getId(), key.getId())){
+                    value++;
+                    entry.setValue(value);
+                }
+            }
+        }
+        Map<Customer,Long> result = customersWithNumOfTimeBorrow.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(Map.Entry:: getKey, Map.Entry::getValue,
+                        (a, b) -> a,LinkedHashMap::new));
+        return result;
+
+    }
+
+
 
 
 }
