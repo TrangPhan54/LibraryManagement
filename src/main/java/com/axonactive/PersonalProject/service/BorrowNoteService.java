@@ -16,13 +16,5 @@ public interface BorrowNoteService {
     BorrowNoteDTO getBorrowNoteById (Long borrowNoteID);
 
     List <BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate (LocalDate borrowDate);
-
-    List <Long> maxBorrowCustomer ();
-    List<CustomerDTO> nameOfMaxBorrowCustomer ();
-
-    List<Long> minBorrowCustomer ();
-
-    List<CustomerDTO> nameOfMinBorrowCustomer ();
-
     List<String> nameOfCustomerReturnBookLate ();
 }

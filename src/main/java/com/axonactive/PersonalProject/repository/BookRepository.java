@@ -2,6 +2,7 @@ package com.axonactive.PersonalProject.repository;
 
 import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.Status;
+import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,8 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByNameContainingIgnoreCase(String keyword);
-    List<Book> findByName (String name);
+
+    List<Book> findByName(String name);
 
     List<Book> findByStatus(Status status);
 
@@ -30,35 +32,27 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("select new com.axonactive.PersonalProject.service.dto.BookContentDTO (b.contentSummary)" +
             "from Book b where b.name = ?1")
     BookContentDTO findContentSummaryByBookName(String bookName);
+
     @Query("select new com.axonactive.PersonalProject.service.dto.BookContentDTO (b.contentSummary)" +
             "from Book b where b.name like ?1")
-    BookContentDTO findContentSummaryByBookNameContaining (String bookName);
-
-
-//    @Query("select b from Book b where b.name  like ?1 and b.publishingHouse.name like ?2")
-//    List<Book> findByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName);
+    BookContentDTO findContentSummaryByBookNameContaining(String bookName);
 
     @Query("select b from Book b where b.author.lastName like ?1")
-    List<Book> findBookByAuthorLastNameContaining (String partOfName);
+    List<Book> findBookByAuthorLastNameContaining(String partOfName);
 
     @Query("select b from Book b where b.author.firstName like ?1")
-
-    List<Book> findBookByAuthorFirstNameContaining (String partOfName);
-
-
-    List<Book> findBookByAuthorLastNameContainingIgnoreCase (String partOfName);
-
-    List<Book> findBookByAuthorFirstNameContainingIgnoreCase (String partOfName);
-
-    List<Book> findAllById (Iterable<Long> bookIds);
-
-    @Query (value = "select count (b.name) from physical_book pb join book b on pb.book_id = b.id where b.name like ?1 ", nativeQuery = true)
-    Long numberOfBookBaseOnTitle (String bookName);
+    List<Book> findBookByAuthorFirstNameContaining(String partOfName);
 
 
+    List<Book> findBookByAuthorLastNameContainingIgnoreCase(String partOfName);
 
+    List<Book> findBookByAuthorFirstNameContainingIgnoreCase(String partOfName);
 
+    List<Book> findAllById(Iterable<Long> bookIds);
 
+    //    @Query (value = "select new com.axonactive.PersonalProject.service.dto.BookAnalyticDTO (b.name), count(b.name) from physical_book pb join book b on pb.book_id = b.id group by b.name ", nativeQuery = true)
+    @Query(nativeQuery = true)
+    List<BookAnalyticDTO> getBookAnalytic();
 
 
 }

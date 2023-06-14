@@ -2,6 +2,7 @@ package com.axonactive.PersonalProject.service;
 
 import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.Status;
+import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 
@@ -42,8 +43,7 @@ public interface BookService {
 
     // 7. Tim tom tat noi dung sach thong qua ten sach co chua ki tu nao do
 
-    BookContentDTO findContentSummaryByBookNameContaining (String bookName);
-
+    BookContentDTO findContentSummaryByBookNameContaining(String bookName);
 
 
     List<BookDTO> getBookByAuthorLastNameContaining(String partOfName);
@@ -55,9 +55,9 @@ public interface BookService {
     List<BookDTO> getBookByAuthorFirstNameContainingIgnoreCase(String partOfName);
 
 
-    List<BookDTO> findAllById (Iterable<Long> bookIds);
+    List<BookDTO> findAllById(Iterable<Long> bookIds);
 
-    Long numberOfBookBaseOnTitle (String bookName);
+    List<BookAnalyticDTO> getBookAnalytic();
 //
 //    List<Book> getBestBorrowBooksBetweenDate (LocalDate date1, LocalDate date2);
 //

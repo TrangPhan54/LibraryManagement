@@ -13,4 +13,5 @@ public class BorrowNoteDetailDTO {
     private Long id;
     private Long physicalBookID;
     private Long borrowNoteID;
+    private Double fineFee;
 }

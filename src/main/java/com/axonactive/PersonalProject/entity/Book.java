@@ -1,5 +1,6 @@
 package com.axonactive.PersonalProject.entity;
 
+import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,23 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table (name ="book")
+@SqlResultSetMapping(
+        name = "BookAnalytic",
+        classes = {
+                @ConstructorResult(
+                        targetClass = com.axonactive.PersonalProject.service.dto.BookAnalyticDTO.class,
+                        columns ={
+                                @ColumnResult(name = "name",type = String.class),
+                                @ColumnResult(name = "numberOfPhysicalCopies", type = Long.class)})})
+@NamedNativeQuery(
+        name = "Book.getBookAnalytic",
+        query = "Select b.name as name, count(b.name) as numberOfPhysicalCopies from physical_book pb join book b on pb.book_id = b.id " +
+                "group by b.name",
+        resultSetMapping = "BookAnalytic"
+)
+
+
+
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,10 +1,11 @@
 package com.axonactive.PersonalProject.service;
 
 import com.axonactive.PersonalProject.entity.Book;
-import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,24 +27,16 @@ public interface BorrowNoteDetailService {
 
     List<String> nameOfBookRemaining (Long customerId, List<Long> physicalBookIds);
 
-    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
-    Long countNumberMaxBorrowBook (Long bookId);
+//    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
+    CustomerDTO returnBookByCustomer(ReturnBookByCustomerDto returnBookByCustomerDto);
+
 
     String getBookNameByBookId (Long bookId);
-
-    List<Long> maxBorrowBook ();
-
-    List<Long> minBorrowBook ();
-
-    List<Book> nameOfMaxBorrowBook();
-
-    List<Book> nameOfMinBorrowBook();
-
-    void feeFineForReturningBookLate(Long customerId,List<Long> bookIds);
+    void fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
     Map<Book, Long> getMaxBorrowBook (LocalDate date1 , LocalDate date2);
 
-    Map<Customer,Long> getMaxCustomer(LocalDate date1, LocalDate date2);
+    List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(LocalDate date1, LocalDate date2);
 
 
 //    List<CustomerDTO> getMaxBorrowCustomer (LocalDate date1, LocalDate date2);

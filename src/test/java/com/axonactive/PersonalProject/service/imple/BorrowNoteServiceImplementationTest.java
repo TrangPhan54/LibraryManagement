@@ -20,30 +20,6 @@ class BorrowNoteServiceImplementationTest {
     private BorrowNoteService borrowNoteService;
 
     @Test
-    void maxBorrowCustomer() {
-        List<Long> ids = borrowNoteService.maxBorrowCustomer();
-        ids.forEach(System.out::println);
-    }
-
-    @Test
-    void nameOfMaxBorrowCustomer() {
-        List<CustomerDTO> customers = borrowNoteService.nameOfMaxBorrowCustomer();
-        customers.forEach(System.out::println);
-    }
-
-    @Test
-    void minBorrowCustomer() {
-        List<Long> ids = borrowNoteService.minBorrowCustomer();
-        ids.forEach(System.out::println);
-    }
-
-    @Test
-    void nameOfMinBorrowCustomer() {
-        List<CustomerDTO> customerDTOS = borrowNoteService.nameOfMinBorrowCustomer();
-        customerDTOS.forEach(System.out::println);
-    }
-
-    @Test
     void nameOfCustomerReturnBookLate() {
         List<String> tempList = borrowNoteService.nameOfCustomerReturnBookLate();
         tempList.forEach(System.out::println);

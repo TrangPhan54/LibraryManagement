@@ -6,6 +6,9 @@ import com.axonactive.PersonalProject.repository.*;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
 import com.axonactive.PersonalProject.service.mapper.CustomerMapper;
@@ -115,14 +118,14 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     // 4. Dịch vụ trả sách. Nếu trả trễ từ 5 cuốn trở lên thì tiến hành khóa tài khoản
     @Override
-    public void returnBookByCustomer(Long customerId, List<Long> physicalBookIds) {
+    public CustomerDTO returnBookByCustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == returnBookByCustomerDto.getCustomerId())
                 .collect(Collectors.toList());
-        Customer customer = customerRepository.findById(customerId).orElseThrow(LibraryException::CustomerNotFound);
+        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (int i = 0; i < bookListOfCustomer.size(); i++) {
-            for (Long j : physicalBookIds) {
+            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
                 if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
                     if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
                         if (customer.getNumberOfTimeReturnLate() < 5) {
@@ -140,21 +143,23 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
             System.out.println("Customer is banned because you have exceeded 5 overdue returns.");
         }
         System.out.println(customer.getNumberOfTimeReturnLate());
+        return customerMapper.toDto(customer);
     }
 
-    // Tính tiền phạt nếu sách trả trễ so với hạn đã ghi trong phiếu mượn
+    //5. Tính tiền phạt nếu sách trả trễ so với hạn đã ghi trong phiếu mượn
     @Override
-    public void feeFineForReturningBookLate(Long customerId, List<Long> bookIds) {
+    public void fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+//        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
+                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == returnBookByCustomerDto.getCustomerId())
                 .collect(Collectors.toList());
         double totalFee = 0;
         for (int i = 0; i < bookListOfCustomer.size(); i++) {
 
             double baseFee = 2.0; // Base fee for overdue books
             double finePerDay = 0.5;
-            for (Long j : bookIds) {
+            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
                 if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
                     if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
                         Long overdueDays = ChronoUnit.DAYS.between(bookListOfCustomer.get(i).getBorrowNote().getDueDate(), bookListOfCustomer.get(i).getReturnDate());
@@ -167,19 +172,16 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                             bookListOfCustomer.get(i).setFineFee(fine);
                         }
                     }
+                    totalFee += bookListOfCustomer.get(i).getFineFee();
+
                 }
-//                totalFee += bookListOfCustomer.get(i).getFineFee();
             }
-            totalFee += bookListOfCustomer.get(i).getFineFee();
-//            borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
+
         }
+
         System.out.println("You have to pay $" + totalFee + " for returning book late.");
     }
 
-    @Override
-    public Long countNumberMaxBorrowBook(Long bookId) {
-        return borrowNoteDetailRepository.countNumberMaxBorrowBook(bookId);
-    }
 
     public String getBookNameByBookId(Long bookId) {
         Optional<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()
@@ -193,31 +195,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return bookName;
     }
 
-    // Tim id nhung sach duoc muon nhieu nhat
-    @Override
-    public List<Long> maxBorrowBook() {
-        return borrowNoteDetailRepository.maxBorrowBook();
-    }
-    // Tim ten nhung cuon sach duoc muon nhieu nhat
-
-    @Override
-    public List<Book> nameOfMaxBorrowBook() {
-        return borrowNoteDetailRepository.nameOfMaxBorrowBook(maxBorrowBook());
-    }
-
-    // Tim id nhung sach duoc muon it nhat
-    @Override
-    public List<Long> minBorrowBook() {
-        return borrowNoteDetailRepository.minBorrowBook();
-    }
-
-    // Tim ten nhung cuon sach duoc muon it nhat
-    @Override
-    public List<Book> nameOfMinBorrowBook() {
-        return borrowNoteDetailRepository.nameOfMinBorrowBook(minBorrowBook());
-    }
-
-
+    //6. Thống kê tiêu đề sách được mượn nhiều nhất trong một khoảng thời gian nhất đinh
     @Override
     public Map<Book, Long> getMaxBorrowBook(LocalDate date1, LocalDate date2) {
         List<BorrowNoteDetail> brdListBetweenDates = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
@@ -243,34 +221,68 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         return result;
     }
+    //7. Thống kê những khách hàng mượn nhiều nhất trong một khoảng thời gian nhất định
+
+//    @Override
+//    public Map<Customer, Long> getMaxCustomer(LocalDate date1, LocalDate date2) {
+//        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
+//        List<Customer> customers = borrowNoteDetailList.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).collect(Collectors.toList());
+//        Map<Customer, Long> customerWithNumberOfPhysicalCopiesBorrow = new HashMap<>();
+//        for (Customer customer : customers) {
+//            customerWithNumberOfPhysicalCopiesBorrow.put(customer, 0L);
+//        }
+//        for (Map.Entry<Customer, Long> entry : customerWithNumberOfPhysicalCopiesBorrow.entrySet()) {
+//            Customer key = entry.getKey();
+//            Long value = entry.getValue();
+//            for (Customer customer : customers) {
+//                if (Objects.equals(customer.getId(), key.getId())) {
+//                    value++;
+//                    entry.setValue(value);
+//                }
+//            }
+//        }
+//        Map<Customer, Long> result = customerWithNumberOfPhysicalCopiesBorrow.entrySet().stream()
+//                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+//                        (a, b) -> a, LinkedHashMap::new));
+//        return result;
+//    }
 
     @Override
-    public Map<Customer, Long> getMaxCustomer(LocalDate date1, LocalDate date2) {
-        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1,date2);
+    public  List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(LocalDate date1, LocalDate date2) {
+        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
         List<Customer> customers = borrowNoteDetailList.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).collect(Collectors.toList());
-        Map<Customer,Long> customersWithNumOfTimeBorrow = new HashMap<>();
-        for (Customer customer: customers){
-            customersWithNumOfTimeBorrow.put(customer,0L);
+        Map<Customer, Long> customerWithNumberOfPhysicalCopiesBorrow = new HashMap<>();
+        for (Customer customer : customers) {
+            customerWithNumberOfPhysicalCopiesBorrow.put(customer, 0L);
         }
-        for (Map.Entry<Customer,Long> entry: customersWithNumOfTimeBorrow.entrySet()){
+        for (Map.Entry<Customer, Long> entry : customerWithNumberOfPhysicalCopiesBorrow.entrySet()) {
             Customer key = entry.getKey();
             Long value = entry.getValue();
-            for (Customer customer: customers){
-                if (Objects.equals(customer.getId(), key.getId())){
+            for (Customer customer : customers) {
+                if (Objects.equals(customer.getId(), key.getId())) {
                     value++;
                     entry.setValue(value);
                 }
             }
         }
-        Map<Customer,Long> result = customersWithNumOfTimeBorrow.entrySet().stream()
+        Map<Customer, Long> result = customerWithNumberOfPhysicalCopiesBorrow.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(Map.Entry:: getKey, Map.Entry::getValue,
-                        (a, b) -> a,LinkedHashMap::new));
-        return result;
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (a, b) -> a, LinkedHashMap::new));
 
+        List<CustomerWithNumberOfPhysicalCopiesBorrow> customerWithNumberOfPhysicalCopiesBorrowList = new ArrayList<>();
+
+        for (Map.Entry<Customer, Long> entry : result.entrySet()) {
+            Customer key = entry.getKey();
+            Long value = entry.getValue();
+            CustomerWithNumberOfPhysicalCopiesBorrow customerWithNumberOfPhysicalCopiesBorrow1 = new CustomerWithNumberOfPhysicalCopiesBorrow();
+            customerWithNumberOfPhysicalCopiesBorrow1.setCustomerId(key.getId());
+            customerWithNumberOfPhysicalCopiesBorrow1.setLastName(key.getLastName());
+            customerWithNumberOfPhysicalCopiesBorrow1.setFirstName(key.getFirstName());
+            customerWithNumberOfPhysicalCopiesBorrow1.setNumberOfPhysicalCopiesBorrow(value);
+            customerWithNumberOfPhysicalCopiesBorrowList.add(customerWithNumberOfPhysicalCopiesBorrow1);
+        }
+        return customerWithNumberOfPhysicalCopiesBorrowList;
     }
-
-
-
-
 }

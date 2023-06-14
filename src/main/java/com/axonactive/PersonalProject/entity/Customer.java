@@ -31,7 +31,7 @@ public class Customer {
     private String password;
     private Long numberOfTimeReturnLate;
     @Column (name = "active")
-    private boolean active;
+    private Boolean active;
     @Column (name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;

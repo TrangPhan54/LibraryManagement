@@ -1,6 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
 import com.axonactive.PersonalProject.service.BookService;
+import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ class BookServiceImplementTest {
 
     @Test
     void numberOfBookBaseOnTitle() {
-        Long numOfBooks = bookService.numberOfBookBaseOnTitle("Nang cao va phat trien toan 8 Tap 1");
-        System.out.println(numOfBooks);
+        List <BookAnalyticDTO> numOfBooks = bookService.getBookAnalytic();
+        numOfBooks.forEach(System.out::println);
     }
 }

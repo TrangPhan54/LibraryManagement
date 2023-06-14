@@ -84,27 +84,8 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     public List<BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate(LocalDate borrowDate) {
         return borrowNoteBookMapper.toDtos(borrowNoteRepository.findBorrowNoteHistoryByBorrowDate(borrowDate));
     }
-    // tim id nhung khach hang muon sach nhieu nhat
-    @Override
-    public List<Long> maxBorrowCustomer() {
-        return borrowNoteRepository.maxBorrowCustomer();
-    }
-    // tim ten nhung khach hang muon sach nhieu nhat
-    @Override
-    public List<CustomerDTO> nameOfMaxBorrowCustomer() {
-        return customerMapper.toDtos(borrowNoteRepository.nameOfMaxBorrowCustomer(maxBorrowCustomer()));
-    }
-    // tim id nhung khach hang muon sach it nhat
 
-    @Override
-    public List<Long> minBorrowCustomer() {
-        return borrowNoteRepository.minBorrowCustomer();
-    }
-    // tim ten nhung khach hang muon sach it nhat
-    @Override
-    public List<CustomerDTO> nameOfMinBorrowCustomer() {
-        return customerMapper.toDtos(borrowNoteRepository.nameOfMinBorrowCustomer(minBorrowCustomer()));
-    }
+
     // tim ten nhung khach hang tra sach tre
     @Override
     public List<String> nameOfCustomerReturnBookLate() {

@@ -6,6 +6,7 @@ import com.axonactive.PersonalProject.repository.AuthorRepository;
 import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.BookService;
+import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
@@ -191,8 +192,8 @@ public class BookServiceImplement implements BookService {
     }
     //10. Thống kê số lượng sách dựa vào tên sách
     @Override
-    public Long numberOfBookBaseOnTitle(String bookName) {
-        return bookRepository.numberOfBookBaseOnTitle(bookName);
+    public List<BookAnalyticDTO> getBookAnalytic() {
+        return bookRepository.getBookAnalytic();
     }
 
 }
