@@ -27,7 +27,7 @@ public interface BookService {
     List<BookDTO> getByName(String name);
 
     // 2. Tim sach boi trang thai (available or unavailable)
-    List<BookDTO> getByStatus(Status status);
+//    List<BookDTO> getByStatus(Status status);
     // 3. Tim sach boi ten nha xuat ban
 
 //    List<BookDTO> getBookByPublishingHouseName(String publishingHouseName);

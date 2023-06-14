@@ -4,6 +4,7 @@ import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
+import com.axonactive.PersonalProject.service.dto.PhysicalBookListDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 public interface BorrowNoteDetailService {
     List<BorrowNoteDetailDTO> getAllBorrowNoteDetail();
 
-    BorrowNoteDetailDTO createBorrowNoteDetail(BorrowNoteDetailDTO borrowNoteDetailDTO, Long physicalBookID, Long orderID);
+    BorrowNoteDetailDTO createBorrowNoteDetail(BorrowNoteDetailDTO borrowNoteDetailDTO);
 
     void deleteBorrowNoteDetailByID(Long borrowNoteDetailID);
 

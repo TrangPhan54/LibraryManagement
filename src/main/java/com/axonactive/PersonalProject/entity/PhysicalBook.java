@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,4 +27,9 @@ public class PhysicalBook {
     @ManyToOne
     @JoinColumn (name = "book_id")
     private Book book;
+    @Column (name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, mappedBy = "physicalBook")
+    private List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
 }

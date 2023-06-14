@@ -1,6 +1,4 @@
 package com.axonactive.PersonalProject.entity;
-
-import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,9 +43,9 @@ public class Book {
     private String contentSummary;
     @Column (name = "date_publish")
     private LocalDate datePublish;
-    @Column (name = "status")
-    @Enumerated(EnumType.STRING)
-    private Status status;
+//    @Column (name = "status")
+//    @Enumerated(EnumType.STRING)
+//    private Status status;
     @ManyToOne
     @JoinColumn (name = "author_id")
     private Author author;

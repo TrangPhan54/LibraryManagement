@@ -117,47 +117,37 @@ public class BookServiceImplement implements BookService {
     }
     // 2. Tim sach boi trang thai (available or unavailable)
 
-    public List<BookDTO> getByStatus(Status status) {
-        return bookMapper.toDtos(bookRepository.findByStatus(status));
-    }
-
-    // 3. Tim sach boi ten nha xuat ban
-//    @Override
-//    public List<BookDTO> getBookByPublishingHouseName(String publishingHouseName) {
-//        return bookMapper.toDtos(bookRepository.findBookByPublishingHouseName(publishingHouseName));
+//    public List<BookDTO> getByStatus(Status status) {
+//        return bookMapper.toDtos(bookRepository.findByStatus(status));
 //    }
 
-    // 4. Tim sach boi ten tac gia
+
+    // 3. Tim sach boi ten tac gia
     @Override
     public List<BookDTO> getBookByAuthorFirstName(String authorFirstName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstName(authorFirstName));
     }
 
-    //5 .Tim sach boi ho tac gia
+    //4 .Tim sach boi ho tac gia
     @Override
     public List<BookDTO> getBookByAuthorLastName(String authorLastName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastName(authorLastName));
     }
 
-    //6. Tim noi dung sach thong qua ten sach
+    //5. Tim noi dung sach thong qua ten sach
     @Override
     public BookContentDTO findContentSummaryByBookName(String bookName) {
         return bookRepository.findContentSummaryByBookName(bookName);
     }
 
-    //7. Tim noi dung sach thong qua ten sach co chua ki tu nao do
+    //6. Tim noi dung sach thong qua ten sach co chua ki tu nao do
     @Override
     public BookContentDTO findContentSummaryByBookNameContaining(String bookName) {
         return bookRepository.findContentSummaryByBookNameContaining("%" + bookName + "%");
     }
 
-//    //7. Tim sach thong qua ten sach va ten nha xuat ban
-//    @Override
-//    public List<BookDTO> getByBookNameContainingAndPublishingHouseNameContaining(String bookName, String publishingHouseName) {
-//        return bookMapper.toDtos(bookRepository.findByBookNameContainingAndPublishingHouseNameContaining("%" + bookName + "%", "%" + publishingHouseName + "%"));
-//
-//    }
-    //8. Tim ten sach dua vao ho tac gia co chua ki tu nao do
+
+    //7. Tim ten sach dua vao ho tac gia co chua ki tu nao do
 
     @Override
     public List<BookDTO> getBookByAuthorLastNameContaining(String partOfName) {
@@ -176,7 +166,7 @@ public class BookServiceImplement implements BookService {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastNameContainingIgnoreCase(partOfName));
     }
 
-    //9. Tim ten sach dua vao ten tac gia co chua ki tu nao do khong phan biet hoa thuong
+    //10. Tim ten sach dua vao ten tac gia co chua ki tu nao do khong phan biet hoa thuong
     @Override
     public List<BookDTO> getBookByAuthorFirstNameContainingIgnoreCase(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstNameContainingIgnoreCase(partOfName));

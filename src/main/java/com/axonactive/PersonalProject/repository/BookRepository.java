@@ -18,7 +18,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByName(String name);
 
-    List<Book> findByStatus(Status status);
+//    List<Book> findByStatus(Status status);
 
 //    @Query("Select b from Book b where b.publishingHouse.name = ?1")
 //    List<Book> findBookByPublishingHouseName(String publishingHouseName);

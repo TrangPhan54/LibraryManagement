@@ -1,11 +1,13 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.Customer;
-import com.axonactive.PersonalProject.entity.BorrowNote;
+import com.axonactive.PersonalProject.entity.*;
 import com.axonactive.PersonalProject.exception.LibraryException;
+import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.repository.BorrowNoteRepository;
+import com.axonactive.PersonalProject.repository.PhysicalBookRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteService;
+import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDTO;
 import com.axonactive.PersonalProject.service.mapper.BorrowNoteBookMapper;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +28,10 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     private final BorrowNoteRepository borrowNoteRepository;
     private final CustomerRepository customerRepository;
     private final BorrowNoteBookMapper borrowNoteBookMapper;
+    private final PhysicalBookRepository physicalBookRepository;
     private final CustomerMapper customerMapper;
+    private final BorrowNoteDetailRepository borrowNoteDetailRepository;
+
     @Override
     public List<BorrowNoteDTO> getAllBorrowNote() {
         List<BorrowNote> borrowNotes = borrowNoteRepository.findAll();
@@ -33,32 +39,37 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     }
 
     @Override
-    public BorrowNoteDTO createBorrowNote(BorrowNoteDTO borrowNoteDTO, Long customerID) {
-        if (borrowNoteDTO.getBorrowDate().isBefore(LocalDate.now())){
-            throw LibraryException.badRequest("WrongTime","Ordering Date Must Be After Now");
+    public BorrowNoteDTO createBorrowNote(CreateBorrowNoteDTO createBorrowNoteDTO) {
+        if (createBorrowNoteDTO.getBorrowDate().isBefore(LocalDate.now())) {
+            throw LibraryException.badRequest("WrongTime", "Ordering Date Must Be After Now");
         }
-        if (borrowNoteDTO.getAddress().isBlank()){
-            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
+//        if (borrowNoteDTO.getAddress().isBlank()) {
+//            throw LibraryException.badRequest("WrongAddressFormat", "Address Cannot Be Empty");
+//        }
+        Customer customer = customerRepository.findById(createBorrowNoteDTO.getCustomerID()).orElseThrow(LibraryException::CustomerNotFound);
+        BorrowNote borrowNote = BorrowNote.builder().customer(customer).build();
+        List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
+        for (Long physicalBookId : createBorrowNoteDTO.getPhysicalBookIdList()) {
+            BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
+            PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).orElseThrow(LibraryException::PhysicalBookNotFound);
+            borrowNoteDetail.setBorrowNote(borrowNote);
+            borrowNoteDetail.setPhysicalBook(physicalBook);
+            physicalBook.setStatus(Status.ONLOAN);
+            borrowNoteDetailList.add(borrowNoteDetail);
         }
-        BorrowNote borrowNote = new BorrowNote();
-        Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
-        borrowNote.setBorrowDate(borrowNoteDTO.getBorrowDate());
-        borrowNote.setAddress(borrowNoteDTO.getAddress());
-        borrowNote.setCustomer(customer);
+
         borrowNote = borrowNoteRepository.save(borrowNote);
         return borrowNoteBookMapper.toDto(borrowNote);
-
-
     }
 
     @Override
     public BorrowNoteDTO updateBorrowNote(Long borrowId, BorrowNoteDTO borrowNoteDTO) {
         BorrowNote borrowNote = borrowNoteRepository.findById(borrowId).orElseThrow(LibraryException::BorrowNoteNotFound);
-        if (borrowNoteDTO.getBorrowDate().isBefore(LocalDate.now())){
-            throw LibraryException.badRequest("WrongTime","Ordering Date Must Be After Now");
+        if (borrowNoteDTO.getBorrowDate().isBefore(LocalDate.now())) {
+            throw LibraryException.badRequest("WrongTime", "Ordering Date Must Be After Now");
         }
-        if (borrowNoteDTO.getAddress().isBlank()){
-            throw LibraryException.badRequest("WrongAddressFormat","Address Cannot Be Empty");
+        if (borrowNoteDTO.getAddress().isBlank()) {
+            throw LibraryException.badRequest("WrongAddressFormat", "Address Cannot Be Empty");
         }
         borrowNote.setBorrowDate(borrowNoteDTO.getBorrowDate());
         borrowNote.setDueDate(borrowNoteDTO.getDueDate());
@@ -85,14 +96,13 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
         return borrowNoteBookMapper.toDtos(borrowNoteRepository.findBorrowNoteHistoryByBorrowDate(borrowDate));
     }
 
-
     // tim ten nhung khach hang tra sach tre
     @Override
     public List<String> nameOfCustomerReturnBookLate() {
-       return borrowNoteRepository.findAll().stream()
-               .filter(br -> LocalDate.now().isAfter(br.getDueDate()))
-               .map(BorrowNote::getCustomer)
-               .map(Customer::getFirstName)
-               .collect(Collectors.toList());
+        return borrowNoteRepository.findAll().stream()
+                .filter(br -> LocalDate.now().isAfter(br.getDueDate()))
+                .map(BorrowNote::getCustomer)
+                .map(Customer::getFirstName)
+                .collect(Collectors.toList());
     }
 }

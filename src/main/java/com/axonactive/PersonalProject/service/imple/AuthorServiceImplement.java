@@ -32,12 +32,16 @@ public class AuthorServiceImplement implements AuthorService {
         if (authorDTO.getLastName().isBlank() || !isAlpha(authorDTO.getLastName()) ||
                 authorDTO.getFirstName().isBlank() || !isAlpha(authorDTO.getFirstName()))
             throw LibraryException.badRequest("Wrong format name", "Name should contain only letters");
-        Author author = new Author();
-        author.setFirstName(authorDTO.getFirstName());
-        author.setLastName(authorDTO.getLastName());
+//        Author author = new Author();
+//        author.setFirstName(authorDTO.getFirstName());
+//        author.setLastName(authorDTO.getLastName());
+        Author author = Author.builder()
+                .lastName(authorDTO.getLastName())
+                .firstName(authorDTO.getFirstName())
+                .build();
+
         author = authorRepository.save(author);
         return authorMapper.toDto(author);
-
     }
 
 

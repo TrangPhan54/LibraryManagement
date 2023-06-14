@@ -4,6 +4,7 @@ import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
+import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import org.junit.jupiter.api.Test;
@@ -133,5 +134,13 @@ class BorrowNoteDetailServiceImplementationTest {
 //        }
 
         re.forEach(System.out::println);
+    }
+
+    @Test
+    void createBorrowNoteDetail() {
+        Long phyID = 40L;
+        Long borrowNoteID = 30L;
+        BorrowNoteDetailDTO re = borrowNoteDetailService.createBorrowNoteDetail(phyID,borrowNoteID);
+        System.out.println(re);
     }
 }

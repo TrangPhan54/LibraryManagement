@@ -70,11 +70,11 @@ public class BookResource {
         log.info("get book by name containing ignore case {}",keyword);
         return ResponseEntity.ok(bookService.getByBookNameContainingIgnoreCase(keyword));
     }
-
-    @GetMapping("/status_available")
-    public ResponseEntity<List<BookDTO>> getByStatus(@RequestParam("status") Status status) {
-        return ResponseEntity.ok(bookService.getByStatus(status));
-    }
+//
+//    @GetMapping("/status_available")
+//    public ResponseEntity<List<BookDTO>> getByStatus(@RequestParam("status") Status status) {
+//        return ResponseEntity.ok(bookService.getByStatus(status));
+//    }
 
 //    @GetMapping("/pub_house")
 //    public ResponseEntity<List<BookDTO>> getBookByPublishingHouseName(@RequestParam("publishingHouseName") String publishingHouseName) {
