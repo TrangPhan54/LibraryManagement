@@ -5,6 +5,7 @@ import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.*;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
+import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookListDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
@@ -48,7 +49,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     }
 
-//    @Override
+    //    @Override
 //    public BorrowNoteDetailDTO createBorrowNoteDetail(PhysicalBookListDTO physicalBookListDTO, Long orderID) {
 //        List <BorrowNoteDetail> borrowNoteDetail = new Ar
 //        List<PhysicalBook> physicalBook = physicalBookRepository.findAllById(physicalBookListDTO.getPhysicalBookIdList());
@@ -68,17 +69,15 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 //
 //        return borrowNoteDetailMapper.toDto(borrowNoteDetail);
 //    }
-//    public BorrowNoteDetailDTO createBorrowNoteDetail(BorrowNoteDetailDTO borrowNoteDetailDTO) {
-//        BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
-//        PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookID).orElseThrow(LibraryException::PhysicalBookNotFound);
-//        BorrowNote note = borrowNoteRepository.findById(orderID).orElseThrow(LibraryException::BorrowNoteNotFound);
-//        borrowNoteDetail.setPhysicalBook(physicalBook);
-//        borrowNoteDetail.setBorrowNote(note);
-//        borrowNoteDetail = borrowNoteDetailRepository.save(borrowNoteDetail);
-//
-//
-//        return borrowNoteDetailMapper.toDto(borrowNoteDetail);
-//    }
+    public BorrowNoteDetailDTO createBorrowNoteDetail(CreateBorrowNoteDetailDTO createBorrowNoteDetailDTO) {
+        BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
+        PhysicalBook physicalBook = physicalBookRepository.findById(createBorrowNoteDetailDTO.getPhysicalBookID()).orElseThrow(LibraryException::PhysicalBookNotFound);
+        BorrowNote note = borrowNoteRepository.findById(createBorrowNoteDetailDTO.getBorrowNoteID()).orElseThrow(LibraryException::BorrowNoteNotFound);
+        borrowNoteDetail.setPhysicalBook(physicalBook);
+        borrowNoteDetail.setBorrowNote(note);
+        borrowNoteDetail = borrowNoteDetailRepository.save(borrowNoteDetail);
+        return borrowNoteDetailMapper.toDto(borrowNoteDetail);
+    }
 
 
     @Override
@@ -149,19 +148,23 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         for (int i = 0; i < bookListOfCustomer.size(); i++) {
             for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
                 if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
-                    if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
-                        if (customer.getNumberOfTimeReturnLate() < 5) {
+                    PhysicalBook physicalBook = physicalBookRepository.findById(j).get();
+                    physicalBook.setStatus(Status.AVAILABLE);
+                    physicalBookRepository.save(physicalBook);
+                    bookListOfCustomer.get(i).setReturnDate(LocalDate.now());
+                    if (LocalDate.now().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
+                        if (customer.getNumberOfTimeReturnLate() < 20) {
                             customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
                         }
-                        if (customer.getNumberOfTimeReturnLate() >= 5) {
+                        if (customer.getNumberOfTimeReturnLate() >= 20) {
                             customer.setActive(false);
                         }
                     }
-                    borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
+//                    borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
                 }
             }
         }
-        if (customer.getNumberOfTimeReturnLate() >= 5) {
+        if (customer.getNumberOfTimeReturnLate() >= 20) {
             System.out.println("Customer is banned because you have exceeded 5 overdue returns.");
         }
         System.out.println(customer.getNumberOfTimeReturnLate());
@@ -169,40 +172,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
 
     //5. Tính tiền phạt nếu sách trả trễ so với hạn đã ghi trong phiếu mượn
-//    @Override
-//    public void fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
-////        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
-//        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
-//        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
-//                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == returnBookByCustomerDto.getCustomerId())
-//                .collect(Collectors.toList());
-//        double totalFee = 0;
-//        for (int i = 0; i < bookListOfCustomer.size(); i++) {
-//
-//            double baseFee = 2.0; // Base fee for overdue books
-//            double finePerDay = 0.5;
-//            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
-//                if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
-//                    if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
-//                        Long overdueDays = ChronoUnit.DAYS.between(bookListOfCustomer.get(i).getBorrowNote().getDueDate(), bookListOfCustomer.get(i).getReturnDate());
-//                        double fine = baseFee + finePerDay * overdueDays;
-//                        if (overdueDays <= 7) {
-//                            bookListOfCustomer.get(i).setFineFee(fine);
-//                        } else {
-//                            double penaltyFactor = Math.pow(1.02, overdueDays - 7);
-//                            fine *= penaltyFactor;
-//                            bookListOfCustomer.get(i).setFineFee(fine);
-//                        }
-//                    }
-//                    totalFee += bookListOfCustomer.get(i).getFineFee();
-//
-//                }
-//            }
-//
-//        }
-//
-//        System.out.println("You have to pay $" + totalFee + " for returning book late.");
-//    }
     @Override
     public void fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
 //        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
@@ -210,13 +179,19 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
                 .filter(brd -> brd.getBorrowNote().getCustomer().getId() == returnBookByCustomerDto.getCustomerId())
                 .collect(Collectors.toList());
+        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+
         double totalFee = 0;
         for (int i = 0; i < bookListOfCustomer.size(); i++) {
 
             for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
                 if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
-                    if (bookListOfCustomer.get(i).getReturnDate().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
-                        Long overdueDays = ChronoUnit.DAYS.between(bookListOfCustomer.get(i).getBorrowNote().getDueDate(), bookListOfCustomer.get(i).getReturnDate());
+                    PhysicalBook physicalBook = physicalBookRepository.findById(j).get();
+                    physicalBook.setStatus(Status.AVAILABLE);
+                    physicalBookRepository.save(physicalBook);
+                    bookListOfCustomer.get(i).setReturnDate(LocalDate.now());
+                    if (LocalDate.now().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
+                        Long overdueDays = ChronoUnit.DAYS.between(bookListOfCustomer.get(i).getBorrowNote().getDueDate(), LocalDate.now());
                         double fine = BASE_FEE + FINE_PER_DAY * overdueDays;
                         if (overdueDays <= 7) {
                             bookListOfCustomer.get(i).setFineFee(fine);
@@ -226,16 +201,16 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                             bookListOfCustomer.get(i).setFineFee(fine);
                         }
                     }
-                    totalFee += bookListOfCustomer.get(i).getFineFee();
+                        totalFee += bookListOfCustomer.get(i).getFineFee();
 
                 }
+
             }
 
         }
 
         System.out.println("You have to pay $" + totalFee + " for returning book late.");
     }
-
 
     public String getBookNameByBookId(Long bookId) {
         Optional<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()

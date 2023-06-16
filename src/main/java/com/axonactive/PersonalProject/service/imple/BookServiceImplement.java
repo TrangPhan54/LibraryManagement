@@ -37,7 +37,7 @@ public class BookServiceImplement implements BookService {
     }
 
     @Override
-    public BookDTO createBook(BookDTO bookDTO, Long authorID) {
+    public BookDTO createBook(BookDTO bookDTO) {
         if (bookDTO.getName().isBlank() || !isAlpha(bookDTO.getName()))
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
 
@@ -57,7 +57,7 @@ public class BookServiceImplement implements BookService {
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
         book.setDatePublish(bookDTO.getDatePublish());
-        Author author = authorRepository.findById(authorID).orElseThrow();
+        Author author = authorRepository.findById(bookDTO.getAuthorID()).orElseThrow();
 //        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow();
         book.setAuthor(author);
 //        book.setPublishingHouse(publishingHouse);

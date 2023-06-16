@@ -29,13 +29,13 @@ public class BorrowNoteResource {
         return ResponseEntity.ok(borrowNoteService.getAllBorrowNote());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/{customerId}")
-    public ResponseEntity<BorrowNoteDTO> createBorrowNote(@PathVariable("customerId") Long customerID,
-                                                         @RequestBody BorrowNoteDTO borrowNoteDTO) {
-        BorrowNoteDTO book = borrowNoteService.createBorrowNote(borrowNoteDTO,customerID);
-        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
-    }
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping(value = "/{customerId}")
+//    public ResponseEntity<BorrowNoteDTO> createBorrowNote(@PathVariable("customerId") Long customerID,
+//                                                         @RequestBody BorrowNoteDTO borrowNoteDTO) {
+//        BorrowNoteDTO book = borrowNoteService.createBorrowNote(borrowNoteDTO,customerID);
+//        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
+//    }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{borrowNoteId}")
     public ResponseEntity<BorrowNoteDTO> updateBorrowNote(@PathVariable("orderBookId") Long borrowNoteID,

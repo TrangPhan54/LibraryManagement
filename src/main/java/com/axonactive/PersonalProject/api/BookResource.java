@@ -36,7 +36,7 @@ public class BookResource {
                                               @PathVariable("publishingHouseId") Long publishingHouseID,
                                               @RequestBody BookDTO bookDTO) {
         log.info("create book");
-        BookDTO book = bookService.createBook(bookDTO, authorID);
+        BookDTO book = bookService.createBook(bookDTO);
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
 

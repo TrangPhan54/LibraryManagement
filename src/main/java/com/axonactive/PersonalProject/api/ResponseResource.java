@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/responses")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('USER')")
+//@PreAuthorize("hasRole('USER')")
 public class ResponseResource {
     @Autowired
     private final ResponseService responseService;

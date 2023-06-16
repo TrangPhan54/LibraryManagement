@@ -40,14 +40,15 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
 
     @Override
     public BorrowNoteDTO createBorrowNote(CreateBorrowNoteDTO createBorrowNoteDTO) {
-        if (createBorrowNoteDTO.getBorrowDate().isBefore(LocalDate.now())) {
-            throw LibraryException.badRequest("WrongTime", "Ordering Date Must Be After Now");
-        }
+//        if (createBorrowNoteDTO.getBorrowDate().isBefore(LocalDate.now())) {
+//            throw LibraryException.badRequest("WrongTime", "Ordering Date Must Be After Now");
+//        }
 //        if (borrowNoteDTO.getAddress().isBlank()) {
 //            throw LibraryException.badRequest("WrongAddressFormat", "Address Cannot Be Empty");
 //        }
         Customer customer = customerRepository.findById(createBorrowNoteDTO.getCustomerID()).orElseThrow(LibraryException::CustomerNotFound);
         BorrowNote borrowNote = BorrowNote.builder().customer(customer).build();
+        borrowNote.setBorrowDate(createBorrowNoteDTO.getBorrowDate());
         List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
         for (Long physicalBookId : createBorrowNoteDTO.getPhysicalBookIdList()) {
             BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
@@ -57,7 +58,7 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
             physicalBook.setStatus(Status.ONLOAN);
             borrowNoteDetailList.add(borrowNoteDetail);
         }
-
+        borrowNote.setBorrowNoteDetailList(borrowNoteDetailList);
         borrowNote = borrowNoteRepository.save(borrowNote);
         return borrowNoteBookMapper.toDto(borrowNote);
     }

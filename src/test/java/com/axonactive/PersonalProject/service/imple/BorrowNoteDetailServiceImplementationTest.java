@@ -1,12 +1,16 @@
 package com.axonactive.PersonalProject.service.imple;
 
 import com.axonactive.PersonalProject.entity.Book;
+import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.entity.Customer;
+import com.axonactive.PersonalProject.entity.PhysicalBook;
+import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,8 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private BorrowNoteDetailRepository borrowNoteDetailRepository;
 
     @Test
     void getNumberOfBookByCustomerId() {
@@ -54,16 +60,18 @@ class BorrowNoteDetailServiceImplementationTest {
     @Test
     void returnBookByCustomer() {
         ReturnBookByCustomerDto returnBookByCustomerDto = new ReturnBookByCustomerDto();
-        returnBookByCustomerDto.setCustomerId(12L);
+        returnBookByCustomerDto.setCustomerId(21L);
         List<Long> physicalBookIds = new ArrayList<>();
-        physicalBookIds.add(17L);
+        physicalBookIds.add(1L);
+        physicalBookIds.add(8L);
+
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
 //        List<Long> ids = List.of(17L);
 //        borrowNoteDetailService.returnBookByCustomer(12L, ids);
         borrowNoteDetailService.returnBookByCustomer(returnBookByCustomerDto);
 //
-        Customer customer = customerRepository.findById(12L).get();
+        Customer customer = customerRepository.findById(21L).get();
 //        System.out.println(customer.get);
     }
 
@@ -77,11 +85,11 @@ class BorrowNoteDetailServiceImplementationTest {
     @Test
     void fineFeeForReturningBookLate() {
         ReturnBookByCustomerDto returnBookByCustomerDto = new ReturnBookByCustomerDto();
-        returnBookByCustomerDto.setCustomerId(1L);
+        returnBookByCustomerDto.setCustomerId(21L);
         List<Long> physicalBookIds = new ArrayList<>();
-        physicalBookIds.add(1L);
+        physicalBookIds.add(7L);
         physicalBookIds.add(2L);
-        physicalBookIds.add(3L);
+//        physicalBookIds.add(3L);
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
         borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
@@ -136,11 +144,13 @@ class BorrowNoteDetailServiceImplementationTest {
         re.forEach(System.out::println);
     }
 
-    @Test
-    void createBorrowNoteDetail() {
-        Long phyID = 40L;
-        Long borrowNoteID = 30L;
-        BorrowNoteDetailDTO re = borrowNoteDetailService.createBorrowNoteDetail(phyID,borrowNoteID);
-        System.out.println(re);
-    }
+
+
+//    @Test
+//    void createBorrowNoteDetail() {
+//        Long phyID = 40L;
+//        Long borrowNoteID = 30L;
+//        BorrowNoteDetailDTO re = borrowNoteDetailService.createBorrowNoteDetail(phyID,borrowNoteID);
+//        System.out.println(re);
+//    }
 }

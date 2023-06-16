@@ -13,7 +13,7 @@ import java.util.Map;
 public interface BookService {
     List<BookDTO> getAllBook();
 
-    BookDTO createBook(BookDTO bookDTO, Long authorID);
+    BookDTO createBook(BookDTO bookDTO);
 
     BookDTO updateBook(Long bookID, BookDTO bookDTO);
 
