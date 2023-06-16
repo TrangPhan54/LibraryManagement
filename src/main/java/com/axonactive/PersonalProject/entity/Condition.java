@@ -1,7 +1,6 @@
 package com.axonactive.PersonalProject.entity;
 
-public enum Status {
-    AVAILABLE,
-    ONLOAN
-
+public enum Condition {
+    LOST,
+    NORMAL
 }

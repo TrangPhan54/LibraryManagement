@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/genres")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
 public class GenreResource {
     @Autowired
     private final GenreService genreService;

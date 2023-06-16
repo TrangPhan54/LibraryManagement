@@ -2,6 +2,8 @@ package com.axonactive.PersonalProject.api;
 
 
 import com.axonactive.PersonalProject.service.BorrowNoteService;
+import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDTO;
+import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.GenreBookDTO;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDTO;
 import lombok.RequiredArgsConstructor;
@@ -30,32 +32,31 @@ public class BorrowNoteResource {
     }
 
 //    @PreAuthorize("hasRole('ADMIN')")
-//    @PostMapping(value = "/{customerId}")
-//    public ResponseEntity<BorrowNoteDTO> createBorrowNote(@PathVariable("customerId") Long customerID,
-//                                                         @RequestBody BorrowNoteDTO borrowNoteDTO) {
-//        BorrowNoteDTO book = borrowNoteService.createBorrowNote(borrowNoteDTO,customerID);
-//        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
-//    }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<BorrowNoteDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
+        BorrowNoteDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);
+        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
+    }
+
     @PutMapping(value = "/{borrowNoteId}")
     public ResponseEntity<BorrowNoteDTO> updateBorrowNote(@PathVariable("orderBookId") Long borrowNoteID,
                                                          @RequestBody BorrowNoteDTO borrowNoteDTO) {
         BorrowNoteDTO book = borrowNoteService.updateBorrowNote(borrowNoteID, borrowNoteDTO);
         return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @DeleteMapping(value = "/{borrowAndNoteId}")
 
     public ResponseEntity<BorrowNoteDTO> deleteBorrowNote(@PathVariable("orderAndBookId") Long borrowAndNoteID) {
         borrowNoteService.deleteBorrowNoteByID(borrowAndNoteID);
         return ResponseEntity.noContent().build();
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/{borrowId}")
     public ResponseEntity<BorrowNoteDTO> getBorrowNoteById (@PathVariable("borrowId") Long borrowId){
         return ResponseEntity.ok(borrowNoteService.getBorrowNoteById(borrowId));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/borrow_date")
     public ResponseEntity <List<BorrowNoteDTO>> getBorrowNoteHistoryByBorrowDate (@RequestParam ("borrowDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate borrowDate){
         return ResponseEntity.ok(borrowNoteService.getBorrowNoteHistoryByBorrowDate(borrowDate));

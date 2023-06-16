@@ -6,7 +6,9 @@ import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookListDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 
 import java.time.LocalDate;
@@ -34,9 +36,9 @@ public interface BorrowNoteDetailService {
 
 
     String getBookNameByBookId (Long bookId);
-    void fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
+    FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
-    Map<Book, Long> getMaxBorrowBook (LocalDate date1 , LocalDate date2);
+    List <BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook (LocalDate date1 , LocalDate date2);
 
     List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(LocalDate date1, LocalDate date2);
 

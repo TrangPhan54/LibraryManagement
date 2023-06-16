@@ -49,6 +49,7 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
         Customer customer = customerRepository.findById(createBorrowNoteDTO.getCustomerID()).orElseThrow(LibraryException::CustomerNotFound);
         BorrowNote borrowNote = BorrowNote.builder().customer(customer).build();
         borrowNote.setBorrowDate(createBorrowNoteDTO.getBorrowDate());
+        borrowNote.setDueDate(createBorrowNoteDTO.getDueDate());
         List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
         for (Long physicalBookId : createBorrowNoteDTO.getPhysicalBookIdList()) {
             BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();

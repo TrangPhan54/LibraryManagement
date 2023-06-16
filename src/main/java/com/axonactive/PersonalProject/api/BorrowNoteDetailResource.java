@@ -3,7 +3,9 @@ package com.axonactive.PersonalProject.api;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import jdk.jfr.DataAmount;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class BorrowNoteDetailResource {
     @Autowired
     private final BorrowNoteDetailService borrowNoteDetailService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping
     public ResponseEntity<List<BorrowNoteDetailDTO>> getAllBorrowNotedetail() {
         log.info("get all borrow note detail");
@@ -43,7 +45,7 @@ public class BorrowNoteDetailResource {
 //        return ResponseEntity.created(URI.create("/api/orderDetails" + book.getId())).body(book);
 //    }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @DeleteMapping(value = "/{orderDetailId}")
 
     public ResponseEntity<BorrowNoteDetailDTO> deleteBorrowNoteDetail(@PathVariable("orderDetailId") Long orderDetailID) {
@@ -51,7 +53,6 @@ public class BorrowNoteDetailResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{borrowId}")
     public ResponseEntity<BorrowNoteDetailDTO> getBorrowNoteDetailId(@PathVariable("borrowId") Long borrowId) {
         return ResponseEntity.ok(borrowNoteDetailService.getBorrowNoteDetailId(borrowId));
@@ -66,5 +67,14 @@ public class BorrowNoteDetailResource {
     public List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
                                                                          @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
         return borrowNoteDetailService.getMaxCustomer(date1, date2);
+    }
+    @GetMapping("/fine_fee")
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto){
+        return borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
+    }
+    @GetMapping("/book_analytic")
+    public List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook (@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                                  @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2){
+        return borrowNoteDetailService.getMaxBorrowBook(date1, date2);
     }
 }

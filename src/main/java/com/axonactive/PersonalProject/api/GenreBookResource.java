@@ -20,12 +20,12 @@ import java.util.List;
 public class GenreBookResource {
     @Autowired
     private final GenreBookService genreBookService;
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<GenreBookDTO>> getAllGenreBook() {
         return ResponseEntity.ok(genreBookService.getAllGenreBook());
     }
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/{bookId}/{genreId}")
     public ResponseEntity<GenreBookDTO> createGenreBook(@PathVariable("bookId") Long bookID,
                                                         @PathVariable("genreId") Long genreID,
@@ -33,21 +33,21 @@ public class GenreBookResource {
         GenreBookDTO book = genreBookService.createGenreBook(genreID, bookID, genreBookDTO);
         return ResponseEntity.created(URI.create("/api/genreBooks" + book.getGenreBookID())).body(book);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{genreBookId}")
     public ResponseEntity<GenreBookDTO> updateGenreBook(@PathVariable("genreBookId") Long genreBookID,
                                                         @RequestBody GenreBookDTO genreBookDTO) {
         GenreBookDTO book = genreBookService.updateGenreBook(genreBookID, genreBookDTO);
         return ResponseEntity.created(URI.create("/api/genreBooks" + book.getGenreBookID())).body(book);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/{genreAndBookId}")
 
     public ResponseEntity<GenreBookDTO> deleteGenreBook(@PathVariable("genreAndBookId") Long genreAndBookID) {
         genreBookService.deleteGenreBookById(genreAndBookID);
         return ResponseEntity.noContent().build();
     }
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{genreID}")
     public ResponseEntity<GenreBookDTO> getGenreBookById(@PathVariable("genreID") Long genreId) {
         return ResponseEntity.ok(genreBookService.getGenreBookById(genreId));

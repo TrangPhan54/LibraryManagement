@@ -27,4 +27,6 @@ public class BorrowNoteDetail {
     @ManyToOne
     @JoinColumn(name = "borrow_id")
     private BorrowNote borrowNote;
+    @Enumerated(EnumType.STRING)
+    private Condition condition;
 }
