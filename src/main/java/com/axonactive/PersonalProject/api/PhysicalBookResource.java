@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/physicalBooks")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
 public class PhysicalBookResource {
     @Autowired
     private final PhysicalBookService physicalBookService;

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookAnalyticForAmountOfTimeDTO {
     private Long bookID;
-
     private String bookTitle;
     private Long numberOfPhysicalBookCopies;
 }

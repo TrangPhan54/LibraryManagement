@@ -33,7 +33,7 @@ public class BorrowNote {
     @Column(name = "due_date")
     private LocalDate dueDate;
 
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, mappedBy = "borrowNote")
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "borrowNote")
     private List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
 
 

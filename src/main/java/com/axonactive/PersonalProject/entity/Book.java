@@ -25,9 +25,6 @@ import java.time.LocalDate;
                 "group by b.name",
         resultSetMapping = "BookAnalytic"
 )
-
-
-
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,9 +40,6 @@ public class Book {
     private String contentSummary;
     @Column (name = "date_publish")
     private LocalDate datePublish;
-//    @Column (name = "status")
-//    @Enumerated(EnumType.STRING)
-//    private Status status;
     @ManyToOne
     @JoinColumn (name = "author_id")
     private Author author;

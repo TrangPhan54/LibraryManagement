@@ -43,8 +43,6 @@ public class ResponseResource {
     public ResponseEntity<ResponseDTO> updateResponse(@PathVariable("responseId") Long responseID, @RequestBody ResponseDTO responseDTO) {
         ResponseDTO response = responseService.updateResponse(responseID, responseDTO);
         return ResponseEntity.created(URI.create("/api/responses/" + response.getResponseID())).body(response);
-
-
     }
 
     @DeleteMapping(value = "/{resID}")

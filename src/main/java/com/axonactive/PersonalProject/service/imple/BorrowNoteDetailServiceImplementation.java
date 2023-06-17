@@ -44,6 +44,18 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     private static final Double FINE_PER_DAY = 0.5;
     private static final Double BONUS_FACTOR = 1.02;
 
+    private static final Double PENALTY_FACTOR = Math.pow(BONUS_FACTOR, 2);
+    private static final Double LIMITATION_OVERDUE_DAY = 7.0;
+    public Double getFineFee(Long overdueDays) {
+        double fine = 0;
+        if (overdueDays <= LIMITATION_OVERDUE_DAY) {
+            fine = BASE_FEE + FINE_PER_DAY * overdueDays;
+        } else {
+            fine *= PENALTY_FACTOR;
+        }
+        return fine;
+    }
+
     @Override
     public List<BorrowNoteDetailDTO> getAllBorrowNoteDetail() {
         List<BorrowNoteDetail> borrowNoteDetails = borrowNoteDetailRepository.findAll();
@@ -51,26 +63,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     }
 
-    //    @Override
-//    public BorrowNoteDetailDTO createBorrowNoteDetail(PhysicalBookListDTO physicalBookListDTO, Long orderID) {
-//        List <BorrowNoteDetail> borrowNoteDetail = new Ar
-//        List<PhysicalBook> physicalBook = physicalBookRepository.findAllById(physicalBookListDTO.getPhysicalBookIdList());
-//        BorrowNote note = borrowNoteRepository.findById(orderID).orElseThrow(LibraryException::BorrowNoteNotFound);
-//        //check status of physicalBook == available
-//        if (physicalBook.size() > 0) {
-//            for (PhysicalBook phy : physicalBook) {
-//                if (phy.getStatus().equals(Status.AVAILABLE))
-//                    phy.setStatus(Status.ONLOAN);
-//                borrowNoteDetail.setPhysicalBook(phy);
-//            }
-////
-////        borrowNoteDetail.setPhysicalBook(physicalBook);
-//            borrowNoteDetail.setBorrowNote(note);
-//            borrowNoteDetail = borrowNoteDetailRepository.save(borrowNoteDetail);
-//        }
-//
-//        return borrowNoteDetailMapper.toDto(borrowNoteDetail);
-//    }
     public BorrowNoteDetailDTO createBorrowNoteDetail(CreateBorrowNoteDetailDTO createBorrowNoteDetailDTO) {
         BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
         PhysicalBook physicalBook = physicalBookRepository.findById(createBorrowNoteDetailDTO.getPhysicalBookID()).orElseThrow(LibraryException::PhysicalBookNotFound);
@@ -97,9 +89,8 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     @Override
     public Long getNumberOfBookByCustomerId(Long customerId) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
-        Long numberOfBorrowedBooks = borrowNoteDetailList.stream()
+        return borrowNoteDetailList.stream()
                 .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId).count();
-        return numberOfBorrowedBooks;
     }
     //2. Tính số sách còn mượn sau khi trả của một khách hàng cụ thể
 
@@ -141,85 +132,148 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     // 4. Dịch vụ trả sách. Nếu trả trễ từ 20 cuốn trở lên thì tiến hành khóa tài khoản
     @Override
+//    public CustomerDTO returnBookByCustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
+//        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+//                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
+//                .collect(Collectors.toList());
+//        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+//        for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
+//            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
+//                if (Objects.equals(noteDetail.getPhysicalBook().getId(), j)) {
+//                    noteDetail.setReturnDate(LocalDate.now());
+//                    noteDetail.setCondition(Condition.NORMAL);
+//                    LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+//                    if (LocalDate.now().isAfter(dueDate)) {
+//                        if (customer.getNumberOfTimeReturnLate() < 20) {
+//                            customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
+//                        }
+//                        else {
+//                            customer.setActive(false);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return customerMapper.toDto(customer);
+//    }
     public CustomerDTO returnBookByCustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
-        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
-        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == returnBookByCustomerDto.getCustomerId())
+        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
                 .collect(Collectors.toList());
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
-        for (int i = 0; i < bookListOfCustomer.size(); i++) {
-            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
-                if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
-                    PhysicalBook physicalBook = physicalBookRepository.findById(j).get();
-                    physicalBook.setStatus(Status.AVAILABLE);
-                    physicalBookRepository.save(physicalBook);
-                    bookListOfCustomer.get(i).setReturnDate(LocalDate.now());
-                    bookListOfCustomer.get(i).setCondition(Condition.NORMAL);
-                    if (LocalDate.now().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
-                        if (customer.getNumberOfTimeReturnLate() < 20) {
-                            customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
-                        }
-                        if (customer.getNumberOfTimeReturnLate() >= 20) {
-                            customer.setActive(false);
-                        }
+        for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
+            Long physicalBookId = noteDetail.getPhysicalBook().getId();
+            if (returnBookByCustomerDto.getPhysicalBookIds().contains(physicalBookId)) {
+                noteDetail.setReturnDate(LocalDate.now());
+                noteDetail.setCondition(Condition.NORMAL);
+                LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+                if (LocalDate.now().isAfter(dueDate)) {
+                    if (customer.getNumberOfTimeReturnLate() < 20) {
+                        customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
+                    } else {
+                        customer.setActive(false);
                     }
                 }
             }
         }
-        if (customer.getNumberOfTimeReturnLate() >= 20) {
-            System.out.println("Customer is banned because you have exceeded 20 overdue returns.");
-        }
-        System.out.println(customer.getNumberOfTimeReturnLate());
         return customerMapper.toDto(customer);
     }
 
     //5. Tính tiền phạt nếu sách trả trễ so với hạn đã ghi trong phiếu mượn
     @Override
     public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
-        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
-        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
-        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == returnBookByCustomerDto.getCustomerId())
-                .collect(Collectors.toList());
+        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
+                .collect(Collectors.toList()); // find list borrow note detail of a customer by customer id
+        double totalFee = 0;
+        for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
+            Long physicalBookId = noteDetail.getPhysicalBook().getId();
+            if (returnBookByCustomerDto.getPhysicalBookIds().contains(physicalBookId)) {
+                noteDetail.setReturnDate(LocalDate.now());
+                noteDetail.setCondition(Condition.NORMAL);// set condition of returning book
+                LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+                if (LocalDate.now().isAfter(dueDate)) {
+                    Long overdueDays = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+                    noteDetail.setFineFee(getFineFee(overdueDays));
+                }
+                totalFee += noteDetail.getFineFee();
+            }
+        }
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
         fineFeeForCustomerDTO.setFirstName(customer.getFirstName());
         fineFeeForCustomerDTO.setLastName(customer.getLastName());
         fineFeeForCustomerDTO.setPhoneNumber(customer.getPhoneNumber());
-        double totalFee = 0;
-        for (int i = 0; i < bookListOfCustomer.size(); i++) {
-            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) {
-                if (bookListOfCustomer.get(i).getPhysicalBook().getId() == j) {
-                    PhysicalBook physicalBook = physicalBookRepository.findById(j).get();
-                    physicalBook.setStatus(Status.AVAILABLE);
-                    physicalBookRepository.save(physicalBook);
-                    bookListOfCustomer.get(i).setReturnDate(LocalDate.now());
-                    bookListOfCustomer.get(i).setCondition(Condition.NORMAL);
-                    if (LocalDate.now().isAfter(bookListOfCustomer.get(i).getBorrowNote().getDueDate())) {
-                        customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
-                        fineFeeForCustomerDTO.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate());
-                        Long overdueDays = ChronoUnit.DAYS.between(bookListOfCustomer.get(i).getBorrowNote().getDueDate(), LocalDate.now());
-                        double fine = BASE_FEE + FINE_PER_DAY * overdueDays;
-                        if (overdueDays <= 7) {
-                            bookListOfCustomer.get(i).setFineFee(fine);
-                        } else {
-                            double penaltyFactor = Math.pow(BONUS_FACTOR, overdueDays - 7);
-                            fine *= penaltyFactor;
-                            bookListOfCustomer.get(i).setFineFee(fine);
-                        }
-                    }
-                    totalFee += bookListOfCustomer.get(i).getFineFee();
-                    if (customer.getNumberOfTimeReturnLate() >= 20) {
-                        customer.setActive(false);
-                        fineFeeForCustomerDTO.setActive(false);
-                    }
-                }
-            }
-        }
         fineFeeForCustomerDTO.setFineFee(totalFee);
-        System.out.println(fineFeeForCustomerDTO.getNumberOfTimeReturnLate());
-        System.out.println("You have to pay $" + totalFee + " for returning book late.");
         return fineFeeForCustomerDTO;
     }
+//    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+//        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+//                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
+//                .collect(Collectors.toList()); // find list borrow note detail of a customer by customer id
+//        double totalFee = 0;
+//        for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
+//            for (Long j : returnBookByCustomerDto.getPhysicalBookIds()) { //check if id of each book that customer return is equals to an id in list borrow note detail
+//                if (Objects.equals(noteDetail.getPhysicalBook().getId(), j)) {
+//                    noteDetail.setReturnDate(LocalDate.now()); // set return date for this book on borrow note detail
+//                    noteDetail.setCondition(Condition.NORMAL); // set condition of returning book
+//                    LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+//                    if (LocalDate.now().isAfter(dueDate)) {
+//                        Long overdueDays = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+//                        double fine = BASE_FEE + FINE_PER_DAY * overdueDays;
+//                        if (overdueDays <= 7) {
+//                            noteDetail.setFineFee(fine);
+//                        } else {
+//                            fine *= PENALTY_FACTOR;
+//                            noteDetail.setFineFee(fine);
+//                        }
+//                    }
+//                    totalFee += noteDetail.getFineFee();
+//                }
+//            }
+//        }
+//        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+//        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
+//        fineFeeForCustomerDTO.setFirstName(customer.getFirstName());
+//        fineFeeForCustomerDTO.setLastName(customer.getLastName());
+//        fineFeeForCustomerDTO.setPhoneNumber(customer.getPhoneNumber());
+//        fineFeeForCustomerDTO.setFineFee(totalFee);
+//        return fineFeeForCustomerDTO;
+//    }
+
+
+//    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+//        List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailRepository.findAll().stream()
+//                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
+//                .collect(Collectors.toList()); // find list borrow note detail of a customer by customer id
+//        double totalFee = 0;
+//        for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
+//            Long physicalBookId = noteDetail.getPhysicalBook().getId();
+//            if (returnBookByCustomerDto.getPhysicalBookIds().contains(physicalBookId)) {
+//                noteDetail.setReturnDate(LocalDate.now());
+//                noteDetail.setCondition(Condition.NORMAL);// set condition of returning book
+//                LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+//                if (LocalDate.now().isAfter(dueDate)) {
+//                    Long overdueDays = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+//                    double fine = BASE_FEE + FINE_PER_DAY * overdueDays;
+//                    if (overdueDays <= LIMITATION_OVERDUE_DAY) {
+//                        noteDetail.setFineFee(fine);
+//                    } else {
+//                        fine *= PENALTY_FACTOR;
+//                        noteDetail.setFineFee(fine);
+//                    }
+//                }
+//                totalFee += noteDetail.getFineFee();
+//            }
+//        }
+//        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+//        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
+//        fineFeeForCustomerDTO.setFirstName(customer.getFirstName());
+//        fineFeeForCustomerDTO.setLastName(customer.getLastName());
+//        fineFeeForCustomerDTO.setPhoneNumber(customer.getPhoneNumber());
+//        fineFeeForCustomerDTO.setFineFee(totalFee);
+//        return fineFeeForCustomerDTO;
+//    }
 
     public String getBookNameByBookId(Long bookId) {
         Optional<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()

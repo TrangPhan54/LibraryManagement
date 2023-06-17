@@ -30,8 +30,6 @@ public class PublishingHouseResource {
     public ResponseEntity<List<PublishingHouseDTO>> getPublishingHouseByName (@RequestParam ("name") String name){
         return ResponseEntity.ok().body(publishngHouseService.getPublishingHouseByName(name));
     }
-
-
     @PostMapping
     public ResponseEntity<PublishingHouseDTO> createPublishingHouse (@RequestBody PublishingHouseDTO publishingHouseDTO){
         PublishingHouseDTO publishingHouse = publishngHouseService.createPublishingHouse(publishingHouseDTO);

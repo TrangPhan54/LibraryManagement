@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/customers")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
 public class CustomerResource {
     @Autowired
     private final CustomerService customerService;

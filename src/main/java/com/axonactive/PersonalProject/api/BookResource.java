@@ -30,7 +30,6 @@ public class BookResource {
         return ResponseEntity.ok(bookService.getAllBook());
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/{authorId}/{publishingHouseId}")
     public ResponseEntity<BookDTO> createBook(@PathVariable("authorId") Long authorID,
                                               @PathVariable("publishingHouseId") Long publishingHouseID,
@@ -40,7 +39,6 @@ public class BookResource {
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{bookId}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long bookID,
                                               @RequestBody BookDTO bookDTO) {
@@ -49,7 +47,6 @@ public class BookResource {
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/{bookId}")
 
     public ResponseEntity<BookDTO> deleteBook(@PathVariable("bookId") Long bookID) {
@@ -58,7 +55,6 @@ public class BookResource {
         return ResponseEntity.noContent().build();
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{bookId}")
     public ResponseEntity<BookDTO> getBookById(@PathVariable("bookId") Long bookId) {
         log.info("get book by id {}",bookId);
@@ -70,17 +66,6 @@ public class BookResource {
         log.info("get book by name containing ignore case {}",keyword);
         return ResponseEntity.ok(bookService.getByBookNameContainingIgnoreCase(keyword));
     }
-//
-//    @GetMapping("/status_available")
-//    public ResponseEntity<List<BookDTO>> getByStatus(@RequestParam("status") Status status) {
-//        return ResponseEntity.ok(bookService.getByStatus(status));
-//    }
-
-//    @GetMapping("/pub_house")
-//    public ResponseEntity<List<BookDTO>> getBookByPublishingHouseName(@RequestParam("publishingHouseName") String publishingHouseName) {
-//        return ResponseEntity.ok(bookService.getBookByPublishingHouseName(publishingHouseName));
-//    }
-
     @GetMapping("/author_first_name")
 
     public ResponseEntity<List<BookDTO>> getBookByAuthorFirstName(@RequestParam("authorFirstName") String authorFirstName) {
@@ -102,12 +87,6 @@ public class BookResource {
         return ResponseEntity.ok(bookService.findContentSummaryByBookNameContaining(bookName));
 
     }
-
-//    @GetMapping("/book_publish_name")
-//    public ResponseEntity<List<BookDTO>> getByBookNameContainingAndPublishingHouseNameContaining(@RequestParam("bookName") String bookName,
-//                                                                                                 @RequestParam("publishingHouseName") String publishingHouseName) {
-//        return ResponseEntity.ok(bookService.getByBookNameContainingAndPublishingHouseNameContaining(bookName, publishingHouseName));
-//    }
 
     @GetMapping("/last_name_containing")
     public ResponseEntity<List<BookDTO>> getBookByAuthorLastNameContaining(@RequestParam("partOfName") String partOfName) {

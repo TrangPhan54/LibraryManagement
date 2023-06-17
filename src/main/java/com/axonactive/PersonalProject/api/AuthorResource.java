@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/authors")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
 public class AuthorResource {
 
     @Autowired
