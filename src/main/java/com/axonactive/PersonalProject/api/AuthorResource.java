@@ -34,8 +34,6 @@ public class AuthorResource {
         log.info("create author");
         AuthorDTO author = authorService.createAuthor(authorDTO);
         return ResponseEntity.created(URI.create("/api/authors/" + author.getId())).body(author);
-
-
     }
     @PutMapping(value = "/{authorID}")
     public ResponseEntity<AuthorDTO> updateAuthor (@PathVariable ("authorID") Long authorID ,@RequestBody AuthorDTO authorDTO){

@@ -12,11 +12,11 @@ import java.util.List;
 
 @Repository
 public interface BorrowNoteDetailRepository extends JpaRepository<BorrowNoteDetail, Long> {
+    List<BorrowNoteDetail> findByBorrowNoteCustomerId(Long customerId);
 
     List<BorrowNoteDetail> findByBorrowNoteBorrowDateBetween(LocalDate date1, LocalDate date2);
 
 //    List<BorrowNoteDetail> findByBorrowNoteBorrowDateBetween ();
-
 
 
 }

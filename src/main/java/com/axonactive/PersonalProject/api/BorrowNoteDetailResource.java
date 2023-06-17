@@ -7,16 +7,13 @@ import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmo
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
-import jdk.jfr.DataAmount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -60,7 +57,7 @@ public class BorrowNoteDetailResource {
 
     @GetMapping("/remain")
     public CustomerDTO returnBookByCustomer(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
-        return borrowNoteDetailService.returnBookByCustomer(returnBookByCustomerDto);
+        return borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
     }
 
     @GetMapping("/max_customer")

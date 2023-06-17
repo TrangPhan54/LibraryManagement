@@ -1,11 +1,8 @@
 package com.axonactive.PersonalProject.service;
 
-import com.axonactive.PersonalProject.entity.Book;
-import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
-import com.axonactive.PersonalProject.service.dto.PhysicalBookListDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
@@ -13,7 +10,6 @@ import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustom
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface BorrowNoteDetailService {
     List<BorrowNoteDetailDTO> getAllBorrowNoteDetail();
@@ -32,7 +28,7 @@ public interface BorrowNoteDetailService {
     List<String> nameOfBookRemaining (Long customerId, List<Long> physicalBookIds);
 
 //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
-    CustomerDTO returnBookByCustomer(ReturnBookByCustomerDto returnBookByCustomerDto);
+    CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
 
     String getBookNameByBookId (Long bookId);

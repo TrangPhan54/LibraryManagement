@@ -1,17 +1,12 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.Book;
-import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.entity.Customer;
-import com.axonactive.PersonalProject.entity.PhysicalBook;
 import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
-import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +18,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -70,7 +64,7 @@ class BorrowNoteDetailServiceImplementationTest {
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
 //        List<Long> ids = List.of(17L);
 //        borrowNoteDetailService.returnBookByCustomer(12L, ids);
-        borrowNoteDetailService.returnBookByCustomer(returnBookByCustomerDto);
+        borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
 //
         Customer customer = customerRepository.findById(1L).get();
 //        System.out.println(customer.get);
