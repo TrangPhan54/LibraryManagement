@@ -9,12 +9,14 @@ import com.axonactive.PersonalProject.service.BookService;
 import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
+import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,9 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 public class BookServiceImplement implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+
+    private final PublishingHouseRepository publishingHouseRepository;
+
     private final BookMapper bookMapper;
 
     @Override
@@ -37,34 +42,45 @@ public class BookServiceImplement implements BookService {
     }
 
     @Override
-    public BookDTO createBook(BookDTO bookDTO) {
-        if (bookDTO.getName().isBlank() || !isAlpha(bookDTO.getName()))
+    public BookDTO createBook(CreateBookDTO createBookDTO) {
+        PublishingHouse publishingHouse = publishingHouseRepository.findById(createBookDTO.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);
+
+        Author author = authorRepository.findById(createBookDTO.getAuthorID()).orElseThrow();
+//        if (createBookDTO.getName().isBlank() || !isAlpha(createBookDTO.getName()))
+//            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
+
+        if (createBookDTO.getName().isBlank() || createBookDTO.getName().trim().isEmpty() || createBookDTO.getName() == null)
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
 
-
-        if (bookDTO.getBookImage().isBlank()) {
+        if (createBookDTO.getBookImage().isBlank()) {
             throw LibraryException.badRequest("WrongImage", "Book Must Have An Image To Describe");
         }
-        if (bookDTO.getContentSummary().isBlank()) {
+        if (createBookDTO.getContentSummary().isBlank()) {
             throw LibraryException.badRequest("EmptySummary", "Summary Must Have At Least 255 Characters");
         }
-
-
-        if (bookDTO.getDatePublish().isAfter(LocalDate.now()))
+        if (createBookDTO.getDatePublish().isAfter(LocalDate.now()))
             throw LibraryException.badRequest("WrongDate", "Date Publish Must Be Before Now");
-        Book book = new Book();
-        book.setName(bookDTO.getName());
-        book.setContentSummary(bookDTO.getContentSummary());
-        book.setBookImage(bookDTO.getBookImage());
-        book.setDatePublish(bookDTO.getDatePublish());
-        Author author = authorRepository.findById(bookDTO.getAuthorID()).orElseThrow();
-//        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow();
-        book.setAuthor(author);
-//        book.setPublishingHouse(publishingHouse);
+        Book book = Book.builder()
+                .bookImage(createBookDTO.getBookImage())
+                .name(createBookDTO.getName())
+                .contentSummary(createBookDTO.getContentSummary())
+                .datePublish(createBookDTO.getDatePublish())
+                .author(author)
+                .build();
+        List<PhysicalBook> physicalBooksList = new ArrayList<>();
+        for (long i = 0; i < createBookDTO.getNumberOfPhysicalBook(); i++) {
+            PhysicalBook physicalBook = PhysicalBook.builder()
+                    .book(book)
+                    .importDate(createBookDTO.getImportDate())
+                    .importPrice(createBookDTO.getImportPrice())
+                    .publishingHouse(publishingHouse)
+                    .build();
+            physicalBooksList.add(physicalBook);
+        }
+        book.setPhysicalBookList(physicalBooksList);
         book = bookRepository.save(book);
         return bookMapper.toDto(book);
     }
-
 
     @Override
     public BookDTO updateBook(Long bookID, BookDTO bookDTO) {

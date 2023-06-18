@@ -47,16 +47,17 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
 //            throw LibraryException.badRequest("WrongAddressFormat", "Address Cannot Be Empty");
 //        }
         Customer customer = customerRepository.findById(createBorrowNoteDTO.getCustomerID()).orElseThrow(LibraryException::CustomerNotFound);
-        BorrowNote borrowNote = BorrowNote.builder().customer(customer).build();
-        borrowNote.setBorrowDate(createBorrowNoteDTO.getBorrowDate());
-        borrowNote.setDueDate(createBorrowNoteDTO.getDueDate());
+        BorrowNote borrowNote = BorrowNote.builder()
+                .customer(customer)
+                .borrowDate(createBorrowNoteDTO.getBorrowDate())
+                .dueDate(createBorrowNoteDTO.getDueDate())
+                .build();
         List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
         for (Long physicalBookId : createBorrowNoteDTO.getPhysicalBookIdList()) {
             BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
             PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).orElseThrow(LibraryException::PhysicalBookNotFound);
             borrowNoteDetail.setBorrowNote(borrowNote);
             borrowNoteDetail.setPhysicalBook(physicalBook);
-            physicalBook.setStatus(Status.ONLOAN);
             borrowNoteDetailList.add(borrowNoteDetail);
         }
         borrowNote.setBorrowNoteDetailList(borrowNoteDetailList);

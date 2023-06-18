@@ -1,12 +1,16 @@
 package com.axonactive.PersonalProject.entity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,4 +47,6 @@ public class Book {
     @ManyToOne
     @JoinColumn (name = "author_id")
     private Author author;
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "book")
+    private List<PhysicalBook> physicalBookList = new ArrayList<>();
 }

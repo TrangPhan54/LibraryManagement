@@ -5,6 +5,7 @@ import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
+import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
 public interface BookService {
     List<BookDTO> getAllBook();
 
-    BookDTO createBook(BookDTO bookDTO);
+    BookDTO createBook(CreateBookDTO createBookDTO);
 
     BookDTO updateBook(Long bookID, BookDTO bookDTO);
 

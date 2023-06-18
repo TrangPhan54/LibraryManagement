@@ -5,6 +5,7 @@ import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.BookService;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
+import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,10 @@ public class BookResource {
         return ResponseEntity.ok(bookService.getAllBook());
     }
 
-    @PostMapping(value = "/{authorId}/{publishingHouseId}")
-    public ResponseEntity<BookDTO> createBook(@PathVariable("authorId") Long authorID,
-                                              @PathVariable("publishingHouseId") Long publishingHouseID,
-                                              @RequestBody BookDTO bookDTO) {
+    @PostMapping
+    public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO) {
         log.info("create book");
-        BookDTO book = bookService.createBook(bookDTO);
+        BookDTO book = bookService.createBook(createBookDTO);
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
 
