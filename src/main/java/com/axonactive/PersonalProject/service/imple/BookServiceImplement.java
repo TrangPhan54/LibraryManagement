@@ -30,9 +30,7 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 public class BookServiceImplement implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
-
     private final PublishingHouseRepository publishingHouseRepository;
-
     private final BookMapper bookMapper;
 
     @Override
@@ -126,7 +124,6 @@ public class BookServiceImplement implements BookService {
     public List<BookDTO> getByBookNameContainingIgnoreCase(String keyword) {
         return bookMapper.toDtos(bookRepository.findByNameContainingIgnoreCase(keyword));
     }
-
     @Override
     public List<BookDTO> getByName(String name) {
         return bookMapper.toDtos(bookRepository.findByName(name));
@@ -173,7 +170,7 @@ public class BookServiceImplement implements BookService {
 
     @Override
     public List<BookDTO> getBookByAuthorFirstNameContaining(String partOfName) {
-        return bookMapper.toDtos(bookRepository.findBookByAuthorLastNameContaining("%" + partOfName + "%"));
+        return bookMapper.toDtos(bookRepository.findBookByAuthorFirstNameContaining("%" + partOfName + "%"));
     }
 
     //9. Tim ten sach dua vao ho tac gia co chua ki tu nao do khong phan biet hoa thuong
@@ -196,7 +193,7 @@ public class BookServiceImplement implements BookService {
         }
         return bookMapper.toDtos(books);
     }
-    //10. Thống kê số lượng sách dựa vào tên sách
+    //11. Book statistics base on book name
     @Override
     public List<BookAnalyticDTO> getBookAnalytic() {
         return bookRepository.getBookAnalytic();

@@ -6,6 +6,7 @@ import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.PhysicalBookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
+import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PublishingHouseDTO;
 import com.axonactive.PersonalProject.service.mapper.PhysicalBookMapper;
@@ -33,25 +34,23 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     }
 
     @Override
-    public PhysicalBookDTO createPhysicalBook(PhysicalBookDTO physicalBookDTO, Long publishingHouseID, Long bookID) {
+    public PhysicalBookDTO createPhysicalBook(CreatePhysicalBookDto createPhysicalBookDto) {
         PhysicalBook physicalBook = new PhysicalBook();
-        Book book = bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound);
-        PublishingHouse publishingHouse = publishingHouseRepository.findById(publishingHouseID).orElseThrow(LibraryException::PublishingHouseNotFound);
+        Book book = bookRepository.findById(createPhysicalBookDto.getBookId()).orElseThrow(LibraryException::BookNotFound);
+        PublishingHouse publishingHouse = publishingHouseRepository.findById(createPhysicalBookDto.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);
 
         physicalBook.setBook(book);
         physicalBook.setPublishingHouse(publishingHouse);
-        physicalBook.setImportDate(physicalBookDTO.getImportDate());
-        physicalBook.setImportPrice(physicalBookDTO.getImportPrice());
+        physicalBook.setImportDate(createPhysicalBookDto.getImportDate());
+        physicalBook.setImportPrice(createPhysicalBookDto.getImportPrice());
         physicalBook = physicalBookRepository.save(physicalBook);
-
-
         return physicalBookMapper.toDto(physicalBook);
 
     }
 
     @Override
-    public PhysicalBookDTO updatePhysicalBook(Long physicalBookID, PhysicalBookDTO physicalBookDTO) {
-        PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookID).orElseThrow();
+    public PhysicalBookDTO updatePhysicalBook(PhysicalBookDTO physicalBookDTO) {
+        PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookDTO.getId()).orElseThrow();
         physicalBook.setBook(bookRepository.findById(physicalBookDTO.getBookID()).orElseThrow(LibraryException::BookNotFound));
         physicalBook.setPublishingHouse(publishingHouseRepository.findById(physicalBookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
         physicalBook.setImportPrice(physicalBookDTO.getImportPrice());

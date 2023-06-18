@@ -3,6 +3,7 @@ package com.axonactive.PersonalProject.api;
 import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.BookService;
+import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
@@ -96,7 +97,7 @@ public class BookResource {
     @GetMapping("/first_name_containing")
     public ResponseEntity<List<BookDTO>> getBookByAuthorFirstNameContaining(@RequestParam("partOfName") String partOfName) {
 
-        return ResponseEntity.ok(bookService.getBookByAuthorLastNameContaining(partOfName));
+        return ResponseEntity.ok(bookService.getBookByAuthorFirstNameContaining(partOfName));
     }
 
     @GetMapping("/name")
@@ -112,4 +113,9 @@ public class BookResource {
     public ResponseEntity<List<BookDTO>> getBookByAuthorFirstNameContainingIgnoreCase(@RequestParam("partOfName") String partOfName) {
         return ResponseEntity.ok(bookService.getBookByAuthorFirstNameContainingIgnoreCase(partOfName));
     }
+    @GetMapping("/book_analytic")
+    public List<BookAnalyticDTO> getBookAnalytic(){
+        return bookService.getBookAnalytic();
+    }
+
 }

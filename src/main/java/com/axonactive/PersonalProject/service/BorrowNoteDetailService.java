@@ -37,6 +37,7 @@ public interface BorrowNoteDetailService {
     List <BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook (LocalDate date1 , LocalDate date2);
 
     List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(LocalDate date1, LocalDate date2);
+    FineFeeForCustomerDTO lostBook (ReturnBookByCustomerDto returnBookByCustomerDto);
 
 
 //    List<CustomerDTO> getMaxBorrowCustomer (LocalDate date1, LocalDate date2);

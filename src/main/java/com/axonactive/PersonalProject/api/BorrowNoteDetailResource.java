@@ -74,4 +74,9 @@ public class BorrowNoteDetailResource {
                                                                   @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2){
         return borrowNoteDetailService.getMaxBorrowBook(date1, date2);
     }
+
+    @GetMapping("/lost_book")
+    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
+        return borrowNoteDetailService.lostBook(returnBookByCustomerDto);
+    }
 }

@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PhysicalBookDTO {
-    @JsonIgnore
     private Long id;
 
     private Double importPrice;

@@ -2,6 +2,8 @@ package com.axonactive.PersonalProject.api;
 
 import com.axonactive.PersonalProject.service.CustomerService;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
+import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
+import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +30,14 @@ public class PhysicalBookResource {
     }
 
     @PostMapping
-    public ResponseEntity<PhysicalBookDTO> createPhysicalBook(@RequestBody PhysicalBookDTO physicalBookDTO,
-                                                              @PathVariable Long publishingHouseID, @PathVariable Long bookID) {
-        PhysicalBookDTO physicalBook = physicalBookService.createPhysicalBook(physicalBookDTO, publishingHouseID, bookID);
+    public ResponseEntity<PhysicalBookDTO> createPhysicalBook(@RequestBody CreatePhysicalBookDto createPhysicalBookDto) {
+        PhysicalBookDTO physicalBook = physicalBookService.createPhysicalBook(createPhysicalBookDto);
         return ResponseEntity.created(URI.create("/api/customers/" + physicalBook.getId())).body(physicalBook);
     }
 
-    @PutMapping(value = "/{physicalBookID}")
-    public ResponseEntity<PhysicalBookDTO> updatePhysicalBook(@PathVariable("physicalBookID") Long physicalBookID,
-                                                              @RequestBody PhysicalBookDTO physicalBookDTO) {
-        PhysicalBookDTO physicalBook = physicalBookService.updatePhysicalBook(physicalBookID, physicalBookDTO);
+    @PutMapping
+    public ResponseEntity<PhysicalBookDTO> updatePhysicalBook(@RequestBody PhysicalBookDTO physicalBookDTO) {
+        PhysicalBookDTO physicalBook = physicalBookService.updatePhysicalBook(physicalBookDTO);
         return ResponseEntity.created(URI.create("/api/customers" + physicalBook.getId())).body(physicalBook);
     }
 

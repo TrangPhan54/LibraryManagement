@@ -1,6 +1,7 @@
 package com.axonactive.PersonalProject.service;
 
 import com.axonactive.PersonalProject.service.dto.BookDTO;
+import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
 import java.util.List;
@@ -8,9 +9,9 @@ import java.util.List;
 public interface PhysicalBookService {
     List<PhysicalBookDTO> getAllPhysicalBook();
 
-    PhysicalBookDTO createPhysicalBook(PhysicalBookDTO physicalBookDTO, Long publishingHouseID, Long bookID);
+    PhysicalBookDTO createPhysicalBook(CreatePhysicalBookDto createPhysicalBookDto);
 
-    PhysicalBookDTO updatePhysicalBook(Long physicalBookID, PhysicalBookDTO bookDTO);
+    PhysicalBookDTO updatePhysicalBook(PhysicalBookDTO bookDTO);
 
     void deletePhysicalBookById(Long physicalBookID);
     // Tim sach vat li dua vao ten nha xuat ban

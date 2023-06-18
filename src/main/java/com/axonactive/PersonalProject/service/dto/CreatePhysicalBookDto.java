@@ -15,6 +15,6 @@ import java.time.LocalDate;
 public class CreatePhysicalBookDto {
     private Double importPrice;
     private LocalDate importDate;
-    private PublishingHouse publishingHouse;
-    private Book book;
+    private Long publishingHouseId;
+    private Long bookId;
 }
