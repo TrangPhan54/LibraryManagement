@@ -4,7 +4,7 @@ import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import lombok.RequiredArgsConstructor;
@@ -61,8 +61,8 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/max_customer")
-    public List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
-                                                                         @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
+    public List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                                            @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
         return borrowNoteDetailService.getMaxCustomer(date1, date2);
     }
     @GetMapping("/fine_fee")

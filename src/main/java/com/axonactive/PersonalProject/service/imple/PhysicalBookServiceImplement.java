@@ -14,7 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +29,7 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     private final PhysicalBookRepository physicalBookRepository;
     private final PhysicalBookMapper physicalBookMapper;
     private final BookRepository bookRepository;
+    private static final Long LIMITATION_NUMBER_OF_DAYS = 2000L;
 
 
     @Override
@@ -76,8 +81,24 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     // Dem co bao nhieu cuon sach vat li co cung mot tua de
     @Override
     public Long countBookBaseOnBookName(String bookName) {
-        Long number = physicalBookRepository.countBookBaseOnBookName(bookName);
-        return number;
+        return physicalBookRepository.countBookBaseOnBookName(bookName);
+    }
+    public List<PhysicalBookDTO> getLiquidationBook (){
+        List<PhysicalBook> physicalBookList = physicalBookRepository.findAll();
+        List<PhysicalBook> liquidationBookList = new ArrayList<>();
+        Predicate<Long> lowerThanLimitationOfDay = x-> x < LIMITATION_NUMBER_OF_DAYS;
+        for (PhysicalBook physicalBook : physicalBookList){
+            long differenceOfTime = ChronoUnit.DAYS.between(physicalBook.getImportDate(),LocalDate.now());
+            if (lowerThanLimitationOfDay.test(differenceOfTime)){
+                physicalBook.setStatus(Status.GOOD);
+                liquidationBookList.add(physicalBook);
+            }
+            else {
+                physicalBook.setStatus(Status.LIQUIDATION);
+                liquidationBookList.add(physicalBook);
+            }
+        }
+        return physicalBookMapper.toDtos(liquidationBookList);
     }
 
 }

@@ -38,11 +38,10 @@ public class BookServiceImplement implements BookService {
         List<Book> books = bookRepository.findAll();
         return bookMapper.toDtos(books);
     }
-
+    // Create book title and physical books with number if copies
     @Override
     public BookDTO createBook(CreateBookDTO createBookDTO) {
         PublishingHouse publishingHouse = publishingHouseRepository.findById(createBookDTO.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);
-
         Author author = authorRepository.findById(createBookDTO.getAuthorID()).orElseThrow();
 //        if (createBookDTO.getName().isBlank() || !isAlpha(createBookDTO.getName()))
 //            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
@@ -158,8 +157,6 @@ public class BookServiceImplement implements BookService {
     public BookContentDTO findContentSummaryByBookNameContaining(String bookName) {
         return bookRepository.findContentSummaryByBookNameContaining("%" + bookName + "%");
     }
-
-
     //7. Tim ten sach dua vao ho tac gia co chua ki tu nao do
 
     @Override
@@ -178,7 +175,6 @@ public class BookServiceImplement implements BookService {
     public List<BookDTO> getBookByAuthorLastNameContainingIgnoreCase(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastNameContainingIgnoreCase(partOfName));
     }
-
     //10. Tim ten sach dua vao ten tac gia co chua ki tu nao do khong phan biet hoa thuong
     @Override
     public List<BookDTO> getBookByAuthorFirstNameContainingIgnoreCase(String partOfName) {

@@ -5,7 +5,7 @@ import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -121,7 +121,7 @@ class BorrowNoteDetailServiceImplementationTest {
         String date2String = "2024/01/01";
         LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
         LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
-        List<CustomerWithNumberOfPhysicalCopiesBorrow> re = borrowNoteDetailService.getMaxCustomer(date1,date2);
+        List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> re = borrowNoteDetailService.getMaxCustomer(date1,date2);
         re.forEach(System.out::println);
     }
 

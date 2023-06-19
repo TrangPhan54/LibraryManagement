@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
 @Entity
 @Data
@@ -32,7 +35,9 @@ public class Customer {
     private Long numberOfTimeReturnLate;
     @Column (name = "active")
     private Boolean active;
-    @Column (name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+//    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "customer")
+//    private List<BorrowNote> borrowNoteList = new ArrayList<>();
 }

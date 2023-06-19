@@ -1,10 +1,12 @@
 package com.axonactive.PersonalProject.service;
 
+import com.axonactive.PersonalProject.entity.PhysicalBook;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface PhysicalBookService {
     List<PhysicalBookDTO> getAllPhysicalBook();
@@ -14,8 +16,10 @@ public interface PhysicalBookService {
     PhysicalBookDTO updatePhysicalBook(PhysicalBookDTO bookDTO);
 
     void deletePhysicalBookById(Long physicalBookID);
-    // Tim sach vat li dua vao ten nha xuat ban
+    //find physical book base on publishing house
     List<PhysicalBookDTO> findPhysicalBookByPublishingHouseName (String publishingHouseName);
-    // Dem co bao nhieu cuon sach vat li co cung mot tua de
+    // count book base on book name (same title)
     Long countBookBaseOnBookName (String bookName);
+    // get list of books that have condition liquidation
+    List<PhysicalBookDTO> getLiquidationBook ();
 }

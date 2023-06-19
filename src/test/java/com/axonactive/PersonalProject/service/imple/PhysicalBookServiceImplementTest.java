@@ -1,5 +1,6 @@
 package com.axonactive.PersonalProject.service.imple;
 
+import com.axonactive.PersonalProject.entity.PhysicalBook;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 import org.junit.jupiter.api.Test;
@@ -30,5 +31,11 @@ class PhysicalBookServiceImplementTest {
     void countBookBaseOnBookName() {
         Long num = physicalBookService.countBookBaseOnBookName("Bai tap nang cao va mot so chuyen de toan 8");
         System.out.println(num);
+    }
+
+    @Test
+    void getLiquidationBook() {
+        List<PhysicalBookDTO> list = physicalBookService.getLiquidationBook();
+        System.out.println(list);
     }
 }

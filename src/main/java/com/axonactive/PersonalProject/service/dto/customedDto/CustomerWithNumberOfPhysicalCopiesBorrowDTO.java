@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerWithNumberOfPhysicalCopiesBorrow {
+public class CustomerWithNumberOfPhysicalCopiesBorrowDTO {
     private Long customerId;
     private String firstName;
     private String lastName;

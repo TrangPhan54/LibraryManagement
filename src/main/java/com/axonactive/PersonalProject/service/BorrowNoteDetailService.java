@@ -4,7 +4,7 @@ import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 
@@ -18,31 +18,30 @@ public interface BorrowNoteDetailService {
 
     void deleteBorrowNoteDetailByID(Long borrowNoteDetailID);
 
-    BorrowNoteDetailDTO getBorrowNoteDetailId (Long borrowNoteDetailId);
+    BorrowNoteDetailDTO getBorrowNoteDetailId(Long borrowNoteDetailId);
 
     // 1.Tinh so sach duoc muon boi 1 khach hang cu the
     Long getNumberOfBookByCustomerId(Long customerId);
 
     Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
 
-    List<String> nameOfBookRemaining (Long customerId, List<Long> physicalBookIds);
+    List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds);
 
-//    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
+    //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
     CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
+    String getBookNameByBookId(Long bookId);
 
-    String getBookNameByBookId (Long bookId);
     FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
-    List <BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook (LocalDate date1 , LocalDate date2);
+    List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2);
 
-    List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(LocalDate date1, LocalDate date2);
-    FineFeeForCustomerDTO lostBook (ReturnBookByCustomerDto returnBookByCustomerDto);
+    List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(LocalDate date1, LocalDate date2);
+
+    FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDto returnBookByCustomerDto);
 
 
 //    List<CustomerDTO> getMaxBorrowCustomer (LocalDate date1, LocalDate date2);
-
-
 
 
 //    String getBookNameById (Long bookId);

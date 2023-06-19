@@ -11,7 +11,7 @@ import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrow;
+import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
@@ -25,6 +25,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +43,9 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     private final BookMapper bookMapper;
     private final CustomerMapper customerMapper;
+    private static final Double LOST_FINE_FEE = 1.5;
+    private static final Double LIMITATION_OVERDUE_DAYS = 20.0;
+
 
     @Override
     public List<BorrowNoteDetailDTO> getAllBorrowNoteDetail() {
@@ -102,16 +106,16 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> bookListOfCustomer = borrowNoteDetailList.stream()
                 .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
                 .collect(Collectors.toList());
-        for (int i = 0; i < bookListOfCustomer.size(); i++) {
+        for (BorrowNoteDetail borrowNoteDetail : bookListOfCustomer) {
             for (Long j : physicalBookIds) {
-                if (Objects.equals(bookListOfCustomer.get(i).getPhysicalBook().getId(), j)) {
-                    borrowNoteDetailRepository.deleteById(bookListOfCustomer.get(i).getId());
+                if (Objects.equals(borrowNoteDetail.getPhysicalBook().getId(), j)) {
+                    borrowNoteDetailRepository.deleteById(borrowNoteDetail.getId());
                 }
             }
         }
         borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         return borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId)
+                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId))
                 .map(brd -> brd.getPhysicalBook().getBook().getName())
                 .collect(Collectors.toList());
     }
@@ -145,16 +149,14 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     // 3. Returning book service (customer lost book)
     public FineFeeForCustomerDTO lostBook (ReturnBookByCustomerDto returnBookByCustomerDto){
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer(returnBookByCustomerDto);
-        List<BorrowNoteDetail> bookListLostOfCustomer = new ArrayList<>();
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
             Long physicalBookId = noteDetail.getPhysicalBook().getId();
             if (returnBookByCustomerDto.getPhysicalBookIds().contains(physicalBookId)) {
                 PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).get();
-                noteDetail.setFineFee(physicalBook.getImportPrice());
+                noteDetail.setFineFee(physicalBook.getImportPrice() * LOST_FINE_FEE);
                 noteDetail.setReturnDate(LocalDate.now());
                 noteDetail.setCondition(Condition.LOST);
-                bookListLostOfCustomer.add(noteDetail);
                 totalFee+=noteDetail.getFineFee();
             }
         }
@@ -173,8 +175,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
-            if (LocalDate.now().isAfter(dueDate)) {
-                if (customer.getNumberOfTimeReturnLate() < 20) {
+            Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
+            if (testOverdue.test(dueDate)) {
+                Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_DAYS;
+                if (numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate())) {
                     customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
                 } else {
                     customer.setActive(false);
@@ -191,10 +195,11 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
-            LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
             FineCalculator fineCalculator = new FineCalculator(); // create object of service class
             PaymentGateway paymentGateway = new PaymentGatewayAdapter(fineCalculator); //PaymentGatewayAdapter class wraps an instance of FineCalculator and implements the PaymentGateway interface
-            if (LocalDate.now().isAfter(dueDate)) {
+            Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
+            LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+            if (testOverdue.test(dueDate)) { // test if customer return book after due date
                 Long overdueDays = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
                 noteDetail.setFineFee(paymentGateway.processPayment(overdueDays));
                 totalFee += noteDetail.getFineFee();
@@ -259,7 +264,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     //7. Customer statistics for an amount of time
     @Override
-    public List<CustomerWithNumberOfPhysicalCopiesBorrow> getMaxCustomer(LocalDate date1, LocalDate date2) {
+    public List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(LocalDate date1, LocalDate date2) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
         List<Customer> customers = borrowNoteDetailList.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).collect(Collectors.toList());
         Map<Customer, Long> customerWithNumberOfPhysicalCopiesBorrow = new HashMap<>();
@@ -281,18 +286,18 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (a, b) -> a, LinkedHashMap::new));
 
-        List<CustomerWithNumberOfPhysicalCopiesBorrow> customerWithNumberOfPhysicalCopiesBorrowList = new ArrayList<>();
+        List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> customerWithNumberOfPhysicalCopiesBorrowDTOList = new ArrayList<>();
 
         for (Map.Entry<Customer, Long> entry : result.entrySet()) {
             Customer key = entry.getKey();
             Long value = entry.getValue();
-            CustomerWithNumberOfPhysicalCopiesBorrow customerWithNumberOfPhysicalCopiesBorrow1 = new CustomerWithNumberOfPhysicalCopiesBorrow();
-            customerWithNumberOfPhysicalCopiesBorrow1.setCustomerId(key.getId());
-            customerWithNumberOfPhysicalCopiesBorrow1.setLastName(key.getLastName());
-            customerWithNumberOfPhysicalCopiesBorrow1.setFirstName(key.getFirstName());
-            customerWithNumberOfPhysicalCopiesBorrow1.setNumberOfPhysicalCopiesBorrow(value);
-            customerWithNumberOfPhysicalCopiesBorrowList.add(customerWithNumberOfPhysicalCopiesBorrow1);
+            CustomerWithNumberOfPhysicalCopiesBorrowDTO customerWithNumberOfPhysicalCopiesBorrowDTO1 = new CustomerWithNumberOfPhysicalCopiesBorrowDTO();
+            customerWithNumberOfPhysicalCopiesBorrowDTO1.setCustomerId(key.getId());
+            customerWithNumberOfPhysicalCopiesBorrowDTO1.setLastName(key.getLastName());
+            customerWithNumberOfPhysicalCopiesBorrowDTO1.setFirstName(key.getFirstName());
+            customerWithNumberOfPhysicalCopiesBorrowDTO1.setNumberOfPhysicalCopiesBorrow(value);
+            customerWithNumberOfPhysicalCopiesBorrowDTOList.add(customerWithNumberOfPhysicalCopiesBorrowDTO1);
         }
-        return customerWithNumberOfPhysicalCopiesBorrowList;
+        return customerWithNumberOfPhysicalCopiesBorrowDTOList;
     }
 }

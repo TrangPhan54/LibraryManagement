@@ -46,4 +46,9 @@ public class PhysicalBookResource {
         physicalBookService.deletePhysicalBookById(physicalBookID);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/liquid")
+    public List<PhysicalBookDTO> getLiquidationBook(){
+        return physicalBookService.getLiquidationBook();
+
+    }
 }
