@@ -25,7 +25,7 @@ import java.util.List;
 public class BorrowNoteResource {
     @Autowired
     private final BorrowNoteService borrowNoteService;
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<BorrowNoteDTO>> getAllBorrowNote() {
         return ResponseEntity.ok(borrowNoteService.getAllBorrowNote());
@@ -35,14 +35,14 @@ public class BorrowNoteResource {
     @PostMapping
     public ResponseEntity<BorrowNoteDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
         BorrowNoteDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);
-        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
+        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getId())).body(book);
     }
 
     @PutMapping(value = "/{borrowNoteId}")
     public ResponseEntity<BorrowNoteDTO> updateBorrowNote(@PathVariable("orderBookId") Long borrowNoteID,
                                                          @RequestBody BorrowNoteDTO borrowNoteDTO) {
         BorrowNoteDTO book = borrowNoteService.updateBorrowNote(borrowNoteID, borrowNoteDTO);
-        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getBorrowID())).body(book);
+        return ResponseEntity.created(URI.create("/api/orderBooks" + book.getId())).body(book);
     }
 
     @DeleteMapping(value = "/{borrowAndNoteId}")

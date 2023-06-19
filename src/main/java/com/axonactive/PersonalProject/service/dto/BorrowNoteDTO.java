@@ -15,8 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BorrowNoteDTO {
-    @JsonIgnore
-    private Long borrowID;
+//    @JsonIgnore
+    private Long id;
     private Long customerID;
     private String address;
     private LocalDate borrowDate;

@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name ="receipt_detail")
 public class ReceiptDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

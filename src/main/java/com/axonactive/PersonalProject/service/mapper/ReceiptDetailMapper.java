@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ReceiptDetailMapper {
-    @Mapping(target = "physicalBookID", source = "receiptDetail.physicalBook.id")
-    @Mapping(target = "receiptID", source ="receiptDetail.receipt.id")
+    @Mapping(target = "physicalBookID", source = "physicalBook.id")
+    @Mapping(target = "receiptID", source ="receipt.id")
     ReceiptDetailDTO toDto (ReceiptDetail receiptDetail);
     List<ReceiptDetailDTO> toDtos (List <ReceiptDetail> receiptDetails);
 }
