@@ -38,6 +38,5 @@ public class Customer {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "customer")
-//    private List<BorrowNote> borrowNoteList = new ArrayList<>();
+
 }

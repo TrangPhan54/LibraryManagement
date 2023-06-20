@@ -11,7 +11,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PhysicalBookMapper {
-    @Mapping(target = "bookID",source ="physicalBook.book.id")
+    @Mapping(target = "bookName",source ="physicalBook.book.name")
+    @Mapping(target = "datePublish",source ="physicalBook.book.datePublish")
     @Mapping(target = "publishingHouseID",source ="physicalBook.publishingHouse.id")
 
 

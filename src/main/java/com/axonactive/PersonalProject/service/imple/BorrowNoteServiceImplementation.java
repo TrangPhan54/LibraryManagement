@@ -37,6 +37,7 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
         List<BorrowNote> borrowNotes = borrowNoteRepository.findAll();
         return borrowNoteBookMapper.toDtos(borrowNotes);
     }
+    // function: create borrow note and borrow note detail for customer
 
     @Override
     public BorrowNoteDTO createBorrowNote(CreateBorrowNoteDTO createBorrowNoteDTO) {
@@ -92,14 +93,14 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
         return borrowNoteBookMapper.toDto(borrowNoteRepository.findById(borrowNoteID).orElseThrow(LibraryException::BorrowNoteNotFound));
     }
 
-    //1.Tim lich su muon sach dua vao ngay cho muon
+    //Find Borrowing History By Borrow Date
 
     @Override
     public List<BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate(LocalDate borrowDate) {
         return borrowNoteBookMapper.toDtos(borrowNoteRepository.findBorrowNoteHistoryByBorrowDate(borrowDate));
     }
 
-    // tim ten nhung khach hang tra sach tre
+    // Find Name Of Customer Returning Book Late
     @Override
     public List<String> nameOfCustomerReturnBookLate() {
         return borrowNoteRepository.findAll().stream()

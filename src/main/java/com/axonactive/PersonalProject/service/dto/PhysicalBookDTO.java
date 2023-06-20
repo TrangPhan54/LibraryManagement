@@ -23,6 +23,6 @@ public class PhysicalBookDTO {
 
     private Long publishingHouseID;
 
-
-    private Long bookID;
+    private String bookName;
+    private LocalDate datePublish;
 }

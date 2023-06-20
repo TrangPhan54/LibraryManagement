@@ -56,5 +56,11 @@ public class GenreBookResource {
     @GetMapping("/book-by-genre-and-name")
     public ResponseEntity<List<BookDTO>> getByGenreNameContainingAndBookNameContaining(@RequestParam("genreName") String genreName, @RequestParam("bookName") String bookName) {
         return ResponseEntity.ok(genreBookService.getByGenreNameContainingAndBookNameContaining(genreName, bookName));
+
     }
+    @GetMapping("/get_book_have_relation")
+    public List<BookDTO> getBookHaveRelation(@RequestParam  String bookName) {
+        return  genreBookService.getBookHaveRelation(bookName);
+    }
+
 }

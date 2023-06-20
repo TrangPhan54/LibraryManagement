@@ -75,7 +75,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     public BorrowNoteDetailDTO getBorrowNoteDetailId(Long borrowNoteDetailId) {
         return borrowNoteDetailMapper.toDto(borrowNoteDetailRepository.findById(borrowNoteDetailId).orElseThrow(LibraryException::BorrowNoteDetailNotFound));
     }
-    //1. Danh sách số lượng sách mà khách hàng cụ thể hiện tại đang mượn
+    //1. Count number of borrowing books of a customer
 
     @Override
     public Long getNumberOfBookByCustomerId(Long customerId) {
@@ -83,7 +83,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return borrowNoteDetailList.stream()
                 .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId).count();
     }
-    //2. Tính số sách còn mượn sau khi trả của một khách hàng cụ thể
+    //2. After return book. count number of book remaining of a customer
 
     @Override
     public Long customerReturnBook(Long customerId, Long numberOfBooksReturned) {
@@ -99,7 +99,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     }
 
-    //3. Liệt kê tên các cuốn sách mà 1 khách hàng vẫn còn mượn sau khi trả trước những cuốn đọc rồi.
+    //3. List of borrowing book of a customer
     @Override
     public List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();

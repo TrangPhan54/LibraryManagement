@@ -2,10 +2,7 @@ package com.axonactive.PersonalProject.api;
 
 import com.axonactive.PersonalProject.service.BorrowNoteService;
 import com.axonactive.PersonalProject.service.ReceiptService;
-import com.axonactive.PersonalProject.service.dto.BorrowNoteDTO;
-import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDTO;
-import com.axonactive.PersonalProject.service.dto.CreateReceiptDTO;
-import com.axonactive.PersonalProject.service.dto.ReceiptDTO;
+import com.axonactive.PersonalProject.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +23,11 @@ public class ReceiptResource {
     public ResponseEntity<List<ReceiptDTO>> getAllReceipt() {
         return ResponseEntity.ok(receiptService.getAllReceipt());
     }
+//    @PostMapping
+//    public ResponseEntity<ReceiptDTO> createReceipt(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO, Long customerID) {
+//        ReceiptDTO receipt = receiptService.createReceipt(listOfPhysicalBookDTO,customerID);
+//        return ResponseEntity.created(URI.create("/auth/receipts" + receipt.getId())).body(receipt);
+//    }
     @PostMapping
     public ResponseEntity<ReceiptDTO> createReceipt(@RequestBody CreateReceiptDTO createReceiptDTO) {
         ReceiptDTO receipt = receiptService.createReceipt(createReceiptDTO);

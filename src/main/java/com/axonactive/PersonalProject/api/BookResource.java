@@ -1,17 +1,12 @@
 package com.axonactive.PersonalProject.api;
 
 import com.axonactive.PersonalProject.entity.Book;
-import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.BookService;
-import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
-import com.axonactive.PersonalProject.service.dto.BookContentDTO;
-import com.axonactive.PersonalProject.service.dto.BookDTO;
-import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
+import com.axonactive.PersonalProject.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -105,11 +100,11 @@ public class BookResource {
         return ResponseEntity.ok(bookService.getByName(name));
     }
 
-    @GetMapping("/first_name_containing_ignorecase")
+    @GetMapping("/last_name_containing_ignorecase")
     public ResponseEntity<List<BookDTO>> getBookByAuthorLastNameContainingIgnoreCase(@RequestParam("partOfName") String partOfName) {
         return ResponseEntity.ok(bookService.getBookByAuthorLastNameContainingIgnoreCase(partOfName));
     }
-
+    @GetMapping("/first_name_containing_ignorecase")
     public ResponseEntity<List<BookDTO>> getBookByAuthorFirstNameContainingIgnoreCase(@RequestParam("partOfName") String partOfName) {
         return ResponseEntity.ok(bookService.getBookByAuthorFirstNameContainingIgnoreCase(partOfName));
     }
@@ -117,5 +112,17 @@ public class BookResource {
     public List<BookAnalyticDTO> getBookAnalytic(){
         return bookService.getBookAnalytic();
     }
+    @GetMapping("/auth_title")
+    public List<BookDTO> findBookByNameContaining(@RequestParam String name) {
+        return bookService.findBookByNameContaining(name);
+
+    }
+    @GetMapping("/publish_before_2000")
+    public List<BookDTO> getBookPublishBefore2000() {
+        return bookService.getBookPublishBefore2000();
+    }
+
+
+
 
 }

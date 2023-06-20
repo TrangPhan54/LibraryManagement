@@ -18,6 +18,8 @@ public class ReceiptDTO {
 //    @JsonIgnore
     private Long id;
     private Long customerID;
-    private List<Long> physicalBookIdList;
+    private String customerFirstName;
+    private String customerLastName;
+    private List<Long> physicalBookList;
     private Double liquidationFee;
 }

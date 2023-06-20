@@ -1,11 +1,9 @@
 package com.axonactive.PersonalProject.api;
 
+import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.CustomerService;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
-import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
-import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
-import com.axonactive.PersonalProject.service.dto.CustomerDTO;
-import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
+import com.axonactive.PersonalProject.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +44,26 @@ public class PhysicalBookResource {
         physicalBookService.deletePhysicalBookById(physicalBookID);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/liquid")
-    public List<PhysicalBookDTO> getLiquidationBook(){
-        return physicalBookService.getLiquidationBook();
+
+//    @GetMapping("/liquid")
+//    public List<PhysicalBookDTO> getLiquidationBook() {
+//        return physicalBookService.getLiquidationBook();
+//
+//    }
+
+    @GetMapping("/status")
+    public List<PhysicalBookDTO> getByStatus(Status status) {
+        return physicalBookService.getByStatus(status);
+    }
+
+    @GetMapping("/find_all_by_id")
+
+    public List<PhysicalBookDTO> findAllById(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
+        return physicalBookService.findAllById(listOfPhysicalBookDTO);
+    }
+
+
 
     }
-}
+
+
