@@ -6,7 +6,7 @@ import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/remain")
-    public CustomerDTO returnBookByCustomer(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public CustomerDTO returnBookByCustomer(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
     }
 
@@ -66,7 +66,7 @@ public class BorrowNoteDetailResource {
         return borrowNoteDetailService.getMaxCustomer(date1, date2);
     }
     @GetMapping("/fine_fee")
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto){
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto){
         return borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
     }
     @GetMapping("/book_analytic")
@@ -76,7 +76,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/lost_book")
-    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return borrowNoteDetailService.lostBook(returnBookByCustomerDto);
     }
 }

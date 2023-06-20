@@ -47,7 +47,7 @@ public class BookServiceImplement implements BookService {
 //            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
 
         if (createBookDTO.getName().isBlank() || createBookDTO.getName().trim().isEmpty() || createBookDTO.getName() == null)
-            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
+            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should Not Be Null");
 
         if (createBookDTO.getBookImage().isBlank()) {
             throw LibraryException.badRequest("WrongImage", "Book Must Have An Image To Describe");

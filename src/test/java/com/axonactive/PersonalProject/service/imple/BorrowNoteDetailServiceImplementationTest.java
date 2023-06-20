@@ -6,7 +6,7 @@ import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void returnBookByCustomer() {
-        ReturnBookByCustomerDto returnBookByCustomerDto = new ReturnBookByCustomerDto();
+        ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
         returnBookByCustomerDto.setCustomerId(1L);
         List<Long> physicalBookIds = new ArrayList<>();
         physicalBookIds.add(40L);
@@ -79,7 +79,7 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void fineFeeForReturningBookLate() {
-        ReturnBookByCustomerDto returnBookByCustomerDto = new ReturnBookByCustomerDto();
+        ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
         returnBookByCustomerDto.setCustomerId(21L);
         List<Long> physicalBookIds = new ArrayList<>();
         physicalBookIds.add(43L);

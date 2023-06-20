@@ -23,14 +23,12 @@ import java.util.List;
 @RequiredArgsConstructor
 
 public class ReceiptServiceImplementation implements ReceiptService {
-    @Autowired
-    private ReceiptRepository receiptRepository;
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private ReceiptMapper receiptMapper;
-    @Autowired
-    private PhysicalBookRepository physicalBookRepository;
+
+    private final ReceiptRepository receiptRepository;
+    private final CustomerRepository customerRepository;
+
+    private final ReceiptMapper receiptMapper;
+    private final PhysicalBookRepository physicalBookRepository;
     private static final double LIQUIDATION_COEFFICIENT = 0.2;
     @Override
     public List<ReceiptDTO> getAllReceipt() {

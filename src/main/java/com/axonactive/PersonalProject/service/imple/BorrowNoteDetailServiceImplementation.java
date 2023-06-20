@@ -13,7 +13,7 @@ import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
 import com.axonactive.PersonalProject.service.mapper.CustomerMapper;
@@ -121,11 +121,11 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     // 1. Returning book service : Get list of borrow note detail of a customer
 
-    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return borrowNoteDetailRepository.findByBorrowNoteCustomerId(returnBookByCustomerDto.getCustomerId());
     }
 
-    public List<Long> getBookListIdOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public List<Long> getBookListIdOfACustomer(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return borrowNoteDetailRepository.findAll().stream()
                 .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
                 .map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getId)
@@ -133,7 +133,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     // 2. Returning book service (customer return book ontime)
 
-    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer(returnBookByCustomerDto);
         List<BorrowNoteDetail> bookListReturnOfCustomer = new ArrayList<>();
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
@@ -147,7 +147,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return bookListReturnOfCustomer;
     }
     // 3. Returning book service (customer lost book)
-    public FineFeeForCustomerDTO lostBook (ReturnBookByCustomerDto returnBookByCustomerDto){
+    public FineFeeForCustomerDTO lostBook (ReturnBookByCustomerDTO returnBookByCustomerDto){
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
@@ -170,7 +170,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     // 4. Returning book service. If a customer return book late for 20 times, customer cannot borrow book in library anymore
     @Override
-    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
@@ -191,7 +191,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     //5. Returning book service. (using Adapter design pattern). Customer have to pay fee and the fee base on number of overdue days
     @Override
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
