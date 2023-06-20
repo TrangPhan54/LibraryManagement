@@ -1,11 +1,11 @@
-drop table if exists customer
-create table customer (
-customer_id int8 primary key not null ,
-customer_firstName varchar(100) not null,
-customer_lastName varchar(100) not null,
-customer_address varchar(100) not null,
-customer_phoneNumber varchar (25) not null,
-)
+--drop table if exists customer
+--create table customer (
+--customer_id int8 primary key not null ,
+--customer_firstName varchar(100) not null,
+--customer_lastName varchar(100) not null,
+--customer_address varchar(100) not null,
+--customer_phoneNumber varchar (25) not null,
+--)
 insert into customer (customer_id,customer_firstName,customer_lastName ,
 customer_address ,customer_phoneNumber)
 values 
@@ -31,11 +31,11 @@ values
 (20,'Tait',	'Just',	'24103 Hermina Street',	'9378638801')
 
 
-create table account (
-user_id int primary key not null,
-customer_id int not null,
-user_email varchar(50) not null,
-user_password varchar(50) not null)
+--create table account (
+--user_id int primary key not null,
+--customer_id int not null,
+--user_email varchar(50) not null,
+--user_password varchar(50) not null)
 
 insert into account (user_id,customer_id,user_email,user_password)
 values
@@ -60,37 +60,37 @@ values
 (19,	19,	'nmccormack12@angelfire.com',	'a4tHGef9'),
 (20,	20,	'tjust13@joomla.org',	'Qn9mWZ6sNdn')
 
-alter table account add constraint account_fk foreign key (customer_id) references customer (customer_id)
+--alter table account add constraint account_fk foreign key (customer_id) references customer (customer_id)
 
-insert into account
+--insert into account
 
-create table roleOfUser(
-role_id int primary key not null,
-user_id int not null,
-role_name varchar(50) not null)
-
-create table assignment_role (
-assignment_id int primary key  not null,
-user_id int not null,
-role_id int not null
+--create table roleOfUser(
+--role_id int primary key not null,
+--user_id int not null,
+--role_name varchar(50) not null)
+--
+--create table assignment_role (
+--assignment_id int primary key  not null,
+--user_id int not null,
+--role_id int not null
 )
 
-alter table assignment_role add constraint assignment_role_fk foreign key (user_id) references account (user_id)
-alter table assignment_role add constraint assignment_role_1_fk foreign key (role_id) references roleOfUser (role_id)
+--alter table assignment_role add constraint assignment_role_fk foreign key (user_id) references account (user_id)
+--alter table assignment_role add constraint assignment_role_1_fk foreign key (role_id) references roleOfUser (role_id)
 
 
 
-drop table if exists book
+--drop table if exists book
 
-create table book (
-book_id int8 primary key not null,
-publishingHouse_id int8 not null,
-bookName varchar(100) not null,
-author_id int8 not null,
-book_image varchar(100) not null,
-contentSummary varchar(250) not null,
-datePublish date not null,
-price int not null)
+--create table book (
+--book_id int8 primary key not null,
+--publishingHouse_id int8 not null,
+--bookName varchar(100) not null,
+--author_id int8 not null,
+--book_image varchar(100) not null,
+--contentSummary varchar(250) not null,
+--datePublish date not null,
+--price int not null)
 
 
 (1,1,	'gone with the wind',	1,	'https://e7.pngegg.com/pngimages/934/734/png-clipart-dvd-film-gone-with-the-wind-film-poster-film-thumbnail.png'	, 'The story is set in Clayton County and Atlanta, both in Georgia, during the American Civil War and Reconstruction Era. It depicts the struggles of young Scarlett OHara, the spoiled daughter of a well-to-do plantation owner, who must use every means at her disposal to claw her way out of poverty following Sherman s destructive "March to the Sea".'	'1980-01-01',150000),
@@ -119,14 +119,14 @@ Locked in a relentless struggle spanning sixty years and three generations, the 
 (19,19,	'a woman is no man', 	19,	'https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/JR5DJ3BW44I6TJAA4SA36JSP3Q.jpg',	'This debut novel by a Palestinian-American voice takes us inside the lives of a conservative Arab family living in America. In Brooklyn, eighteen-year-old Deya is starting to meet with suitors. Though she doesn’t want to get married, her grandparents give her no choice. History is repeating itself: Deya’s mother, Isra, also had no choice when she left Palestine as a teenager to marry Adam. Though Deya was raised to believe her parents died in a car accident, a secret note from a mysterious, yet familiar-looking woman makes Deya question everything she was told about her past. As the narrative alternates between the lives of Deya and Isra, she begins to understand the dark, complex secrets behind her community.','1999-05-25',	100000),
 (20,20,	'the diary of anne frank',	20,	'https://m.media-amazon.com/images/I/81xPFVVGesL._AC_UF1000,1000_QL80_.jpg','It tells the story of her family who live in Frankfurt, Germany and suddenly have to go into hiding as a result of Hitler and the Nazi Party’s treatment of Jews in Europe during the second world war. They escape to Amsterdam where they go into hiding with other Jews. The diary ends suddenly on 1 August 1944.','1955-04-24',	85000)
 
-drop table if exists orderBook
+--drop table if exists orderBook
 
-create table orderBook (
-order_id int8 primary key not null,
-customer_id int8 not null,
-orderingDate date not null,
-address varchar(100) not null,
-status_deliver int4 not null)
+--create table orderBook (
+--order_id int8 primary key not null,
+--customer_id int8 not null,
+--orderingDate date not null,
+--address varchar(100) not null,
+--status_deliver int4 not null)
 
 (1,1,'2023-21-04','6 Packers Parkway',0)
 (2,2,'2023-21-04','2491 Oak Way',1)
@@ -183,13 +183,13 @@ status_deliver int4 not null)
 
 
 
-alter table orderBook add constraint orderBook_fk foreign key (customer_id) references customer (customer_id)
-
-drop table if exists genre
-
-create table genre (
-genre_id int primary key not null,
-genreName varchar(100) not null)
+--alter table orderBook add constraint orderBook_fk foreign key (customer_id) references customer (customer_id)
+--
+--drop table if exists genre
+--
+--create table genre (
+--genre_id int primary key not null,
+--genreName varchar(100) not null)
 
 (1, 'Classic'),
 (2, 'Drama'),
