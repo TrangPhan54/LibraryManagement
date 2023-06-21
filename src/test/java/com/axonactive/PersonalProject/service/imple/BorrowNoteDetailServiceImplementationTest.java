@@ -40,12 +40,6 @@ class BorrowNoteDetailServiceImplementationTest {
     }
 
     @Test
-    void customerReturnBook() {
-        System.out.println(borrowNoteDetailService.customerReturnBook(1L, 2L));
-    }
-
-
-    @Test
     void nameOfBookRemaining() {
         List<Long> ids = List.of(1L,2L);
         List<String> tempList = borrowNoteDetailService.nameOfBookRemaining(1L, ids);

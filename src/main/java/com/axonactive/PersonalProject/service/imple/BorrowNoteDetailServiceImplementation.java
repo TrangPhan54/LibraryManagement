@@ -84,20 +84,19 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId).count();
     }
     //2. Tính số sách còn mượn sau khi trả của một khách hàng cụ thể
-
-    @Override
-    public Long customerReturnBook(Long customerId, Long numberOfBooksReturned) {
-        log.info("request the number of return books by customer id {}", customerId);
-        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll().stream()
-                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId))
-                .collect(Collectors.toList());
-        Long numberOfRemainingBooks = borrowNoteDetailList.stream()
-                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId)).count() - numberOfBooksReturned;
-
-        borrowNoteDetailList.forEach(System.out::println);
-        return numberOfRemainingBooks;
-
-    }
+//    @Override
+//    public Long customerReturnBook(Long customerId, Long numberOfBooksReturned) {
+//        log.info("request the number of return books by customer id {}", customerId);
+//        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll().stream()
+//                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId))
+//                .collect(Collectors.toList());
+//        Long numberOfRemainingBooks = borrowNoteDetailList.stream()
+//                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId)).count() - numberOfBooksReturned;
+//
+//        borrowNoteDetailList.forEach(System.out::println);
+//        return numberOfRemainingBooks;
+//
+//    }
 
     //3. Liệt kê tên các cuốn sách mà 1 khách hàng vẫn còn mượn sau khi trả trước những cuốn đọc rồi.
     @Override

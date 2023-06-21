@@ -23,7 +23,7 @@ public interface BorrowNoteDetailService {
     // 1.Tinh so sach duoc muon boi 1 khach hang cu the
     Long getNumberOfBookByCustomerId(Long customerId);
 
-    Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
+//    Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
 
     List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds);
 
