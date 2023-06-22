@@ -121,6 +121,15 @@ public class BookResource {
     public List<BookDTO> getBookPublishBefore2000() {
         return bookService.getBookPublishBefore2000();
     }
+    @GetMapping("/fn1")
+    public List<BookDTO> getBookByAuthorFirstName1 (String firstName){
+        return bookService.getBookByAuthorFirstName1(firstName);
+    }
+    @GetMapping("/gn")
+    public List<BookDTO> getBookByGenreName (String genreName){
+        return bookService.getBookByGenreName(genreName);
+    }
+
 
 
 

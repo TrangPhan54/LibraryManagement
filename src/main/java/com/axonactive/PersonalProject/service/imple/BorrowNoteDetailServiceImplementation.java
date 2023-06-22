@@ -10,17 +10,19 @@ import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.axonactive.PersonalProject.service.dto.customedDto.*;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
 import com.axonactive.PersonalProject.service.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.ls.LSInput;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -40,11 +42,18 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     private final BorrowNoteDetailMapper borrowNoteDetailMapper;
 
     private final CustomerRepository customerRepository;
+    private final EntityManager entityManager;
 
     private final BookMapper bookMapper;
     private final CustomerMapper customerMapper;
     private static final Double LOST_FINE_FEE = 1.5;
-    private static final Double LIMITATION_OVERDUE_DAYS = 20.0;
+    private static final Double LIMITATION_OVERDUE_TIMES = 20.0;
+
+    private static final Long LIMITATION_OVERDUE_DAYS = 100L;
+
+
+    FineCalculator fineCalculator = new FineCalculator(); // create object of service class
+    PaymentGateway paymentGateway = new PaymentGatewayAdapter(fineCalculator); //PaymentGatewayAdapter class wraps an instance of FineCalculator and implements the PaymentGateway interface
 
 
     @Override
@@ -121,20 +130,48 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     // 1. Returning book service : Get list of borrow note detail of a customer
 
-    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
-        return borrowNoteDetailRepository.findByBorrowNoteCustomerId(returnBookByCustomerDto.getCustomerId());
+    //    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
+//        return borrowNoteDetailRepository.findByBorrowNoteCustomerId(returnBookByCustomerDto.getCustomerId());
+//    }
+    // Get list of borrow note detail of a customer for function return book and lost book
+    public List<BorrowNoteDetail> getBookListOfACustomer(Long customerID) {
+        return borrowNoteDetailRepository.findByBorrowNoteCustomerId(customerID);
     }
 
-    public List<Long> getBookListIdOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
-        return borrowNoteDetailRepository.findAll().stream()
-                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), returnBookByCustomerDto.getCustomerId()))
-                .map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getId)
-                .collect(Collectors.toList());
+    // Get list of borrow note detail of a customer for function return book and lost book by using criteria builder
+    public List<BorrowNoteDetail> getBookListOfACustomer1(Long customerID) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("borrowNote").get("customer").get("id"), customerID)
+        );
+        query.select(root).where(condition);
+        return entityManager.createQuery(query).getResultList();
     }
+
+    public List<BorrowNoteDetailDTO> getBookListOfACustomer2(Long customerID) {
+        return borrowNoteDetailMapper.toDtos(borrowNoteDetailRepository.findByBorrowNoteCustomerId(customerID));
+    }
+
+    public List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID(Long borrowID) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("borrowNote").get("id"), borrowID)
+        );
+        query.select(root).where(condition);
+        List<BorrowNoteDetail> books = entityManager.createQuery(query).getResultList();
+        return borrowNoteDetailMapper.toDtos(books);
+
+    }
+
+
     // 2. Returning book service (customer return book ontime)
 
     public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
-        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer(returnBookByCustomerDto);
+        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         List<BorrowNoteDetail> bookListReturnOfCustomer = new ArrayList<>();
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
             Long physicalBookId = noteDetail.getPhysicalBook().getId();
@@ -146,18 +183,19 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         }
         return bookListReturnOfCustomer;
     }
+
     // 3. Returning book service (customer lost book)
-    public FineFeeForCustomerDTO lostBook (ReturnBookByCustomerDto returnBookByCustomerDto){
-        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer(returnBookByCustomerDto);
+    public FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
+        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
             Long physicalBookId = noteDetail.getPhysicalBook().getId();
             if (returnBookByCustomerDto.getPhysicalBookIds().contains(physicalBookId)) {
                 PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).get();
-                noteDetail.setFineFee(physicalBook.getImportPrice() * LOST_FINE_FEE);
+                noteDetail.setFineFee(paymentGateway.processFineBookLost(physicalBook.getImportPrice()));
                 noteDetail.setReturnDate(LocalDate.now());
                 noteDetail.setCondition(Condition.LOST);
-                totalFee+=noteDetail.getFineFee();
+                totalFee += noteDetail.getFineFee();
             }
         }
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
@@ -177,7 +215,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
             Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
             if (testOverdue.test(dueDate)) {
-                Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_DAYS;
+                Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_TIMES;
                 if (numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate())) {
                     customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
                 } else {
@@ -195,8 +233,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
-            FineCalculator fineCalculator = new FineCalculator(); // create object of service class
-            PaymentGateway paymentGateway = new PaymentGatewayAdapter(fineCalculator); //PaymentGatewayAdapter class wraps an instance of FineCalculator and implements the PaymentGateway interface
+
             Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
             if (testOverdue.test(dueDate)) { // test if customer return book after due date
@@ -213,23 +250,19 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return fineFeeForCustomerDTO;
     }
 
-
-    public String getBookNameByBookId(Long bookId) {
-        Optional<BorrowNoteDetail> borrowNoteDetailListOfCustomer = borrowNoteDetailRepository.findAll().stream()
-                .filter(brd -> Objects.equals(brd.getPhysicalBook().getBook().getId(), bookId)).findFirst();
-        List<Book> bookOfCustomer = borrowNoteDetailListOfCustomer
-                .stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook)
-                .collect(Collectors.toList());
-        return bookOfCustomer.stream()
-                .map(Book::getName)
-                .collect(Collectors.joining(","));
-    }
-
     //6. Book statistics for an amount of time
     @Override
     public List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2) {
-        List<BorrowNoteDetail> brdListBetweenDates = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
-        List<Book> bookList = brdListBetweenDates.stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook).collect(Collectors.toList());
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.between(root.get("borrowNote").get("borrowDate"), date1, date2)
+        );
+        query.select(root).where(condition);
+        List<BorrowNoteDetail> borrowListBaseOnDate = entityManager.createQuery(query).getResultList();
+//        List<BorrowNoteDetail> borrowListBaseOnDate = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
+        List<Book> bookList = borrowListBaseOnDate.stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook).collect(Collectors.toList());
         Map<Book, Long> booksWithPhysicalCopiedBorrowed = new HashMap<>();
         for (Book book : bookList) {
             booksWithPhysicalCopiedBorrowed.put(book, 0L);
@@ -246,7 +279,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         }
         Map<Book, Long> result = booksWithPhysicalCopiedBorrowed.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-//                .limit(5)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         List<BookAnalyticForAmountOfTimeDTO> bookAnalyticForAmountOfTimeDTOS = new ArrayList<>();
@@ -262,6 +294,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         }
         return bookAnalyticForAmountOfTimeDTOS;
     }
+
     //7. Customer statistics for an amount of time
     @Override
     public List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(LocalDate date1, LocalDate date2) {
@@ -299,5 +332,33 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
             customerWithNumberOfPhysicalCopiesBorrowDTOList.add(customerWithNumberOfPhysicalCopiesBorrowDTO1);
         }
         return customerWithNumberOfPhysicalCopiesBorrowDTOList;
+    }
+
+    // get list of customer still borrow book to contact
+    public List<BorrowNoteDetailDTO> getListOfCustomerStillBorrowBook2() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.isNull(root.get("returnDate"))
+        );
+        query.select(root).where(condition);
+        List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
+        return borrowNoteDetailMapper.toDtos(listOfCustomerStillBorrowBook);
+    }
+
+    public List<CustomerDTO> getListOfCustomerStillBorrowBook3() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.isNull(root.get("returnDate")),
+                criteriaBuilder.greaterThan(root.get("borrowNote").get("dueDate"), LocalDate.now().minusDays(LIMITATION_OVERDUE_DAYS))
+        );
+        query.select(root).where(condition);
+        List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
+        List<Customer> customerStillNotReturnBook = listOfCustomerStillBorrowBook.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).distinct().collect(Collectors.toList());
+        return customerMapper.toDtos(customerStillNotReturnBook);
+
     }
 }

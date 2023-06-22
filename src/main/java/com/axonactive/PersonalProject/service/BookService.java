@@ -53,6 +53,10 @@ public interface BookService {
     List<BookDTO> findBookByNameContaining(String name);
     List<BookDTO> getBookPublishBefore2000 ();
 
+    List<BookDTO> getBookByAuthorFirstName1 (String firstName);
+
+    List<BookDTO> getBookByGenreName (String genreName);
+
 
 
 //

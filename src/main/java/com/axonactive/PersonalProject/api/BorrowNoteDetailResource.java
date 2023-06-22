@@ -1,12 +1,10 @@
 package com.axonactive.PersonalProject.api;
 
+import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.axonactive.PersonalProject.service.dto.customedDto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +54,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/remain")
-    public CustomerDTO returnBookByCustomer(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public CustomerDTO banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
         return borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
     }
 
@@ -78,5 +76,27 @@ public class BorrowNoteDetailResource {
     @GetMapping("/lost_book")
     public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
         return borrowNoteDetailService.lostBook(returnBookByCustomerDto);
+    }
+
+    @GetMapping("/cus1")
+    public List<BorrowNoteDetail> getBookListOfACustomer1(@RequestParam Long customerID){
+        return borrowNoteDetailService.getBookListOfACustomer1(customerID);
+    }
+    @GetMapping("/borrownote/{id}")
+    public List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID (@PathVariable("id") Long borrowID){
+        return borrowNoteDetailService.getBorowNoteDetailByBorrowNoteID(borrowID);
+    }
+    @GetMapping("/br_id")
+    public List<BorrowNoteDetailDTO> getBookListOfACustomer2(@RequestParam Long customerID){
+        return borrowNoteDetailService.getBookListOfACustomer2(customerID);
+    }
+
+    @GetMapping("/null2")
+    public List<BorrowNoteDetailDTO> getListOfCustomerStillBorrowBook2(){
+        return borrowNoteDetailService.getListOfCustomerStillBorrowBook2();
+    }
+    @GetMapping("/null3")
+    public List<CustomerDTO> getListOfCustomerStillBorrowBook3(){
+        return borrowNoteDetailService.getListOfCustomerStillBorrowBook3();
     }
 }
