@@ -1,8 +1,10 @@
 package com.axonactive.PersonalProject.service;
 
 import com.axonactive.PersonalProject.entity.PhysicalBook;
+import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
+import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
 import java.util.List;
@@ -22,4 +24,10 @@ public interface PhysicalBookService {
     Long countBookBaseOnBookName (String bookName);
     // get list of books that have condition liquidation
     List<PhysicalBookDTO> getLiquidationBook ();
+
+    List<PhysicalBookDTO> getByStatus (Status status);
+
+    List<PhysicalBookDTO> findAllById(ListOfPhysicalBookDTO listOfPhysicalBookDTO);
+
+
 }

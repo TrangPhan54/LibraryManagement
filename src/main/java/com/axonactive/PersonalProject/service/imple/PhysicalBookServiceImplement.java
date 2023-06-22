@@ -7,18 +7,24 @@ import com.axonactive.PersonalProject.repository.PhysicalBookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
 import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
+import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
-import com.axonactive.PersonalProject.service.dto.PublishingHouseDTO;
+
 import com.axonactive.PersonalProject.service.mapper.PhysicalBookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import java.util.function.Predicate;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +36,8 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     private final PhysicalBookMapper physicalBookMapper;
     private final BookRepository bookRepository;
     private static final Long LIMITATION_NUMBER_OF_DAYS = 2000L;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
 
     @Override
@@ -56,7 +64,6 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     @Override
     public PhysicalBookDTO updatePhysicalBook(PhysicalBookDTO physicalBookDTO) {
         PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookDTO.getId()).orElseThrow();
-        physicalBook.setBook(bookRepository.findById(physicalBookDTO.getBookID()).orElseThrow(LibraryException::BookNotFound));
         physicalBook.setPublishingHouse(publishingHouseRepository.findById(physicalBookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
         physicalBook.setImportPrice(physicalBookDTO.getImportPrice());
         physicalBook.setImportDate(physicalBookDTO.getImportDate());
@@ -72,33 +79,51 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
         physicalBookRepository.delete(physicalBook);
 
     }
+
     // Tim sach vat li dua vao ten nha xuat ban
     @Override
     public List<PhysicalBookDTO> findPhysicalBookByPublishingHouseName(String publishingHouseName) {
-        List<PhysicalBook> physicalBook = physicalBookRepository.findAll().stream().filter(pb->pb.getPublishingHouse().getName().equalsIgnoreCase(publishingHouseName)).collect(Collectors.toList());
+        List<PhysicalBook> physicalBook = physicalBookRepository.findAll().stream().filter(pb -> pb.getPublishingHouse().getName().equalsIgnoreCase(publishingHouseName)).collect(Collectors.toList());
         return physicalBookMapper.toDtos(physicalBook);
     }
-    // Dem co bao nhieu cuon sach vat li co cung mot tua de
+
     @Override
     public Long countBookBaseOnBookName(String bookName) {
         return physicalBookRepository.countBookBaseOnBookName(bookName);
     }
-    public List<PhysicalBookDTO> getLiquidationBook (){
+
+    //Function: Set old book into liquidation
+    public List<PhysicalBookDTO> getLiquidationBook() {
         List<PhysicalBook> physicalBookList = physicalBookRepository.findAll();
         List<PhysicalBook> liquidationBookList = new ArrayList<>();
-        Predicate<Long> lowerThanLimitationOfDay = x-> x < LIMITATION_NUMBER_OF_DAYS;
-        for (PhysicalBook physicalBook : physicalBookList){
-            long differenceOfTime = ChronoUnit.DAYS.between(physicalBook.getImportDate(),LocalDate.now());
-            if (lowerThanLimitationOfDay.test(differenceOfTime)){
+        Predicate<Long> lowerThanLimitationOfDay = x -> x < LIMITATION_NUMBER_OF_DAYS;
+        for (PhysicalBook physicalBook : physicalBookList) {
+            long differenceOfTime = ChronoUnit.DAYS.between(physicalBook.getImportDate(), LocalDate.now());
+            if (lowerThanLimitationOfDay.test(differenceOfTime)) {
                 physicalBook.setStatus(Status.GOOD);
                 liquidationBookList.add(physicalBook);
-            }
-            else {
+            } else {
                 physicalBook.setStatus(Status.LIQUIDATION);
                 liquidationBookList.add(physicalBook);
             }
         }
         return physicalBookMapper.toDtos(liquidationBookList);
     }
+
+
+    // Function: get physical book by its status
+
+    @Override
+    public List<PhysicalBookDTO> getByStatus(Status status) {
+        return physicalBookMapper.toDtos(physicalBookRepository.findByStatus(status));
+    }
+    // Function: get some physical book by ids
+
+    @Override
+    public List<PhysicalBookDTO> findAllById(ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
+        List<PhysicalBook> physicalBooks = physicalBookRepository.findAllById(listOfPhysicalBookDTO.getPhysicalBookIds());
+        return physicalBookMapper.toDtos(physicalBooks);
+    }
+
 
 }

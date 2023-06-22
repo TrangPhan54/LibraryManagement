@@ -1,15 +1,12 @@
 package com.axonactive.PersonalProject.service;
 
 import com.axonactive.PersonalProject.entity.Book;
-import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface BookService {
     List<BookDTO> getAllBook();
@@ -27,11 +24,7 @@ public interface BookService {
 
     List<BookDTO> getByName(String name);
 
-    // 2. Tim sach boi trang thai (available or unavailable)
-//    List<BookDTO> getByStatus(Status status);
-    // 3. Tim sach boi ten nha xuat ban
 
-//    List<BookDTO> getBookByPublishingHouseName(String publishingHouseName);
 
     // 4. Tim sach boi ten tac gia
     List<BookDTO> getBookByAuthorFirstName(String authorFirstName);
@@ -41,11 +34,9 @@ public interface BookService {
 
     // 6. Tim tom tat noi dung sach thong qua ten sach
     BookContentDTO findContentSummaryByBookName(String bookName);
-
     // 7. Tim tom tat noi dung sach thong qua ten sach co chua ki tu nao do
 
     BookContentDTO findContentSummaryByBookNameContaining(String bookName);
-
 
     List<BookDTO> getBookByAuthorLastNameContaining(String partOfName);
 
@@ -55,10 +46,15 @@ public interface BookService {
 
     List<BookDTO> getBookByAuthorFirstNameContainingIgnoreCase(String partOfName);
 
-
     List<BookDTO> findAllById(Iterable<Long> bookIds);
 
     List<BookAnalyticDTO> getBookAnalytic();
+
+    List<BookDTO> findBookByNameContaining(String name);
+    List<BookDTO> getBookPublishBefore2000 ();
+
+
+
 //
 //    List<Book> getBestBorrowBooksBetweenDate (LocalDate date1, LocalDate date2);
 //

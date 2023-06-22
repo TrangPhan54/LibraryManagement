@@ -6,14 +6,17 @@ import com.axonactive.PersonalProject.repository.AuthorRepository;
 import com.axonactive.PersonalProject.repository.BookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.BookService;
-import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
-import com.axonactive.PersonalProject.service.dto.BookContentDTO;
-import com.axonactive.PersonalProject.service.dto.BookDTO;
-import com.axonactive.PersonalProject.service.dto.CreateBookDTO;
+import com.axonactive.PersonalProject.service.dto.*;
 import com.axonactive.PersonalProject.service.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,12 +35,15 @@ public class BookServiceImplement implements BookService {
     private final AuthorRepository authorRepository;
     private final PublishingHouseRepository publishingHouseRepository;
     private final BookMapper bookMapper;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
     public List<BookDTO> getAllBook() {
         List<Book> books = bookRepository.findAll();
         return bookMapper.toDtos(books);
     }
+
     // Create book title and physical books with number if copies
     @Override
     public BookDTO createBook(CreateBookDTO createBookDTO) {
@@ -118,81 +124,107 @@ public class BookServiceImplement implements BookService {
         return bookMapper.toDto(bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound));
     }
 
-    // 1. Tim sach co chua ki tu khong phan biet hoa thuong
+    // find book by name containing ignore case
     @Override
     public List<BookDTO> getByBookNameContainingIgnoreCase(String keyword) {
         return bookMapper.toDtos(bookRepository.findByNameContainingIgnoreCase(keyword));
     }
+
+    // find book by name
     @Override
     public List<BookDTO> getByName(String name) {
         return bookMapper.toDtos(bookRepository.findByName(name));
     }
-    // 2. Tim sach boi trang thai (available or unavailable)
-
-//    public List<BookDTO> getByStatus(Status status) {
-//        return bookMapper.toDtos(bookRepository.findByStatus(status));
-//    }
 
 
-    // 3. Tim sach boi ten tac gia
+    // find book by author first name
     @Override
     public List<BookDTO> getBookByAuthorFirstName(String authorFirstName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstName(authorFirstName));
     }
 
-    //4 .Tim sach boi ho tac gia
+    // find book by author last name
     @Override
     public List<BookDTO> getBookByAuthorLastName(String authorLastName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastName(authorLastName));
     }
 
-    //5. Tim noi dung sach thong qua ten sach
+    // find content summary by book title
     @Override
     public BookContentDTO findContentSummaryByBookName(String bookName) {
         return bookRepository.findContentSummaryByBookName(bookName);
     }
 
-    //6. Tim noi dung sach thong qua ten sach co chua ki tu nao do
+    // find book name by book title containing
     @Override
     public BookContentDTO findContentSummaryByBookNameContaining(String bookName) {
         return bookRepository.findContentSummaryByBookNameContaining("%" + bookName + "%");
     }
-    //7. Tim ten sach dua vao ho tac gia co chua ki tu nao do
+    //find book name by author last name containing
 
     @Override
     public List<BookDTO> getBookByAuthorLastNameContaining(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastNameContaining("%" + partOfName + "%"));
     }
-    //8. Tim ten sach dua vao ten tac gia co chua ki tu nao do
 
+    //find book name by author first name containing
     @Override
     public List<BookDTO> getBookByAuthorFirstNameContaining(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstNameContaining("%" + partOfName + "%"));
     }
 
-    //9. Tim ten sach dua vao ho tac gia co chua ki tu nao do khong phan biet hoa thuong
+    //find book name by author last name containing ignore case
     @Override
     public List<BookDTO> getBookByAuthorLastNameContainingIgnoreCase(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastNameContainingIgnoreCase(partOfName));
     }
-    //10. Tim ten sach dua vao ten tac gia co chua ki tu nao do khong phan biet hoa thuong
+
+    //find book name by author first name containing ignore case
     @Override
     public List<BookDTO> getBookByAuthorFirstNameContainingIgnoreCase(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstNameContainingIgnoreCase(partOfName));
     }
 
+    // find all book by list ids of books
     @Override
     public List<BookDTO> findAllById(Iterable<Long> bookIds) {
         List<Book> books = bookRepository.findAllById(bookIds);
-        for (Book book: books){
+        for (Book book : books) {
             System.out.println(book.getName());
         }
         return bookMapper.toDtos(books);
     }
-    //11. Book statistics base on book name
+
+    // Book statistics base on book name
     @Override
     public List<BookAnalyticDTO> getBookAnalytic() {
         return bookRepository.getBookAnalytic();
     }
+
+    // Use criteria builder and query to find book by name containing
+    public List<BookDTO> findBookByNameContaining(String name) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = cb.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
+        query.select(root)
+                .where(cb.and(
+                        cb.like(root.get("name"), "%" + name + "%")
+                ));
+        return bookMapper.toDtos(entityManager.createQuery(query).getResultList());
+    }
+    // Use criteria builder to get books that were published before 2000
+
+    public List<BookDTO> getBookPublishBefore2000 (){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
+        Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.lessThanOrEqualTo(root.get("datePublish"), LocalDate.of(2000, 1, 1))
+        );
+        query.select(root).where(condition);
+        List<Book> books = entityManager.createQuery(query).getResultList();
+        return bookMapper.toDtos(books);
+    }
+
 
 }

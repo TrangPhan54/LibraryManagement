@@ -78,18 +78,18 @@ public class GenreBookServiceImplementation implements GenreBookService {
         return genreBookMapper.toDto(genreBookRepository.findById(genreBookId).orElseThrow(LibraryException::GenreBookNotFound));
     }
 
-    // 1. Tìm sách theo tên thể loại
+    //find book by genre name containing
     @Override
     public List<String> getByGenreNameContaining(String name) {
         return genreBookRepository.findByGenreNameContaining(name).stream().map(gb -> gb.getBook().getName()).collect(Collectors.toList());
     }
-    // 2. Tìm sách theo tên thể loại và tên sách
+    //find book by genre name containing and title containing
     @Override
     public List<BookDTO> getByGenreNameContainingAndBookNameContaining(String genreName, String bookName) {
         return bookMapper.toDtos(genreBookRepository.findByGenreNameContainingAndBookNameContaining(genreName, bookName).stream().map(GenreBook::getBook).collect(Collectors.toList()));
     }
 
-    // 3. Tìm sách có chung 1 thể loại nào đó
+    // find book that have the same genre for recommendation
     @Override
     public List<BookDTO> getBookHaveRelation(String bookName) {
         List<GenreBook> relationalBook = genreBookRepository.findAll().stream().filter(gb -> gb.getBook().getName().equalsIgnoreCase(bookName)).collect(Collectors.toList());
