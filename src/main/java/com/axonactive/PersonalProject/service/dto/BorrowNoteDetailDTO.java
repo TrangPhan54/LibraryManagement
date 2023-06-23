@@ -17,7 +17,13 @@ public class BorrowNoteDetailDTO {
     @JsonIgnore
     private Long id;
     private Long physicalBookID;
+    private String physicalBookName;
+
     private Long borrowNoteID;
+    private Long customerID;
+    private String customerFirstName;
+    private String customerLastName;
+    private String customerPhoneNumber;
     private LocalDate returnDate;
     private Double fineFee;
 

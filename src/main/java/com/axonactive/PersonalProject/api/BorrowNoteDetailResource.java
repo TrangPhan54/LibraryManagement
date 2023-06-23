@@ -6,7 +6,7 @@ import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,19 @@ public class BorrowNoteDetailResource {
         return ResponseEntity.ok(borrowNoteDetailService.getAllBorrowNoteDetail());
     }
 
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping(value = "/{orderId}/{bookId}")
+//    public ResponseEntity<BorrowNoteDetailDTO> createBorrowNoteDetail(@PathVariable("orderId") Long orderID,
+//                                                                      @PathVariable("bookId") Long bookID,
+//                                                                      @RequestBody BorrowNoteDetailDTO borrowNoteDetailDTO) {
+//        log.info("create borrow note detail");
+//        BorrowNoteDetailDTO book = borrowNoteDetailService.createBorrowNoteDetail(borrowNoteDetailDTO, bookID, orderID);
+//        return ResponseEntity.created(URI.create("/api/orderDetails" + book.getId())).body(book);
+//    }
+
+
     @DeleteMapping(value = "/{orderDetailId}")
+
     public ResponseEntity<BorrowNoteDetailDTO> deleteBorrowNoteDetail(@PathVariable("orderDetailId") Long orderDetailID) {
         borrowNoteDetailService.deleteBorrowNoteDetailByID(orderDetailID);
         return ResponseEntity.noContent().build();
@@ -44,7 +56,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/remain")
-    public CustomerDTO returnBookByCustomer(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
+    public CustomerDTO returnBookByCustomer(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
         return borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
     }
 
@@ -54,7 +66,7 @@ public class BorrowNoteDetailResource {
         return borrowNoteDetailService.getMaxCustomer(date1, date2);
     }
     @GetMapping("/fine_fee")
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto){
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto){
         return borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
     }
     @GetMapping("/book_analytic")
@@ -64,7 +76,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/lost_book")
-    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
         return borrowNoteDetailService.lostBook(returnBookByCustomerDto);
     }
 }

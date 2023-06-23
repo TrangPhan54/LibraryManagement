@@ -6,7 +6,7 @@ import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,22 +23,22 @@ public interface BorrowNoteDetailService {
     // 1.Tinh so sach duoc muon boi 1 khach hang cu the
     Long getNumberOfBookByCustomerId(Long customerId);
 
-//    Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
+    Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
 
     List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds);
 
     //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
-    CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
+    CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
     String getBookNameByBookId(Long bookId);
 
-    FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
+    FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
 
     List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2);
 
     List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(LocalDate date1, LocalDate date2);
 
-    FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDTO returnBookByCustomerDto);
+    FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDto returnBookByCustomerDto);
 
 
 //    List<CustomerDTO> getMaxBorrowCustomer (LocalDate date1, LocalDate date2);

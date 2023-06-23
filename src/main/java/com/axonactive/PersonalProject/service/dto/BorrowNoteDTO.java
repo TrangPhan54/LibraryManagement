@@ -18,6 +18,9 @@ public class BorrowNoteDTO {
 //    @JsonIgnore
     private Long id;
     private Long customerID;
+    private String customerFirstName;
+    private String customerLastName;
+    private String customerPhoneNumber;
     private String address;
     private LocalDate borrowDate;
     private LocalDate dueDate;

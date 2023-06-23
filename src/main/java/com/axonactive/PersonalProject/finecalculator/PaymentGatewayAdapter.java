@@ -11,4 +11,10 @@ public class PaymentGatewayAdapter implements PaymentGateway {
     public Double processPayment(Long numberOfDays) {
         return fineCalculator.calculatingFineFee(numberOfDays);
     }
+
+    @Override
+    public Double processFineBookLost(Double importPrice) {
+        return fineCalculator.calculatingFeeBookLost(importPrice);
+    }
+
 }

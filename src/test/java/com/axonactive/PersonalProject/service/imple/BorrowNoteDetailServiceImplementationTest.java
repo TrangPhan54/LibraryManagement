@@ -1,5 +1,6 @@
 package com.axonactive.PersonalProject.service.imple;
 
+import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
@@ -64,12 +65,7 @@ class BorrowNoteDetailServiceImplementationTest {
 //        System.out.println(customer.get);
     }
 
-    @Test
-    void getBookNameByBookId() {
-        String books = borrowNoteDetailService.getBookNameByBookId(12L);
-        System.out.println(books);
 
-    }
 
     @Test
     void fineFeeForReturningBookLate() {
@@ -119,6 +115,18 @@ class BorrowNoteDetailServiceImplementationTest {
         re.forEach(System.out::println);
     }
 
+    @Test
+    void getBookListOfACustomer() {
+        Long id = 15L;
+        borrowNoteDetailService.getBookListOfACustomer(id);
+    }
+
+    @Test
+    void getBookListOfACustomer1() {
+        Long id = 6L;
+        List<BorrowNoteDetail> brdList = borrowNoteDetailService.getBookListOfACustomer1(id);
+        brdList.forEach(System.out::println);
+    }
 
 
 //    @Test

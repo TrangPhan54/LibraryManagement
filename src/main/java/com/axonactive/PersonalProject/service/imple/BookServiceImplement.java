@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 
@@ -223,6 +224,31 @@ public class BookServiceImplement implements BookService {
         );
         query.select(root).where(condition);
         List<Book> books = entityManager.createQuery(query).getResultList();
+        return bookMapper.toDtos(books);
+    }
+    // use criteria builder to find book by author first name
+    public List<BookDTO> getBookByAuthorFirstName1 (String firstName){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
+        Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("author").get("firstName"), firstName )
+        );
+        query.select(root).where(condition);
+        List<Book> books = entityManager.createQuery(query).getResultList();
+        return bookMapper.toDtos(books);
+    }
+    // use criteria builder to find book by genre name
+
+    public List<BookDTO> getBookByGenreName (String genreName){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<GenreBook> query = criteriaBuilder.createQuery(GenreBook.class);
+        Root<GenreBook> root = query.from(GenreBook.class);
+        Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("genre").get("name"), genreName )
+        );
+        query.select(root).where(condition);
+        List<Book> books = entityManager.createQuery(query).getResultList().stream().map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(books);
     }
 
