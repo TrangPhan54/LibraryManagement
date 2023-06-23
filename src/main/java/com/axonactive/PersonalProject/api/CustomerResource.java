@@ -41,8 +41,8 @@ public class CustomerResource {
         customerService.deleteCustomerByID(customerID);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/customer_id")
-    public ResponseEntity<CustomerDTO> getCustomerById (@RequestParam ("customerID") Long customerID){
+    @GetMapping("/{customer_id}")
+    public ResponseEntity<CustomerDTO> getCustomerById (@PathVariable ("customer_id") Long customerID){
          return ResponseEntity.ok(customerService.getCustomerByID(customerID));
     }
     @GetMapping("/customer_first_name")

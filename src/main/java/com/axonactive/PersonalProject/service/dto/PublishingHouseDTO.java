@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublishingHouseDTO {
-    @JsonIgnore
     private Long id;
     private String name;
 }

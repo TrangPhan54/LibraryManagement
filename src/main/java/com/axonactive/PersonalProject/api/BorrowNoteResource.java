@@ -25,13 +25,10 @@ import java.util.List;
 public class BorrowNoteResource {
     @Autowired
     private final BorrowNoteService borrowNoteService;
-//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<BorrowNoteDTO>> getAllBorrowNote() {
         return ResponseEntity.ok(borrowNoteService.getAllBorrowNote());
     }
-
-//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BorrowNoteDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
         BorrowNoteDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);
@@ -46,7 +43,6 @@ public class BorrowNoteResource {
     }
 
     @DeleteMapping(value = "/{borrowAndNoteId}")
-
     public ResponseEntity<BorrowNoteDTO> deleteBorrowNote(@PathVariable("orderAndBookId") Long borrowAndNoteID) {
         borrowNoteService.deleteBorrowNoteByID(borrowAndNoteID);
         return ResponseEntity.noContent().build();
