@@ -17,6 +17,6 @@ public interface BorrowNoteDetailRepository extends JpaRepository<BorrowNoteDeta
     List<BorrowNoteDetail> findByBorrowNoteBorrowDateBetween(LocalDate date1, LocalDate date2);
 
 //    List<BorrowNoteDetail> findByBorrowNoteBorrowDateBetween ();
-
-
+    @Query("SELECT * FROM BorrowNoteDetail bnd WHERE bnd.id = ?1")
+    List<BorrowNoteDetail> findByBorrowNoteId(Long id);
 }
