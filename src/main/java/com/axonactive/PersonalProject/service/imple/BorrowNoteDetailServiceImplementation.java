@@ -166,8 +166,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return borrowNoteDetailMapper.toDtos(books);
 
     }
-
-
     // 2. Returning book service (customer return book ontime)
 
     public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
@@ -290,7 +288,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
             bookAnalyticForAmountOfTimeDTO.setBookTitle(key.getName());
             bookAnalyticForAmountOfTimeDTO.setNumberOfPhysicalBookCopies(value);
             bookAnalyticForAmountOfTimeDTOS.add(bookAnalyticForAmountOfTimeDTO);
-
         }
         return bookAnalyticForAmountOfTimeDTOS;
     }
@@ -318,9 +315,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (a, b) -> a, LinkedHashMap::new));
-
         List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> customerWithNumberOfPhysicalCopiesBorrowDTOList = new ArrayList<>();
-
         for (Map.Entry<Customer, Long> entry : result.entrySet()) {
             Customer key = entry.getKey();
             Long value = entry.getValue();
@@ -346,7 +341,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
         return borrowNoteDetailMapper.toDtos(listOfCustomerStillBorrowBook);
     }
-
+    // get list of customer still borrow book to contact
     public List<CustomerDTO> getListOfCustomerStillBorrowBook3() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
@@ -359,6 +354,5 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
         List<Customer> customerStillNotReturnBook = listOfCustomerStillBorrowBook.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).distinct().collect(Collectors.toList());
         return customerMapper.toDtos(customerStillNotReturnBook);
-
     }
 }

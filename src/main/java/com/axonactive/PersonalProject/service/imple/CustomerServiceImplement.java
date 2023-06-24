@@ -44,6 +44,7 @@ public class CustomerServiceImplement implements CustomerService {
                 .firstName(customerDTO.getFirstName())
                 .lastName(customerDTO.getLastName())
                 .address(customerDTO.getAddress())
+                .active(customerDTO.getActive())
                 .phoneNumber(customerDTO.getPhoneNumber())
                 .build();
 
