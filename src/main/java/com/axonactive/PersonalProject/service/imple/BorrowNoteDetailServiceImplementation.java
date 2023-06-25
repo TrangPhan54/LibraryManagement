@@ -128,6 +128,11 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .map(brd -> brd.getPhysicalBook().getBook().getName())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void returnBookByCustomer(Long customerId, List<Long> physicalBookId) {
+
+    }
     // 1. Returning book service : Get list of borrow note detail of a customer
 
     //    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
@@ -168,7 +173,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     // 2. Returning book service (customer return book ontime)
 
-    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         List<BorrowNoteDetail> bookListReturnOfCustomer = new ArrayList<>();
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
@@ -183,7 +188,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
 
     // 3. Returning book service (customer lost book)
-    public FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
@@ -204,9 +209,24 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return fineFeeForCustomerDTO;
     }
 
+    @Override
+    public List<CustomerDTO> getMaxBorrowCustomer(LocalDate date1, LocalDate date2) {
+        return null;
+    }
+
+    @Override
+    public String getBookNameById(Long bookId) {
+        return null;
+    }
+
+    @Override
+    public List<BorrowNoteDetailDTO> getBorrowNoteDetailListByBorrowNoteId(Long id) {
+        return null;
+    }
+
     // 4. Returning book service. If a customer return book late for 20 times, customer cannot borrow book in library anymore
     @Override
-    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
@@ -225,9 +245,14 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return customerMapper.toDto(customer);
     }
 
+    @Override
+    public String getBookNameByBookId(Long bookId) {
+        return null;
+    }
+
     //5. Returning book service. (using Adapter design pattern). Customer have to pay fee and the fee base on number of overdue days
     @Override
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
