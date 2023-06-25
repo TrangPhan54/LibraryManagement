@@ -49,36 +49,14 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void returnBookByCustomer() {
-        ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
-        returnBookByCustomerDto.setCustomerId(1L);
-        List<Long> physicalBookIds = new ArrayList<>();
-        physicalBookIds.add(40L);
-        physicalBookIds.add(12L);
 
-        returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
-        System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
-//        List<Long> ids = List.of(17L);
-//        borrowNoteDetailService.returnBookByCustomer(12L, ids);
-        borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
-//
-        Customer customer = customerRepository.findById(1L).get();
-//        System.out.println(customer.get);
     }
 
 
 
     @Test
     void fineFeeForReturningBookLate() {
-        ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
-        returnBookByCustomerDto.setCustomerId(21L);
-        List<Long> physicalBookIds = new ArrayList<>();
-        physicalBookIds.add(43L);
-        physicalBookIds.add(13L);
-//        physicalBookIds.add(3L);
-        returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
-        borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
-        System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
-//        borrowNoteDetailService.feeFineForReturningBookLate(1L,ids);
+
     }
 
     @Test
@@ -117,15 +95,12 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void getBookListOfACustomer() {
-        Long id = 15L;
-        borrowNoteDetailService.getBookListOfACustomer(id);
+
     }
 
     @Test
     void getBookListOfACustomer1() {
-        Long id = 6L;
-        List<BorrowNoteDetail> brdList = borrowNoteDetailService.getBookListOfACustomer1(id);
-        brdList.forEach(System.out::println);
+
     }
 
 

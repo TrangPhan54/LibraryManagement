@@ -16,7 +16,7 @@ public class BorrowNoteDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "physical_book_id")
     private PhysicalBook physicalBook;
     @Column(name = "fine_fee")
@@ -24,7 +24,7 @@ public class BorrowNoteDetail {
     @Column (name = "return_date")
     private LocalDate returnDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "borrow_id")
     private BorrowNote borrowNote;
     @Enumerated(EnumType.STRING)

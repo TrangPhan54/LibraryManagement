@@ -16,7 +16,6 @@ public interface BorrowNoteDetailMapper {
     @Mapping(target = "customerLastName", source = "borrowNoteDetail.borrowNote.customer.lastName")
     @Mapping(target = "customerPhoneNumber", source = "borrowNoteDetail.borrowNote.customer.phoneNumber")
     @Mapping(target = "customerID", source = "borrowNoteDetail.borrowNote.customer.id")
-
     BorrowNoteDetailDTO toDto (BorrowNoteDetail borrowNoteDetail);
     List<BorrowNoteDetailDTO> toDtos (List <BorrowNoteDetail> borrowNoteDetails);
 }

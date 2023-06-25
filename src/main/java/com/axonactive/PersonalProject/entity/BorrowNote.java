@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -28,11 +29,11 @@ public class BorrowNote {
     private Customer customer;
     @Column(name = "address")
     private String address;
+    @CreationTimestamp
     @Column(name = "borrow_date")
     private LocalDate borrowDate;
     @Column(name = "due_date")
     private LocalDate dueDate;
-
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "borrowNote")
     private List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
 
