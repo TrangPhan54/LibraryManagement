@@ -214,7 +214,6 @@ public class BookServiceImplement implements BookService {
         return bookMapper.toDtos(entityManager.createQuery(query).getResultList());
     }
     // Use criteria builder to get books that were published before 2000
-
     public List<BookDTO> getBookPublishBefore2000 (){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
@@ -239,7 +238,6 @@ public class BookServiceImplement implements BookService {
         return bookMapper.toDtos(books);
     }
     // use criteria builder to find book by genre name
-
     public List<BookDTO> getBookByGenreName (String genreName){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GenreBook> query = criteriaBuilder.createQuery(GenreBook.class);
@@ -251,6 +249,4 @@ public class BookServiceImplement implements BookService {
         List<Book> books = entityManager.createQuery(query).getResultList().stream().map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(books);
     }
-
-
 }
