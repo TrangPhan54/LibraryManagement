@@ -60,11 +60,7 @@ public class ReceiptServiceImplementation implements ReceiptService {
         receiptDTO.setCustomerID(receipt.getCustomer().getId());
         receiptDTO.setCustomerFirstName(receipt.getCustomer().getFirstName());
         receiptDTO.setCustomerLastName(receipt.getCustomer().getLastName());
-//        receiptDTO.setPhysicalBookList(physicalBookRepository.findAllById(createReceiptDTO.getPhysicalBookIdList()));
         receiptDTO.setPhysicalBookList(createReceiptDTO.getPhysicalBookIdList());
-//        receiptDTO.setPhysicalBookList(physicalBookRepository.findAllById(createReceiptDTO.getPhysicalBookIdList()));
-
-//        receiptDTO.setPhysicalBookIdList(createReceiptDTO.getPhysicalBookIdList());
         receiptDTO.setLiquidationFee(totalFee);
         return receiptDTO;
     }

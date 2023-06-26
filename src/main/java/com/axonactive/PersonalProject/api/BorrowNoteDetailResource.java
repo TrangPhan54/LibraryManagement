@@ -54,7 +54,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/remain")
-    public CustomerDTO banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public CustomerDTO banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
     }
 
@@ -64,7 +64,7 @@ public class BorrowNoteDetailResource {
         return borrowNoteDetailService.getMaxCustomer(date1, date2);
     }
     @GetMapping("/fine_fee")
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto){
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto){
         return borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
     }
     @GetMapping("/book_analytic")
@@ -74,7 +74,7 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/lost_book")
-    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return borrowNoteDetailService.lostBook(returnBookByCustomerDto);
     }
 
@@ -82,8 +82,8 @@ public class BorrowNoteDetailResource {
     public List<BorrowNoteDetail> getBookListOfACustomer1(@RequestParam Long customerID){
         return borrowNoteDetailService.getBookListOfACustomer1(customerID);
     }
-    @GetMapping("/borrownote/{id}")
-    public List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID (@PathVariable("id") Long borrowID){
+    @GetMapping("/borrowNote")
+    public List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID (@RequestParam Long borrowID){
         return borrowNoteDetailService.getBorowNoteDetailByBorrowNoteID(borrowID);
     }
     @GetMapping("/br_id")

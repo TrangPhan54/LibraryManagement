@@ -7,7 +7,7 @@ import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDto;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void returnBookByCustomer() {
-        ReturnBookByCustomerDto returnBookByCustomerDto = new ReturnBookByCustomerDto();
+        ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
         returnBookByCustomerDto.setCustomerId(1L);
         List<Long> physicalBookIds = new ArrayList<>();
         physicalBookIds.add(40L);
@@ -63,8 +63,6 @@ class BorrowNoteDetailServiceImplementationTest {
 
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
-//        List<Long> ids = List.of(17L);
-//        borrowNoteDetailService.returnBookByCustomer(12L, ids);
         borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
 //
         Customer customer = customerRepository.findById(1L).get();
@@ -75,16 +73,14 @@ class BorrowNoteDetailServiceImplementationTest {
 
     @Test
     void fineFeeForReturningBookLate() {
-        ReturnBookByCustomerDto returnBookByCustomerDto = new ReturnBookByCustomerDto();
+        ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
         returnBookByCustomerDto.setCustomerId(21L);
         List<Long> physicalBookIds = new ArrayList<>();
         physicalBookIds.add(43L);
         physicalBookIds.add(13L);
-//        physicalBookIds.add(3L);
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
         borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
-//        borrowNoteDetailService.feeFineForReturningBookLate(1L,ids);
     }
 
     @Test
@@ -98,17 +94,6 @@ class BorrowNoteDetailServiceImplementationTest {
         re.forEach(System.out::println);
 
     }
-
-//    @Test
-//    void getMaxBorrowCustomer() {
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-//        String date1String = "2022/01/01";
-//        String date2String = "2024/01/01";
-//        LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
-//        LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
-//        List<CustomerDTO> re = borrowNoteDetailService.getMaxBorrowCustomer(date1,date2);
-//        System.out.println(re);
-//    }
 
     @Test
     void getMaxCustomer() {

@@ -50,9 +50,6 @@ public class BookServiceImplement implements BookService {
     public BookDTO createBook(CreateBookDTO createBookDTO) {
         PublishingHouse publishingHouse = publishingHouseRepository.findById(createBookDTO.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);
         Author author = authorRepository.findById(createBookDTO.getAuthorID()).orElseThrow();
-//        if (createBookDTO.getName().isBlank() || !isAlpha(createBookDTO.getName()))
-//            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
-
         if (createBookDTO.getName().isBlank() || createBookDTO.getName().trim().isEmpty() || createBookDTO.getName() == null)
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
 
@@ -136,33 +133,27 @@ public class BookServiceImplement implements BookService {
     public List<BookDTO> getByName(String name) {
         return bookMapper.toDtos(bookRepository.findByName(name));
     }
-
-
     // find book by author first name
     @Override
     public List<BookDTO> getBookByAuthorFirstName(String authorFirstName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstName(authorFirstName));
     }
-
     // find book by author last name
     @Override
     public List<BookDTO> getBookByAuthorLastName(String authorLastName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastName(authorLastName));
     }
-
     // find content summary by book title
     @Override
     public BookContentDTO findContentSummaryByBookName(String bookName) {
         return bookRepository.findContentSummaryByBookName(bookName);
     }
-
     // find book name by book title containing
     @Override
     public BookContentDTO findContentSummaryByBookNameContaining(String bookName) {
         return bookRepository.findContentSummaryByBookNameContaining("%" + bookName + "%");
     }
     //find book name by author last name containing
-
     @Override
     public List<BookDTO> getBookByAuthorLastNameContaining(String partOfName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastNameContaining("%" + partOfName + "%"));

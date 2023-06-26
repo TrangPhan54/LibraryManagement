@@ -82,10 +82,12 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
 
     }
 
-    // Tim sach vat li dua vao ten nha xuat ban
+    // Find physical book base on publishing house name
     @Override
     public List<PhysicalBookDTO> findPhysicalBookByPublishingHouseName(String publishingHouseName) {
-        List<PhysicalBook> physicalBook = physicalBookRepository.findAll().stream().filter(pb -> pb.getPublishingHouse().getName().equalsIgnoreCase(publishingHouseName)).collect(Collectors.toList());
+        List<PhysicalBook> physicalBook = physicalBookRepository.findAll().stream()
+                .filter(pb -> pb.getPublishingHouse().getName().equalsIgnoreCase(publishingHouseName))
+                .collect(Collectors.toList());
         return physicalBookMapper.toDtos(physicalBook);
     }
 
@@ -114,7 +116,6 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
 
 
     // Function: get physical book by its status
-
     @Override
     public List<PhysicalBookDTO> getByStatus(Status status) {
         return physicalBookMapper.toDtos(physicalBookRepository.findByStatus(status));

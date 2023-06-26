@@ -2,10 +2,7 @@ package com.axonactive.PersonalProject.api;
 
 
 import com.axonactive.PersonalProject.service.BorrowNoteService;
-import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDTO;
-import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
-import com.axonactive.PersonalProject.service.dto.GenreBookDTO;
-import com.axonactive.PersonalProject.service.dto.BorrowNoteDTO;
+import com.axonactive.PersonalProject.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +30,8 @@ public class BorrowNoteResource {
 
 //    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<BorrowNoteDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
-        BorrowNoteDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);
+    public ResponseEntity<CreateBorrowNoteResponseDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
+        CreateBorrowNoteResponseDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);
         return ResponseEntity.created(URI.create("/api/orderBooks" + book.getId())).body(book);
     }
 

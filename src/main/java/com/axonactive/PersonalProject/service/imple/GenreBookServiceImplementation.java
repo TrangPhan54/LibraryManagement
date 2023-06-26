@@ -86,15 +86,19 @@ public class GenreBookServiceImplementation implements GenreBookService {
     //find book by genre name containing and title containing
     @Override
     public List<BookDTO> getByGenreNameContainingAndBookNameContaining(String genreName, String bookName) {
-        return bookMapper.toDtos(genreBookRepository.findByGenreNameContainingAndBookNameContaining(genreName, bookName).stream().map(GenreBook::getBook).collect(Collectors.toList()));
+        return bookMapper.toDtos(genreBookRepository.findByGenreNameContainingAndBookNameContaining(genreName, bookName)
+                         .stream().map(GenreBook::getBook).collect(Collectors.toList()));
     }
 
     // find book that have the same genre for recommendation
     @Override
     public List<BookDTO> getBookHaveRelation(String bookName) {
-        List<GenreBook> relationalBook = genreBookRepository.findAll().stream().filter(gb -> gb.getBook().getName().equalsIgnoreCase(bookName)).collect(Collectors.toList());
+        List<GenreBook> relationalBook = genreBookRepository.findAll().stream()
+                           .filter(gb -> gb.getBook().getName().equalsIgnoreCase(bookName)).collect(Collectors.toList());
         Optional<String> getGenre = relationalBook.stream().map(GenreBook::getGenre).map(Genre::getName).findFirst();
-        List<Book> result = genreBookRepository.findAll().stream().filter(gb -> gb.getGenre().getName().equalsIgnoreCase(getGenre.get())).map(GenreBook::getBook).collect(Collectors.toList());
+        List<Book> result = genreBookRepository.findAll().stream()
+                          .filter(gb -> gb.getGenre().getName().equalsIgnoreCase(getGenre.get()))
+                          .map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(result);
     }
 

@@ -21,7 +21,7 @@ class ResponseServiceImplementTest {
 
     @Test
     void findResponseOfABookByBookName() {
-        String res = responseService.findResponseOfABookByBookName("Gone with the wind");
+        String res = responseService.findResponseOfABookByBookName("The thorn bird");
         System.out.println(res);
     }
 

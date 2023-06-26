@@ -52,8 +52,6 @@ class BorrowNoteServiceImplementationTest {
         physicalBookIDList.add(book7);
         physicalBookIDList.add(book8);
         physicalBookIDList.add(book9);
-
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String date1String = "2022/01/01";
         LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);

@@ -54,4 +54,8 @@ public class ResponseResource {
     public ResponseEntity<ResponseDTO> getResponseById (@PathVariable("responseId") Long responseId){
         return ResponseEntity.ok(responseService.getResponseById(responseId));
     }
+    @GetMapping("/response")
+    public String findResponseOfABookByBookName(@RequestParam String bookName){
+        return responseService.findResponseOfABookByBookName(bookName);
+    }
 }

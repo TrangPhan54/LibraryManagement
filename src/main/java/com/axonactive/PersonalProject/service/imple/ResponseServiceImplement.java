@@ -84,15 +84,14 @@ public class ResponseServiceImplement implements ResponseService {
     @Override
     public String getResponseOfABook(Long bookId) {
         Optional<String> response = responseRepository.findResponseOfABook(bookId).stream().map(Response::getResponseContent).findFirst();
-        String res = response.stream().collect(Collectors.joining(","));
-        return res;
+        return response.stream().collect(Collectors.joining(","));
     }
 
     @Override
     public String findResponseOfABookByBookName(String bookName) {
-        Optional<String> response = responseRepository.findResponseOfABookByName(bookName).stream().map(Response::getResponseContent).findFirst();
-        String res = response.stream().collect(Collectors.joining(","));
-        return res;
+        Optional<String> response = responseRepository.findResponseOfABookByName(bookName)
+                                   .stream().map(Response::getResponseContent).findFirst();
+        return response.stream().collect(Collectors.joining(","));
     }
 
 

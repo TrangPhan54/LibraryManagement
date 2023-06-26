@@ -26,14 +26,14 @@ public interface BorrowNoteDetailService {
     List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds);
 
     //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
-    CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
-    FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto);
+    CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
+    FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
     List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2);
 
     List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(LocalDate date1, LocalDate date2);
 
-    FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDto returnBookByCustomerDto);
+    FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
     List<BorrowNoteDetail> getBookListOfACustomer1(Long customerID);
 

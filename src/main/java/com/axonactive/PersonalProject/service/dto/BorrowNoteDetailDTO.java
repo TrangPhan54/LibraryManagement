@@ -18,7 +18,6 @@ public class BorrowNoteDetailDTO {
     private Long id;
     private Long physicalBookID;
     private String physicalBookName;
-
     private Long borrowNoteID;
     private Long customerID;
     private String customerFirstName;
@@ -26,5 +25,4 @@ public class BorrowNoteDetailDTO {
     private String customerPhoneNumber;
     private LocalDate returnDate;
     private Double fineFee;
-
 }

@@ -36,14 +36,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("select new com.axonactive.PersonalProject.service.dto.BookContentDTO (b.contentSummary)" +
             "from Book b where b.name like ?1")
     BookContentDTO findContentSummaryByBookNameContaining(String bookName);
-
     @Query("select b from Book b where b.author.lastName like ?1")
     List<Book> findBookByAuthorLastNameContaining(String partOfName);
-
     @Query("select b from Book b where b.author.firstName like ?1")
     List<Book> findBookByAuthorFirstNameContaining(String partOfName);
-
-
     List<Book> findBookByAuthorLastNameContainingIgnoreCase(String partOfName);
 
     List<Book> findBookByAuthorFirstNameContainingIgnoreCase(String partOfName);

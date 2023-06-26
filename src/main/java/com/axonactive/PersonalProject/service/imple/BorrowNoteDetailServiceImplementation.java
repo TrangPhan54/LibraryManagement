@@ -17,7 +17,6 @@ import com.axonactive.PersonalProject.service.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.ls.LSInput;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -168,7 +167,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     // 2. Returning book service (customer return book ontime)
 
-    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         List<BorrowNoteDetail> bookListReturnOfCustomer = new ArrayList<>();
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
@@ -183,7 +182,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
 
     // 3. Returning book service (customer lost book)
-    public FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
@@ -206,7 +205,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     // 4. Returning book service. If a customer return book late for 20 times, customer cannot borrow book in library anymore
     @Override
-    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
@@ -216,8 +215,9 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_TIMES;
                 if (numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate())) {
                     customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
-                } else {
-                    customer.setActive(false);
+                    if (customer.getNumberOfTimeReturnLate() >= LIMITATION_OVERDUE_TIMES){
+                        customer.setActive(false);
+                    }
                 }
             }
         }
@@ -227,11 +227,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     //5. Returning book service. (using Adapter design pattern). Customer have to pay fee and the fee base on number of overdue days
     @Override
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDto returnBookByCustomerDto) {
+    public FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
-
             Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
             if (testOverdue.test(dueDate)) { // test if customer return book after due date
