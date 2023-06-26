@@ -99,4 +99,9 @@ public class BorrowNoteDetailResource {
     public List<CustomerDTO> getListOfCustomerStillBorrowBook3(){
         return borrowNoteDetailService.getListOfCustomerStillBorrowBook3();
     }
+    @GetMapping("/borrownote/{id}")
+    public ResponseEntity<List<BorrowNoteDetailDTO>> getBorrowNoteDetailListByBorrowNoteId(@PathVariable("id") Long id){
+        log.info("Find List of Borrow Note Detail by Borrow Note Id");
+        return ResponseEntity.ok().body(borrowNoteDetailService.getBorrowNoteDetailListByBorrowNoteId(id));
+    }
 }

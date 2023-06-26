@@ -55,4 +55,5 @@ public interface BorrowNoteDetailService {
 
 
 //    String getBookNameById (Long bookId);
+    List<BorrowNoteDetailDTO> getBorrowNoteDetailListByBorrowNoteId(Long id);
 }

@@ -354,4 +354,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<Customer> customerStillNotReturnBook = listOfCustomerStillBorrowBook.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).distinct().collect(Collectors.toList());
         return customerMapper.toDtos(customerStillNotReturnBook);
     }
+    public List<BorrowNoteDetailDTO> getBorrowNoteDetailListByBorrowNoteId(Long id) {
+        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteId(id);
+        if (borrowNoteDetailList.size() > 0){
+            return borrowNoteDetailMapper.toDtos(borrowNoteDetailList);
+        } else return null;
+    }
 }
