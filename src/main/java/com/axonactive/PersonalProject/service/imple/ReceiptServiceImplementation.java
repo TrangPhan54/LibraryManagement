@@ -7,14 +7,9 @@ import com.axonactive.PersonalProject.repository.PhysicalBookRepository;
 import com.axonactive.PersonalProject.repository.ReceiptRepository;
 import com.axonactive.PersonalProject.service.ReceiptService;
 import com.axonactive.PersonalProject.service.dto.CreateReceiptDTO;
-import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
-import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.ReceiptDTO;
 import com.axonactive.PersonalProject.service.mapper.ReceiptMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

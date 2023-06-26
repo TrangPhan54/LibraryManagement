@@ -1,14 +1,12 @@
 package com.axonactive.PersonalProject.service;
 
-import com.axonactive.PersonalProject.entity.PhysicalBook;
 import com.axonactive.PersonalProject.entity.Status;
-import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
+import com.axonactive.PersonalProject.service.dto.ReturnPhysicalBookDTO;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface PhysicalBookService {
     List<PhysicalBookDTO> getAllPhysicalBook();
@@ -28,7 +26,7 @@ public interface PhysicalBookService {
     List<PhysicalBookDTO> getByStatus (Status status);
 
     List<PhysicalBookDTO> findAllById(ListOfPhysicalBookDTO listOfPhysicalBookDTO);
-
+    ReturnPhysicalBookDTO returnPhysicalBook(Long id);
 
 
 }

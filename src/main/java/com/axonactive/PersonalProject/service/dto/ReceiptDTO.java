@@ -1,8 +1,5 @@
 package com.axonactive.PersonalProject.service.dto;
 
-import com.axonactive.PersonalProject.entity.PhysicalBook;
-import com.axonactive.PersonalProject.entity.ReceiptDetail;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

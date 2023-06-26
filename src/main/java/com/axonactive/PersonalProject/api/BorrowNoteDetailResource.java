@@ -40,7 +40,6 @@ public class BorrowNoteDetailResource {
     }
 
     @DeleteMapping(value = "/{orderDetailId}")
-
     public ResponseEntity<BorrowNoteDetailDTO> deleteBorrowNoteDetail(@PathVariable("orderDetailId") Long orderDetailID) {
         borrowNoteDetailService.deleteBorrowNoteDetailByID(orderDetailID);
         return ResponseEntity.noContent().build();

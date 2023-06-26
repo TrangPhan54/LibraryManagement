@@ -1,8 +1,6 @@
 package com.axonactive.PersonalProject.service.mapper;
 
-import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
 import com.axonactive.PersonalProject.entity.ReceiptDetail;
-import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.ReceiptDetailDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

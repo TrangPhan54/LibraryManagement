@@ -61,8 +61,10 @@ public class PhysicalBookResource {
     public List<PhysicalBookDTO> findAllById(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
         return physicalBookService.findAllById(listOfPhysicalBookDTO);
     }
-
-
+    @GetMapping("/returnbook/{id}")
+    public ResponseEntity<ReturnPhysicalBookDTO> returnPhysicalBook(@PathVariable("id") Long id){
+        return null;
     }
+}
 
 

@@ -3,6 +3,7 @@ package com.axonactive.PersonalProject.service.imple;
 import com.axonactive.PersonalProject.entity.*;
 import com.axonactive.PersonalProject.exception.LibraryException;
 import com.axonactive.PersonalProject.repository.BookRepository;
+import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.PhysicalBookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
@@ -10,16 +11,15 @@ import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
+import com.axonactive.PersonalProject.service.dto.ReturnPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.mapper.PhysicalBookMapper;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -33,10 +33,12 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class PhysicalBookServiceImplement implements PhysicalBookService {
+    private Condition condition;
     private final PublishingHouseRepository publishingHouseRepository;
     private final PhysicalBookRepository physicalBookRepository;
     private final PhysicalBookMapper physicalBookMapper;
     private final BookRepository bookRepository;
+    private final BorrowNoteDetailRepository borrowNoteDetailRepository;
     private static final Long LIMITATION_NUMBER_OF_DAYS = 2000L;
     @PersistenceContext
     private final EntityManager entityManager;
@@ -127,5 +129,30 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
         return physicalBookMapper.toDtos(physicalBooks);
     }
 
-
+    @Override
+    public ReturnPhysicalBookDTO returnPhysicalBook(Long id) {
+        PhysicalBook physicalBook = physicalBookRepository.findById(id).orElseThrow(LibraryException::PhysicalBookNotFound);
+        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByPhysicalBookId(id);
+        List<BorrowNoteDetail> returnBook = new ArrayList<>();
+        borrowNoteDetailList.forEach(bnd -> {
+           if (bnd.getCondition() == null){
+               bnd.setReturnDate(LocalDate.now());
+               bnd.setCondition(Condition.NORMAL);
+               returnBook.add(bnd);
+           }
+        });
+        BorrowNoteDetail borrowNoteDetail = returnBook.get(0);
+        ReturnPhysicalBookDTO returnPhysicalBookDTO = ReturnPhysicalBookDTO.builder()
+                .physicalBookId(borrowNoteDetail.getPhysicalBook().getId())
+                .borrowNoteId(borrowNoteDetail.getBorrowNote().getId())
+                .bookName(borrowNoteDetail.getPhysicalBook().getBook().getName())
+                .bookImage(borrowNoteDetail.getPhysicalBook().getBook().getBookImage())
+                .borrowDate(borrowNoteDetail.getBorrowNote().getBorrowDate())
+                .dueDate(borrowNoteDetail.getBorrowNote().getDueDate())
+                .returnDate(borrowNoteDetail.getReturnDate())
+                .build();
+        returnPhysicalBookDTO.setLate(returnPhysicalBookDTO.getReturnDate().isAfter(returnPhysicalBookDTO.getDueDate()) ?
+    true : false);
+        return returnPhysicalBookDTO;
+    }
 }

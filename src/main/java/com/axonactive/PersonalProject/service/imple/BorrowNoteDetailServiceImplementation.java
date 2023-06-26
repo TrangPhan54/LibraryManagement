@@ -134,7 +134,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     }
     // 1. Returning book service : Get list of borrow note detail of a customer
-
     //    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
 //        return borrowNoteDetailRepository.findByBorrowNoteCustomerId(returnBookByCustomerDto.getCustomerId());
 //    }
@@ -169,10 +168,8 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         query.select(root).where(condition);
         List<BorrowNoteDetail> books = entityManager.createQuery(query).getResultList();
         return borrowNoteDetailMapper.toDtos(books);
-
     }
     // 2. Returning book service (customer return book ontime)
-
     public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
         List<BorrowNoteDetail> bookListReturnOfCustomer = new ArrayList<>();

@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.service.dto;
 
-import com.axonactive.PersonalProject.entity.PhysicalBook;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

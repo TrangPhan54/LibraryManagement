@@ -23,7 +23,6 @@ public class BorrowNoteDetail {
     private Double fineFee;
     @Column (name = "return_date")
     private LocalDate returnDate;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "borrow_id")
     private BorrowNote borrowNote;

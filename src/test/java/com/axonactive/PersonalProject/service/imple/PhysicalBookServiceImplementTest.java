@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.PhysicalBook;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 import org.junit.jupiter.api.Test;
@@ -11,8 +10,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -37,5 +34,10 @@ class PhysicalBookServiceImplementTest {
     void getLiquidationBook() {
         List<PhysicalBookDTO> list = physicalBookService.getLiquidationBook();
         System.out.println(list);
+    }
+
+    @Test
+    void returnPhysicalBook() {
+        System.out.println(physicalBookService.returnPhysicalBook(1l));
     }
 }

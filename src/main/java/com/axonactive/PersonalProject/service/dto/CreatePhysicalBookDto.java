@@ -1,7 +1,5 @@
 package com.axonactive.PersonalProject.service.dto;
 
-import com.axonactive.PersonalProject.entity.Book;
-import com.axonactive.PersonalProject.entity.PublishingHouse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

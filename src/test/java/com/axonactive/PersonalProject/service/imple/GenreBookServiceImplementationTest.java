@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.GenreBook;
 import com.axonactive.PersonalProject.service.GenreBookService;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import org.junit.jupiter.api.Test;
@@ -11,8 +10,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
