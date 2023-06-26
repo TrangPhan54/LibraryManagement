@@ -218,7 +218,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     @Override
     public List<BorrowNoteDetailDTO> getBorrowNoteDetailListByBorrowNoteId(Long id) {
-        return null;
+        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteId(id);
+        if (borrowNoteDetailList.size() > 0){
+            return borrowNoteDetailMapper.toDtos(borrowNoteDetailList);
+        } else return null;
     }
 
     // 4. Returning book service. If a customer return book late for 20 times, customer cannot borrow book in library anymore

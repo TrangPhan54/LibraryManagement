@@ -47,7 +47,6 @@ public class BorrowNoteResource {
         borrowNoteService.deleteBorrowNoteByID(borrowAndNoteID);
         return ResponseEntity.noContent().build();
     }
-
     @GetMapping("/{borrowId}")
     public ResponseEntity<BorrowNoteDTO> getBorrowNoteById (@PathVariable("borrowId") Long borrowId){
         return ResponseEntity.ok(borrowNoteService.getBorrowNoteById(borrowId));

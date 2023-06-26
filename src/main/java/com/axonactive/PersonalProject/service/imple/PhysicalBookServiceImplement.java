@@ -131,7 +131,6 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
 
     @Override
     public ReturnPhysicalBookDTO returnPhysicalBook(Long id) {
-        PhysicalBook physicalBook = physicalBookRepository.findById(id).orElseThrow(LibraryException::PhysicalBookNotFound);
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByPhysicalBookId(id);
         List<BorrowNoteDetail> returnBook = new ArrayList<>();
         borrowNoteDetailList.forEach(bnd -> {
@@ -141,18 +140,20 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
                returnBook.add(bnd);
            }
         });
-        BorrowNoteDetail borrowNoteDetail = returnBook.get(0);
-        ReturnPhysicalBookDTO returnPhysicalBookDTO = ReturnPhysicalBookDTO.builder()
-                .physicalBookId(borrowNoteDetail.getPhysicalBook().getId())
-                .borrowNoteId(borrowNoteDetail.getBorrowNote().getId())
-                .bookName(borrowNoteDetail.getPhysicalBook().getBook().getName())
-                .bookImage(borrowNoteDetail.getPhysicalBook().getBook().getBookImage())
-                .borrowDate(borrowNoteDetail.getBorrowNote().getBorrowDate())
-                .dueDate(borrowNoteDetail.getBorrowNote().getDueDate())
-                .returnDate(borrowNoteDetail.getReturnDate())
-                .build();
-        returnPhysicalBookDTO.setLate(returnPhysicalBookDTO.getReturnDate().isAfter(returnPhysicalBookDTO.getDueDate()) ?
-    true : false);
-        return returnPhysicalBookDTO;
+        if (returnBook.size() > 0) {
+            BorrowNoteDetail borrowNoteDetail = returnBook.get(0);
+            ReturnPhysicalBookDTO returnPhysicalBookDTO = ReturnPhysicalBookDTO.builder()
+                    .physicalBookId(borrowNoteDetail.getPhysicalBook().getId())
+                    .borrowNoteId(borrowNoteDetail.getBorrowNote().getId())
+                    .bookName(borrowNoteDetail.getPhysicalBook().getBook().getName())
+                    .bookImage(borrowNoteDetail.getPhysicalBook().getBook().getBookImage())
+                    .borrowDate(borrowNoteDetail.getBorrowNote().getBorrowDate())
+                    .dueDate(borrowNoteDetail.getBorrowNote().getDueDate())
+                    .returnDate(borrowNoteDetail.getReturnDate())
+                    .build();
+            returnPhysicalBookDTO.setLate(returnPhysicalBookDTO.getReturnDate().isAfter(returnPhysicalBookDTO.getDueDate()) ?
+                    true : false);
+            return returnPhysicalBookDTO;
+        }else return null;
     }
 }

@@ -63,8 +63,10 @@ public class PhysicalBookResource {
     }
     @GetMapping("/returnbook/{id}")
     public ResponseEntity<ReturnPhysicalBookDTO> returnPhysicalBook(@PathVariable("id") Long id){
-        return null;
+        log.info("return book {id}", id);
+        return ResponseEntity.ok().body(physicalBookService.returnPhysicalBook(id));
     }
+
 }
 
 
