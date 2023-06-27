@@ -19,7 +19,10 @@ import java.util.List;
 public class CustomerResource {
     @Autowired
     private final CustomerService customerService;
-
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerDTO> findCustomerById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(customerService.getCustomerByID(id));
+    }
      @GetMapping
      public ResponseEntity<List<CustomerDTO>> getAllCustomer() {
         return ResponseEntity.ok(customerService.getAllCustomer());
