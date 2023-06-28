@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BorrowNoteDetailDTO {
-    @JsonIgnore
     private Long id;
     private Long physicalBookID;
     private String physicalBookName;

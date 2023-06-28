@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/auth/books")
-
 public class BookResource {
     @Autowired
     private final BookService bookService;
@@ -129,9 +128,5 @@ public class BookResource {
     public List<BookDTO> getBookByGenreName (String genreName){
         return bookService.getBookByGenreName(genreName);
     }
-
-
-
-
 
 }

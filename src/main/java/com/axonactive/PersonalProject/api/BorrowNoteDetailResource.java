@@ -5,6 +5,7 @@ import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.BorrowNoteDetailDTO;
 import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.*;
+import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,21 @@ import java.util.List;
 public class BorrowNoteDetailResource {
     @Autowired
     private final BorrowNoteDetailService borrowNoteDetailService;
-
+    @Autowired
+    private final BorrowNoteDetailMapper borrowNoteDetailMapper;
 
     @GetMapping
     public ResponseEntity<List<BorrowNoteDetailDTO>> getAllBorrowNotedetail() {
         log.info("get all borrow note detail");
         return ResponseEntity.ok(borrowNoteDetailService.getAllBorrowNoteDetail());
     }
-
+    @PostMapping("/returnbook")
+    public ResponseEntity<List<BorrowNoteDetailDTO>> returnBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto){
+        log.info("Return Book On Time");
+        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailService.returnBook(returnBookByCustomerDto);
+        List<BorrowNoteDetailDTO> borrowNoteDetailDTOList = borrowNoteDetailMapper.toDtos(borrowNoteDetailList);
+        return ResponseEntity.ok().body(borrowNoteDetailDTOList);
+    }
 //    @PreAuthorize("hasRole('ADMIN')")
 //    @PostMapping(value = "/{orderId}/{bookId}")
 //    public ResponseEntity<BorrowNoteDetailDTO> createBorrowNoteDetail(@PathVariable("orderId") Long orderID,
@@ -42,7 +50,6 @@ public class BorrowNoteDetailResource {
 
 
     @DeleteMapping(value = "/{orderDetailId}")
-
     public ResponseEntity<BorrowNoteDetailDTO> deleteBorrowNoteDetail(@PathVariable("orderDetailId") Long orderDetailID) {
         borrowNoteDetailService.deleteBorrowNoteDetailByID(orderDetailID);
         return ResponseEntity.noContent().build();
@@ -63,7 +70,7 @@ public class BorrowNoteDetailResource {
                                                                             @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
         return borrowNoteDetailService.getMaxCustomer(date1, date2);
     }
-    @GetMapping("/fine_fee")
+    @PostMapping("/fine_fee")
     public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto){
         return borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
     }

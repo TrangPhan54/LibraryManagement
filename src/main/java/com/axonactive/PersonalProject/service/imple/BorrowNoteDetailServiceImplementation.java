@@ -37,12 +37,9 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     private final BorrowNoteDetailRepository borrowNoteDetailRepository;
     private final PhysicalBookRepository physicalBookRepository;
     private final BorrowNoteRepository borrowNoteRepository;
-
     private final BorrowNoteDetailMapper borrowNoteDetailMapper;
-
     private final CustomerRepository customerRepository;
     private final EntityManager entityManager;
-
     private final BookMapper bookMapper;
     private final CustomerMapper customerMapper;
     private static final Double LOST_FINE_FEE = 1.5;

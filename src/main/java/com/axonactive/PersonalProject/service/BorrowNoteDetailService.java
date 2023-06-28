@@ -56,4 +56,5 @@ public interface BorrowNoteDetailService {
 
 //    String getBookNameById (Long bookId);
     List<BorrowNoteDetailDTO> getBorrowNoteDetailListByBorrowNoteId(Long id);
+    List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDto);
 }
