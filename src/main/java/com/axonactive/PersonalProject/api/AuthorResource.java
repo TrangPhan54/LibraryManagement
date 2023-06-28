@@ -25,7 +25,7 @@ public class AuthorResource {
     @GetMapping
      public ResponseEntity<List<AuthorDTO>> getAllAuthor() {
         log.info("get all author");
-        return ResponseEntity.ok(authorService.getAllAuthor());
+        return ResponseEntity.ok().body(authorService.getAllAuthor());
     }
 
 

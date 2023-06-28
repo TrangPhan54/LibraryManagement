@@ -44,7 +44,7 @@ public class Book {
     private String contentSummary;
     @Column (name = "date_publish")
     private LocalDate datePublish;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "author_id")
     private Author author;
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "book")
