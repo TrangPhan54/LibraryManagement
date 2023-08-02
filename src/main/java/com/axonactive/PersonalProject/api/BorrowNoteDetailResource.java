@@ -99,4 +99,10 @@ public class BorrowNoteDetailResource {
     public List<CustomerDTO> getListOfCustomerStillBorrowBook3(){
         return borrowNoteDetailService.getListOfCustomerStillBorrowBook3();
     }
+
+    @GetMapping("/own")
+    public ResponseEntity<List<CustomerDTO>> getListOfCustomerOwnBook(){
+        return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerOwnBook());
+
+    }
 }

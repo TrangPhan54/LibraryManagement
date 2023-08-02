@@ -24,8 +24,8 @@ public class BorrowNoteDetail {
     @Column (name = "return_date")
     private LocalDate returnDate;
 
-    @ManyToOne
-    @JoinColumn(name = "borrow_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "borrow_id" )
     private BorrowNote borrowNote;
     @Enumerated(EnumType.STRING)
     private Condition condition;

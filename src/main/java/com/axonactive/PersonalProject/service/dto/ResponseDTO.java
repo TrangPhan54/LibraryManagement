@@ -14,8 +14,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseDTO {
-    @JsonIgnore
-    private Long responseID;
+    private Long id;
     private String responseContent;
 
     private Long customerID;

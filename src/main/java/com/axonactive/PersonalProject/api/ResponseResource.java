@@ -34,7 +34,7 @@ public class ResponseResource {
                                                        @PathVariable("bookID") Long bookID,
             @RequestBody ResponseDTO responseDTO) {
         ResponseDTO response = responseService.createResponse(customerID, bookID, responseDTO);
-        return ResponseEntity.created(URI.create("/api/responses/" + response.getResponseID())).body(response);
+        return ResponseEntity.created(URI.create("/api/responses/" + response.getId())).body(response);
 
 
     }
@@ -42,7 +42,7 @@ public class ResponseResource {
     @PutMapping(value = "/{responseId}")
     public ResponseEntity<ResponseDTO> updateResponse(@PathVariable("responseId") Long responseID, @RequestBody ResponseDTO responseDTO) {
         ResponseDTO response = responseService.updateResponse(responseID, responseDTO);
-        return ResponseEntity.created(URI.create("/api/responses/" + response.getResponseID())).body(response);
+        return ResponseEntity.created(URI.create("/api/responses/" + response.getId())).body(response);
     }
 
     @DeleteMapping(value = "/{resID}")

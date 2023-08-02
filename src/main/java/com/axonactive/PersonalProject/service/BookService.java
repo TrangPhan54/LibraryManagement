@@ -57,6 +57,8 @@ public interface BookService {
 
     List<BookDTO> getBookByGenreName (String genreName);
 
+    List<BookDTO> getBookByCriteria (String firstName, String genreName);
+
 
 
 //

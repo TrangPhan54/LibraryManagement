@@ -16,6 +16,8 @@ import com.axonactive.PersonalProject.service.mapper.BorrowNoteDetailMapper;
 import com.axonactive.PersonalProject.service.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -353,5 +355,22 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
         List<Customer> customerStillNotReturnBook = listOfCustomerStillBorrowBook.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).distinct().collect(Collectors.toList());
         return customerMapper.toDtos(customerStillNotReturnBook);
+    }
+    public List<CustomerDTO> getListOfCustomerOwnBook(){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.isNull(root.get("returnDate")),
+                criteriaBuilder.greaterThanOrEqualTo(root.get("borrowNote").get("dueDate") , LocalDate.now().minusDays(LIMITATION_OVERDUE_DAYS))
+
+        );
+        query.select(root).where(condition);
+        List<BorrowNoteDetail> listBorrowNoteDetail = entityManager.createQuery(query).getResultList();
+        List<Customer> customerOwnBook = listBorrowNoteDetail.stream()
+                .map(BorrowNoteDetail::getBorrowNote)
+                .map(BorrowNote::getCustomer)
+                .collect(Collectors.toList());
+        return customerMapper.toDtos(customerOwnBook);
     }
 }

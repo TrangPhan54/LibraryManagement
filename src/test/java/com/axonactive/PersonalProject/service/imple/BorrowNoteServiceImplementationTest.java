@@ -24,11 +24,6 @@ class BorrowNoteServiceImplementationTest {
     @Autowired
     private BorrowNoteService borrowNoteService;
 
-    @Test
-    void nameOfCustomerReturnBookLate() {
-        List<String> tempList = borrowNoteService.nameOfCustomerReturnBookLate();
-        tempList.forEach(System.out::println);
-    }
 
     @Test
     void createBorrowNote() {

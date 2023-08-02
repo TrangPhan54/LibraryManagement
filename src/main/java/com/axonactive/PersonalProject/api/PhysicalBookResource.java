@@ -4,6 +4,7 @@ import com.axonactive.PersonalProject.entity.Status;
 import com.axonactive.PersonalProject.service.CustomerService;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
 import com.axonactive.PersonalProject.service.dto.*;
+import com.axonactive.PersonalProject.service.dto.customedDto.ReturnPhysicalBookDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +46,16 @@ public class PhysicalBookResource {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/liquid")
-//    public List<PhysicalBookDTO> getLiquidationBook() {
-//        return physicalBookService.getLiquidationBook();
-//
-//    }
+    @GetMapping("/liquid")
+    public List<PhysicalBookDTO> getLiquidationBook() {
+        return physicalBookService.getLiquidationBook();
+
+    }
+    @GetMapping("/pub_name")
+    public  List<PhysicalBookDTO> findPhysicalBookByPublishingHouseName(@RequestParam String publishingHouseName){
+        return physicalBookService.findPhysicalBookByPublishingHouseName(publishingHouseName);
+
+    }
 
     @GetMapping("/status")
     public List<PhysicalBookDTO> getByStatus(Status status) {
@@ -60,6 +66,11 @@ public class PhysicalBookResource {
 
     public List<PhysicalBookDTO> findAllById(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
         return physicalBookService.findAllById(listOfPhysicalBookDTO);
+    }
+    @GetMapping("/returnbook/{id}")
+    public ResponseEntity<ReturnPhysicalBookDTO> returnPhysicalBook(@PathVariable("id") Long id){
+        log.info("return book {id}", id);
+        return ResponseEntity.ok().body(physicalBookService.returnPhysicalBook(id));
     }
 
 

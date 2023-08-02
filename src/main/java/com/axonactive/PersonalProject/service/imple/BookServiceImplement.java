@@ -20,9 +20,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
@@ -38,6 +36,24 @@ public class BookServiceImplement implements BookService {
     private final BookMapper bookMapper;
     @PersistenceContext
     private final EntityManager entityManager;
+    public void saveBook (Book book){
+        entityManager.persist(book);
+    }
+    public Book findBookByID(Long id){
+        return entityManager.find(Book.class,id);
+    }
+    public List<BookDTO> getBookByAuthorFirstName2 (String firstName){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
+        Predicate condition = criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("author").get("firstName"), firstName )
+        );
+        query.select(root).where(condition);
+        List<Book> books = entityManager.createQuery(query).getResultList();
+        return bookMapper.toDtos(books);
+    }
+
 
     @Override
     public List<BookDTO> getAllBook() {
@@ -239,5 +255,20 @@ public class BookServiceImplement implements BookService {
         query.select(root).where(condition);
         List<Book> books = entityManager.createQuery(query).getResultList().stream().map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(books);
+    }
+
+    public List<BookDTO> getBookByCriteria (String bookName, String firstName){
+        CriteriaBuilder cr = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = cr.createQuery(Book.class);
+        Root<Book> root = query.from(Book.class);
+        Predicate condition1 = cr.like(root.get("name"),bookName);
+        Predicate condition2 = cr.like(root.get("author").get("firstName"), firstName);
+        Predicate pd = cr.and(condition1, condition2);
+        query.where(pd);
+
+        List<Book> books = entityManager.createQuery(query).getResultList();
+        return bookMapper.toDtos(books);
+//        return null;
+
     }
 }

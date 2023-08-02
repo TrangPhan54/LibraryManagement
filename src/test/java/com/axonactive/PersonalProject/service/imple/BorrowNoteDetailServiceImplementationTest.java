@@ -40,10 +40,7 @@ class BorrowNoteDetailServiceImplementationTest {
 //        assertEquals(numberOfBorrowedBooks, 2);
     }
 
-    @Test
-    void customerReturnBook() {
-        System.out.println(borrowNoteDetailService.customerReturnBook(1L, 2L));
-    }
+
 
 
     @Test
@@ -112,12 +109,6 @@ class BorrowNoteDetailServiceImplementationTest {
         borrowNoteDetailService.getBookListOfACustomer(id);
     }
 
-    @Test
-    void getBookListOfACustomer1() {
-        Long id = 6L;
-        List<BorrowNoteDetail> brdList = borrowNoteDetailService.getBookListOfACustomer1(id);
-        brdList.forEach(System.out::println);
-    }
 
 
 //    @Test

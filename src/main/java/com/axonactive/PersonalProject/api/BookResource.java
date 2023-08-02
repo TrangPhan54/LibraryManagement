@@ -129,8 +129,10 @@ public class BookResource {
     public List<BookDTO> getBookByGenreName (String genreName){
         return bookService.getBookByGenreName(genreName);
     }
-
-
+    @GetMapping("/crrrrr")
+    public ResponseEntity<List<BookDTO>> getBookByCriteria (@RequestParam String firstName, @RequestParam String bookName){
+        return ResponseEntity.ok(bookService.getBookByCriteria(firstName,bookName));
+    }
 
 
 

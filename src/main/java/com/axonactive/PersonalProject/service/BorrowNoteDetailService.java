@@ -27,6 +27,7 @@ public interface BorrowNoteDetailService {
 
     //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
     CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
+
     FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
     List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2);
@@ -39,13 +40,15 @@ public interface BorrowNoteDetailService {
 
     List<BorrowNoteDetail> getBookListOfACustomer(Long customerID);
 
-    List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID (Long borrowID);
+    List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID(Long borrowID);
 
     List<BorrowNoteDetailDTO> getBookListOfACustomer2(Long customerID);
 
     List<BorrowNoteDetailDTO> getListOfCustomerStillBorrowBook2();
 
     List<CustomerDTO> getListOfCustomerStillBorrowBook3();
+
+    List<CustomerDTO> getListOfCustomerOwnBook();
 
 
 //    List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto);

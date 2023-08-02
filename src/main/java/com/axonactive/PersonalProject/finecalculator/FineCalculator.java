@@ -10,11 +10,11 @@ public class FineCalculator {
 
 
     public Double calculatingFineFee(Long overdueDays) {
-        double fine = 0;
+        double fine;
         if (overdueDays <= LIMITATION_OVERDUE_DAY) {
             fine = BASE_FEE + FINE_PER_DAY * overdueDays;
         } else {
-            fine *= PENALTY_FACTOR;
+            fine = (BASE_FEE + FINE_PER_DAY * overdueDays) * PENALTY_FACTOR;
         }
         return fine;
     }
