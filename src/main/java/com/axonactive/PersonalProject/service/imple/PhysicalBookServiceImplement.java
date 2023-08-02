@@ -11,7 +11,6 @@ import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
 import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.mapper.PhysicalBookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -129,33 +128,6 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     public List<PhysicalBookDTO> findAllById(ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
         List<PhysicalBook> physicalBooks = physicalBookRepository.findAllById(listOfPhysicalBookDTO.getPhysicalBookIds());
         return physicalBookMapper.toDtos(physicalBooks);
-    }
-
-    @Override
-    public ReturnPhysicalBookDTO returnPhysicalBook(Long id) {
-        List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByPhysicalBookId(id);
-        List<BorrowNoteDetail> returnBook = new ArrayList<>();
-        borrowNoteDetailList.forEach(bnd -> {
-            if (bnd.getCondition() == null){
-                bnd.setReturnDate(LocalDate.now());
-                bnd.setCondition(Condition.NORMAL);
-                returnBook.add(bnd);
-            }
-        });
-        if (returnBook.size() > 0) {
-            BorrowNoteDetail borrowNoteDetail = returnBook.get(0);
-            ReturnPhysicalBookDTO returnPhysicalBookDTO = ReturnPhysicalBookDTO.builder()
-                    .physicalBookId(borrowNoteDetail.getPhysicalBook().getId())
-                    .borrowNoteId(borrowNoteDetail.getBorrowNote().getId())
-                    .bookName(borrowNoteDetail.getPhysicalBook().getBook().getName())
-                    .bookImage(borrowNoteDetail.getPhysicalBook().getBook().getBookImage())
-                    .borrowDate(borrowNoteDetail.getBorrowNote().getBorrowDate())
-                    .dueDate(borrowNoteDetail.getBorrowNote().getDueDate())
-                    .returnDate(borrowNoteDetail.getReturnDate())
-                    .build();
-            returnPhysicalBookDTO.setLate(returnPhysicalBookDTO.getReturnDate().isAfter(returnPhysicalBookDTO.getDueDate()));
-            return returnPhysicalBookDTO;
-        }else return null;
     }
 
 

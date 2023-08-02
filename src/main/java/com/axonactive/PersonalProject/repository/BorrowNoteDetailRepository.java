@@ -22,6 +22,8 @@ public interface BorrowNoteDetailRepository extends JpaRepository<BorrowNoteDeta
     List<BorrowNoteDetail> findByPhysicalBookId(Long id);
 
 //    List<BorrowNoteDetail> findByBorrowNoteBorrowDateBetween ();
-
-
+    @Query("SELECT bnd FROM BorrowNoteDetail bnd WHERE bnd.borrowNote.id = ?1")
+    List<BorrowNoteDetail> findByBorrowNoteId(Long id);
+    @Query("SELECT bnd FROM BorrowNoteDetail bnd WHERE bnd.physicalBook.id = ?1")
+    List<BorrowNoteDetail> findByPhysicalBookId(Long id);
 }
