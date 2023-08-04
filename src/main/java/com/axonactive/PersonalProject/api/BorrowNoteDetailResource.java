@@ -45,6 +45,10 @@ public class BorrowNoteDetailResource {
     public ResponseEntity<CustomerDTO> banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return ResponseEntity.ok(borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto));
     }
+    @GetMapping("/remain1")
+    public ResponseEntity<CustomerDTO> banAccountForReturningBookLate1(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
+        return ResponseEntity.ok(borrowNoteDetailService.banAccountForReturningBookLate1(returnBookByCustomerDto));
+    }
 
     @GetMapping("/max_customer")
     public ResponseEntity<List<CustomerWithNumberOfPhysicalCopiesBorrowDTO>> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,

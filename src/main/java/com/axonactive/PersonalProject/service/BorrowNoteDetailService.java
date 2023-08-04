@@ -27,6 +27,8 @@ public interface BorrowNoteDetailService {
 
     //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
     CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
+    CustomerDTO banAccountForReturningBookLate1(ReturnBookByCustomerDTO returnBookByCustomerDto);
+
 
     FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
 

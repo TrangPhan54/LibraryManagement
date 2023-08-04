@@ -197,19 +197,39 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     // 4. Returning book service. If a customer return book late for 20 times, customer cannot borrow book in library anymore
     @Override
-    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
+    public CustomerDTO banAccountForReturningBookLate1(ReturnBookByCustomerDTO returnBookByCustomerDto) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
-            if (isOverDueDate(dueDate) && !numberOfTimeReturnLateOverLimitation(customer)) {
+            if (isOverDueDate(dueDate) && numberOfTimeReturnLateOverLimitation(customer)) {
                 customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
-                if (customer.getNumberOfTimeReturnLate() >= LIMITATION_OVERDUE_TIMES) {
+                if (!numberOfTimeReturnLateOverLimitation(customer)) {
                     customer.setActive(false);
                 }
             }
         }
 
+        customerRepository.save(customer);
+        return customerMapper.toDto(customer);
+    }
+    @Override
+    public CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
+        List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
+        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+        for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
+            LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
+            Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
+            if (testOverdue.test(dueDate)) {
+                Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_TIMES;
+                if (numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate())) {
+                    customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
+                    if (customer.getNumberOfTimeReturnLate() >= LIMITATION_OVERDUE_TIMES){
+                        customer.setActive(false);
+                    }
+                }
+            }
+        }
         customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }
