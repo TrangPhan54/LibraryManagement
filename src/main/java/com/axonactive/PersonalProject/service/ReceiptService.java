@@ -5,8 +5,7 @@ import com.axonactive.PersonalProject.service.dto.*;
 import java.util.List;
 
 public interface ReceiptService {
-    List<ReceiptDTO> getAllReceipt ();
-    ReceiptDTO createReceipt (CreateReceiptDTO createReceiptDTO);
+    List<ReceiptDTO> getAllReceipt();
 
-//    ReceiptDTO createReceipt(ListOfPhysicalBookDTO listOfPhysicalBookDTO, Long customerID);
+    ReceiptDTO createReceipt(CreateReceiptDTO createReceiptDTO);
 }

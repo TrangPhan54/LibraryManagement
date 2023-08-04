@@ -65,7 +65,6 @@ public class GenreBookServiceImplementation implements GenreBookService {
         return genreBookMapper.toDto(genreBook);
 
     }
-
     @Override
     public void deleteGenreBookById(Long genreBookId) {
         GenreBook genreBook = genreBookRepository.findById(genreBookId).orElseThrow(LibraryException::GenreBookNotFound);

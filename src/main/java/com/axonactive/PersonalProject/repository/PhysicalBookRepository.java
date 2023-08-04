@@ -9,18 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 @Repository
-public interface PhysicalBookRepository extends JpaRepository <PhysicalBook,Long> {
-//    @Query (value = "select * from from physical_book pb join book b" +
-//            "on  b.id = pb.book_id " +
-//            "join publishing_house ph " +
-//            "on ph.id = pb.publishing_house_id ",nativeQuery = true)
-    List<PhysicalBook> findPhysicalBookByPublishingHouseName (String publishingHouseName);
+public interface PhysicalBookRepository extends JpaRepository<PhysicalBook, Long> {
 
+    @Query(value = "select count(pb.book_id) from physical_book pb join book b on b.name like ?1 and pb.book_id = b.id ", nativeQuery = true)
+    Long countBookBaseOnBookName(String bookName);
 
-    @Query (value = "select count(pb.book_id) from physical_book pb join book b on b.name like ?1 and pb.book_id = b.id ", nativeQuery = true)
-    Long countBookBaseOnBookName (String bookName);
-
-    List<PhysicalBook> findByStatus (Status status);
+    List<PhysicalBook> findByStatus(Status status);
 
 
 }

@@ -1,14 +1,11 @@
 package com.axonactive.PersonalProject.api;
 
-import com.axonactive.PersonalProject.service.GenreService;
 import com.axonactive.PersonalProject.service.ResponseService;
-import com.axonactive.PersonalProject.service.dto.GenreDTO;
 import com.axonactive.PersonalProject.service.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -30,9 +27,9 @@ public class ResponseResource {
 
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> createResponse (@PathVariable("customerID") Long customerID,
-                                                       @PathVariable("bookID") Long bookID,
-            @RequestBody ResponseDTO responseDTO) {
+    public ResponseEntity<ResponseDTO> createResponse(@PathVariable("customerID") Long customerID,
+                                                      @PathVariable("bookID") Long bookID,
+                                                      @RequestBody ResponseDTO responseDTO) {
         ResponseDTO response = responseService.createResponse(customerID, bookID, responseDTO);
         return ResponseEntity.created(URI.create("/api/responses/" + response.getId())).body(response);
 
@@ -50,12 +47,14 @@ public class ResponseResource {
         responseService.deleteResponseByID(responseID);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/{responseId}")
-    public ResponseEntity<ResponseDTO> getResponseById (@PathVariable("responseId") Long responseId){
+    public ResponseEntity<ResponseDTO> getResponseById(@PathVariable("responseId") Long responseId) {
         return ResponseEntity.ok(responseService.getResponseById(responseId));
     }
+
     @GetMapping("/response")
-    public String findResponseOfABookByBookName(@RequestParam String bookName){
-        return responseService.findResponseOfABookByBookName(bookName);
+    public ResponseEntity<String> findResponseOfABookByBookName(@RequestParam String bookName) {
+        return ResponseEntity.ok(responseService.findResponseOfABookByBookName(bookName));
     }
 }

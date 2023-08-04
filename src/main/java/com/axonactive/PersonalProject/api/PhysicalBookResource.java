@@ -1,15 +1,12 @@
 package com.axonactive.PersonalProject.api;
 
 import com.axonactive.PersonalProject.entity.Status;
-import com.axonactive.PersonalProject.service.CustomerService;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
 import com.axonactive.PersonalProject.service.dto.*;
-import com.axonactive.PersonalProject.service.dto.customedDto.ReturnPhysicalBookDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -29,7 +26,7 @@ public class PhysicalBookResource {
     }
 
     @PostMapping
-    public ResponseEntity<PhysicalBookDTO> createPhysicalBook(@RequestBody CreatePhysicalBookDto createPhysicalBookDto) {
+    public ResponseEntity<PhysicalBookDTO> createPhysicalBook(@RequestBody CreatePhysicalBookDTO createPhysicalBookDto) {
         PhysicalBookDTO physicalBook = physicalBookService.createPhysicalBook(createPhysicalBookDto);
         return ResponseEntity.created(URI.create("/api/customers/" + physicalBook.getId())).body(physicalBook);
     }
@@ -47,25 +44,25 @@ public class PhysicalBookResource {
     }
 
     @GetMapping("/liquid")
-    public List<PhysicalBookDTO> getLiquidationBook() {
-        return physicalBookService.getLiquidationBook();
+    public ResponseEntity<List<PhysicalBookDTO>> getLiquidationBook() {
+        return ResponseEntity.ok(physicalBookService.getLiquidationBook());
 
     }
     @GetMapping("/pub_name")
-    public  List<PhysicalBookDTO> findPhysicalBookByPublishingHouseName(@RequestParam String publishingHouseName){
-        return physicalBookService.findPhysicalBookByPublishingHouseName(publishingHouseName);
+    public  ResponseEntity<List<PhysicalBookDTO>> findPhysicalBookByPublishingHouseName(@RequestParam String publishingHouseName){
+        return ResponseEntity.ok(physicalBookService.findPhysicalBookByPublishingHouseName(publishingHouseName));
 
     }
 
     @GetMapping("/status")
-    public List<PhysicalBookDTO> getByStatus(Status status) {
-        return physicalBookService.getByStatus(status);
+    public ResponseEntity<List<PhysicalBookDTO>> getByStatus(Status status) {
+        return ResponseEntity.ok(physicalBookService.getByStatus(status));
     }
 
     @GetMapping("/find_all_by_id")
 
-    public List<PhysicalBookDTO> findAllById(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
-        return physicalBookService.findAllById(listOfPhysicalBookDTO);
+    public ResponseEntity<List<PhysicalBookDTO>> findAllById(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO) {
+        return ResponseEntity.ok(physicalBookService.findAllById(listOfPhysicalBookDTO));
     }
 
 

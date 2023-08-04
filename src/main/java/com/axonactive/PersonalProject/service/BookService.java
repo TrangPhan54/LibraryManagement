@@ -25,7 +25,6 @@ public interface BookService {
     List<BookDTO> getByName(String name);
 
 
-
     // 4. Tim sach boi ten tac gia
     List<BookDTO> getBookByAuthorFirstName(String authorFirstName);
 
@@ -51,20 +50,13 @@ public interface BookService {
     List<BookAnalyticDTO> getBookAnalytic();
 
     List<BookDTO> findBookByNameContaining(String name);
-    List<BookDTO> getBookPublishBefore2000 ();
 
-    List<BookDTO> getBookByAuthorFirstName1 (String firstName);
+    List<BookDTO> getBookPublishBefore2000();
 
-    List<BookDTO> getBookByGenreName (String genreName);
+    List<BookDTO> getBookByAuthorFirstName1(String firstName);
 
-    List<BookDTO> getBookByCriteria (String firstName, String genreName);
+    List<BookDTO> getBookByGenreName(String genreName);
 
-
-
-//
-//    List<Book> getBestBorrowBooksBetweenDate (LocalDate date1, LocalDate date2);
-//
-//
-
+    List<BookDTO> getBookByCriteria(String firstName, String genreName);
 
 }

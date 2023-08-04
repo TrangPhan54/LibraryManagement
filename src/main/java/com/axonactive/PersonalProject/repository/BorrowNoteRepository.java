@@ -14,8 +14,4 @@ import java.util.List;
 public interface BorrowNoteRepository extends JpaRepository<BorrowNote, Long> {
     @Query("Select bn from BorrowNote bn where bn.borrowDate = ?1")
     List<BorrowNote> findBorrowNoteHistoryByBorrowDate(LocalDate borrowDate);
-
-
-
-//    List<BorrowNote> nameOfCustomerReturnBookLate();
 }

@@ -109,6 +109,4 @@ public class CustomerServiceImplement implements CustomerService {
     public List<CustomerDTO> getCustomerByLastNameContaining(String partOfName) {
         return customerMapper.toDtos(customerRepository.findCustomerByLastNameContaining(partOfName));
     }
-
-
 }

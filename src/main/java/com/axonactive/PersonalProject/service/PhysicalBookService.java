@@ -1,19 +1,15 @@
 package com.axonactive.PersonalProject.service;
 
-import com.axonactive.PersonalProject.entity.PhysicalBook;
 import com.axonactive.PersonalProject.entity.Status;
-import com.axonactive.PersonalProject.service.dto.BookDTO;
-import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
+import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
-
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface PhysicalBookService {
     List<PhysicalBookDTO> getAllPhysicalBook();
 
-    PhysicalBookDTO createPhysicalBook(CreatePhysicalBookDto createPhysicalBookDto);
+    PhysicalBookDTO createPhysicalBook(CreatePhysicalBookDTO createPhysicalBookDto);
 
     PhysicalBookDTO updatePhysicalBook(PhysicalBookDTO bookDTO);
 

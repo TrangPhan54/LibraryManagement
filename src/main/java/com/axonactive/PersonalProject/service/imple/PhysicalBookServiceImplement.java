@@ -7,26 +7,20 @@ import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.PhysicalBookRepository;
 import com.axonactive.PersonalProject.repository.PublishingHouseRepository;
 import com.axonactive.PersonalProject.service.PhysicalBookService;
-import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDto;
+import com.axonactive.PersonalProject.service.dto.CreatePhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.ListOfPhysicalBookDTO;
 import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
 import com.axonactive.PersonalProject.service.mapper.PhysicalBookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -51,7 +45,7 @@ public class PhysicalBookServiceImplement implements PhysicalBookService {
     }
 
     @Override
-    public PhysicalBookDTO createPhysicalBook(CreatePhysicalBookDto createPhysicalBookDto) {
+    public PhysicalBookDTO createPhysicalBook(CreatePhysicalBookDTO createPhysicalBookDto) {
         PhysicalBook physicalBook = new PhysicalBook();
         Book book = bookRepository.findById(createPhysicalBookDto.getBookId()).orElseThrow(LibraryException::BookNotFound);
         PublishingHouse publishingHouse = publishingHouseRepository.findById(createPhysicalBookDto.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);

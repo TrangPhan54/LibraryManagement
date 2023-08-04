@@ -50,13 +50,4 @@ public interface BorrowNoteDetailService {
 
     List<CustomerDTO> getListOfCustomerOwnBook();
 
-
-//    List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto);
-
-
-//    List<CustomerDTO> getMaxBorrowCustomer (LocalDate date1, LocalDate date2);
-
-
-//    String getBookNameById (Long bookId);
-    List<BorrowNoteDetailDTO> getBorrowNoteDetailListByBorrowNoteId(Long id);
 }

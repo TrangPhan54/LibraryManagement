@@ -44,14 +44,11 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     private final CustomerRepository customerRepository;
     private final EntityManager entityManager;
-
     private final BookMapper bookMapper;
     private final CustomerMapper customerMapper;
-    private static final Double LOST_FINE_FEE = 1.5;
     private static final Double LIMITATION_OVERDUE_TIMES = 20.0;
 
     private static final Long LIMITATION_OVERDUE_DAYS = 100L;
-
 
     FineCalculator fineCalculator = new FineCalculator(); // create object of service class
     PaymentGateway paymentGateway = new PaymentGatewayAdapter(fineCalculator); //PaymentGatewayAdapter class wraps an instance of FineCalculator and implements the PaymentGateway interface
@@ -91,19 +88,17 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     public Long getNumberOfBookByCustomerId(Long customerId) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll();
         return borrowNoteDetailList.stream()
-                .filter(brd -> brd.getBorrowNote().getCustomer().getId() == customerId).count();
+                .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId)).count();
     }
     //2. After return book. count number of book remaining of a customer
 
     @Override
     public Long customerReturnBook(Long customerId, Long numberOfBooksReturned) {
-        log.info("request the number of return books by customer id {}", customerId);
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findAll().stream()
                 .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId))
                 .collect(Collectors.toList());
         Long numberOfRemainingBooks = borrowNoteDetailList.stream()
                 .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId)).count() - numberOfBooksReturned;
-
         borrowNoteDetailList.forEach(System.out::println);
         return numberOfRemainingBooks;
 
@@ -129,12 +124,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .map(brd -> brd.getPhysicalBook().getBook().getName())
                 .collect(Collectors.toList());
     }
-    // 1. Returning book service : Get list of borrow note detail of a customer
 
-    //    public List<BorrowNoteDetail> getBookListOfACustomer(ReturnBookByCustomerDto returnBookByCustomerDto) {
-//        return borrowNoteDetailRepository.findByBorrowNoteCustomerId(returnBookByCustomerDto.getCustomerId());
-//    }
-    // Get list of borrow note detail of a customer for function return book and lost book
     public List<BorrowNoteDetail> getBookListOfACustomer(Long customerID) {
         return borrowNoteDetailRepository.findByBorrowNoteCustomerId(customerID);
     }
@@ -212,19 +202,26 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
-            Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
-            if (testOverdue.test(dueDate)) {
-                Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_TIMES;
-                if (numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate())) {
-                    customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
-                    if (customer.getNumberOfTimeReturnLate() >= LIMITATION_OVERDUE_TIMES){
-                        customer.setActive(false);
-                    }
+            if (isOverDueDate(dueDate) && !numberOfTimeReturnLateOverLimitation(customer)) {
+                customer.setNumberOfTimeReturnLate(customer.getNumberOfTimeReturnLate() + 1);
+                if (customer.getNumberOfTimeReturnLate() >= LIMITATION_OVERDUE_TIMES) {
+                    customer.setActive(false);
                 }
             }
         }
+
         customerRepository.save(customer);
         return customerMapper.toDto(customer);
+    }
+
+    private boolean isOverDueDate(LocalDate returnDate) {
+        Predicate<LocalDate> testOverDue = x -> x.isBefore(LocalDate.now());
+        return testOverDue.test(returnDate);
+    }
+
+    private boolean numberOfTimeReturnLateOverLimitation(Customer customer) {
+        Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_TIMES;
+        return numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate());
     }
 
     //5. Returning book service. (using Adapter design pattern). Customer have to pay fee and the fee base on number of overdue days
@@ -260,8 +257,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         );
         query.select(root).where(condition);
         List<BorrowNoteDetail> borrowListBaseOnDate = entityManager.createQuery(query).getResultList();
-//        List<BorrowNoteDetail> borrowListBaseOnDate = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
-        List<Book> bookList = borrowListBaseOnDate.stream().map(BorrowNoteDetail::getPhysicalBook).map(PhysicalBook::getBook).collect(Collectors.toList());
+        List<Book> bookList = borrowListBaseOnDate.stream()
+                .map(BorrowNoteDetail::getPhysicalBook)
+                .map(PhysicalBook::getBook)
+                .collect(Collectors.toList());
         Map<Book, Long> booksWithPhysicalCopiedBorrowed = new HashMap<>();
         for (Book book : bookList) {
             booksWithPhysicalCopiedBorrowed.put(book, 0L);
@@ -297,7 +296,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     @Override
     public List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(LocalDate date1, LocalDate date2) {
         List<BorrowNoteDetail> borrowNoteDetailList = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
-        List<Customer> customers = borrowNoteDetailList.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).collect(Collectors.toList());
+        List<Customer> customers = borrowNoteDetailList.stream()
+                .map(BorrowNoteDetail::getBorrowNote)
+                .map(BorrowNote::getCustomer)
+                .collect(Collectors.toList());
         Map<Customer, Long> customerWithNumberOfPhysicalCopiesBorrow = new HashMap<>();
         for (Customer customer : customers) {
             customerWithNumberOfPhysicalCopiesBorrow.put(customer, 0L);
@@ -342,6 +344,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
         return borrowNoteDetailMapper.toDtos(listOfCustomerStillBorrowBook);
     }
+
     // get list of customer still borrow book to contact
     public List<CustomerDTO> getListOfCustomerStillBorrowBook3() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -353,18 +356,24 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         );
         query.select(root).where(condition);
         List<BorrowNoteDetail> listOfCustomerStillBorrowBook = entityManager.createQuery(query).getResultList();
-        List<Customer> customerStillNotReturnBook = listOfCustomerStillBorrowBook.stream().map(BorrowNoteDetail::getBorrowNote).map(BorrowNote::getCustomer).distinct().collect(Collectors.toList());
+        List<Customer> customerStillNotReturnBook = listOfCustomerStillBorrowBook.stream()
+                .map(BorrowNoteDetail::getBorrowNote)
+                .map(BorrowNote::getCustomer)
+                .distinct()
+                .collect(Collectors.toList());
         return customerMapper.toDtos(customerStillNotReturnBook);
     }
-    public List<CustomerDTO> getListOfCustomerOwnBook(){
+
+    public List<CustomerDTO> getListOfCustomerOwnBook() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
         Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
-        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
-                criteriaBuilder.isNull(root.get("returnDate")),
-                criteriaBuilder.greaterThanOrEqualTo(root.get("borrowNote").get("dueDate") , LocalDate.now().minusDays(LIMITATION_OVERDUE_DAYS))
+        javax.persistence.criteria.Predicate condition =
+                criteriaBuilder.and(
+                        criteriaBuilder.isNull(root.get("returnDate")),
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("borrowNote").get("dueDate"), LocalDate.now().minusDays(LIMITATION_OVERDUE_DAYS))
 
-        );
+                );
         query.select(root).where(condition);
         List<BorrowNoteDetail> listBorrowNoteDetail = entityManager.createQuery(query).getResultList();
         List<Customer> customerOwnBook = listBorrowNoteDetail.stream()

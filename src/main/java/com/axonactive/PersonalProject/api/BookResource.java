@@ -37,7 +37,7 @@ public class BookResource {
     @PutMapping(value = "/{bookId}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long bookID,
                                               @RequestBody BookDTO bookDTO) {
-        log.info("update book by id {}",bookID);
+        log.info("update book by id {}", bookID);
         BookDTO book = bookService.updateBook(bookID, bookDTO);
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
@@ -45,22 +45,23 @@ public class BookResource {
     @DeleteMapping(value = "/{bookId}")
 
     public ResponseEntity<BookDTO> deleteBook(@PathVariable("bookId") Long bookID) {
-        log.info("delete book by id {}",bookID);
+        log.info("delete book by id {}", bookID);
         bookService.deleteBookById(bookID);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{bookId}")
     public ResponseEntity<BookDTO> getBookById(@PathVariable("bookId") Long bookId) {
-        log.info("get book by id {}",bookId);
+        log.info("get book by id {}", bookId);
         return ResponseEntity.ok(bookService.getBookById(bookId));
     }
 
     @GetMapping("/keyword")
     public ResponseEntity<List<BookDTO>> getByBookNameContainingIgnoreCase(@RequestParam("keyword") String keyword) {
-        log.info("get book by name containing ignore case {}",keyword);
+        log.info("get book by name containing ignore case {}", keyword);
         return ResponseEntity.ok(bookService.getByBookNameContainingIgnoreCase(keyword));
     }
+
     @GetMapping("/author_first_name")
 
     public ResponseEntity<List<BookDTO>> getBookByAuthorFirstName(@RequestParam("authorFirstName") String authorFirstName) {
@@ -104,36 +105,40 @@ public class BookResource {
     public ResponseEntity<List<BookDTO>> getBookByAuthorLastNameContainingIgnoreCase(@RequestParam("partOfName") String partOfName) {
         return ResponseEntity.ok(bookService.getBookByAuthorLastNameContainingIgnoreCase(partOfName));
     }
+
     @GetMapping("/first_name_containing_ignorecase")
     public ResponseEntity<List<BookDTO>> getBookByAuthorFirstNameContainingIgnoreCase(@RequestParam("partOfName") String partOfName) {
         return ResponseEntity.ok(bookService.getBookByAuthorFirstNameContainingIgnoreCase(partOfName));
     }
+
     @GetMapping("/book_analytic")
-    public List<BookAnalyticDTO> getBookAnalytic(){
-        return bookService.getBookAnalytic();
+    public ResponseEntity<List<BookAnalyticDTO>> getBookAnalytic() {
+        return ResponseEntity.ok(bookService.getBookAnalytic());
     }
+
     @GetMapping("/auth_title")
-    public List<BookDTO> findBookByNameContaining(@RequestParam String name) {
-        return bookService.findBookByNameContaining(name);
+    public ResponseEntity<List<BookDTO>> findBookByNameContaining(@RequestParam String name) {
+        return ResponseEntity.ok(bookService.findBookByNameContaining(name));
 
     }
+
     @GetMapping("/publish_before_2000")
-    public List<BookDTO> getBookPublishBefore2000() {
-        return bookService.getBookPublishBefore2000();
+    public ResponseEntity<List<BookDTO>> getBookPublishBefore2000() {
+        return ResponseEntity.ok(bookService.getBookPublishBefore2000());
     }
+
     @GetMapping("/fn1")
-    public List<BookDTO> getBookByAuthorFirstName1 (String firstName){
-        return bookService.getBookByAuthorFirstName1(firstName);
+    public ResponseEntity<List<BookDTO>> getBookByAuthorFirstName1(String firstName) {
+        return ResponseEntity.ok(bookService.getBookByAuthorFirstName1(firstName));
     }
+
     @GetMapping("/gn")
-    public List<BookDTO> getBookByGenreName (String genreName){
-        return bookService.getBookByGenreName(genreName);
+    public ResponseEntity<List<BookDTO>> getBookByGenreName(String genreName) {
+        return ResponseEntity.ok(bookService.getBookByGenreName(genreName));
     }
+
     @GetMapping("/crrrrr")
-    public ResponseEntity<List<BookDTO>> getBookByCriteria (@RequestParam String firstName, @RequestParam String bookName){
-        return ResponseEntity.ok(bookService.getBookByCriteria(firstName,bookName));
+    public ResponseEntity<List<BookDTO>> getBookByCriteria(@RequestParam String firstName, @RequestParam String bookName) {
+        return ResponseEntity.ok(bookService.getBookByCriteria(firstName, bookName));
     }
-
-
-
 }

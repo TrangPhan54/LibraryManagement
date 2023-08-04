@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.service;
 
-import com.axonactive.PersonalProject.entity.GenreBook;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
 import com.axonactive.PersonalProject.service.dto.GenreBookDTO;
 

@@ -26,20 +26,8 @@ public class BorrowNoteDetailResource {
 
     @GetMapping
     public ResponseEntity<List<BorrowNoteDetailDTO>> getAllBorrowNotedetail() {
-        log.info("get all borrow note detail");
         return ResponseEntity.ok(borrowNoteDetailService.getAllBorrowNoteDetail());
     }
-
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @PostMapping(value = "/{orderId}/{bookId}")
-//    public ResponseEntity<BorrowNoteDetailDTO> createBorrowNoteDetail(@PathVariable("orderId") Long orderID,
-//                                                                      @PathVariable("bookId") Long bookID,
-//                                                                      @RequestBody BorrowNoteDetailDTO borrowNoteDetailDTO) {
-//        log.info("create borrow note detail");
-//        BorrowNoteDetailDTO book = borrowNoteDetailService.createBorrowNoteDetail(borrowNoteDetailDTO, bookID, orderID);
-//        return ResponseEntity.created(URI.create("/api/orderDetails" + book.getId())).body(book);
-//    }
-
 
     @DeleteMapping(value = "/{orderDetailId}")
 
@@ -54,54 +42,59 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/remain")
-    public CustomerDTO banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        return borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
+    public ResponseEntity<CustomerDTO> banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
+        return ResponseEntity.ok(borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto));
     }
 
     @GetMapping("/max_customer")
-    public List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
-                                                                            @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
-        return borrowNoteDetailService.getMaxCustomer(date1, date2);
+    public ResponseEntity<List<CustomerWithNumberOfPhysicalCopiesBorrowDTO>> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                                                            @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
+        return ResponseEntity.ok(borrowNoteDetailService.getMaxCustomer(date1, date2));
     }
+
     @GetMapping("/fine_fee")
-    public FineFeeForCustomerDTO fineFeeForReturningBookLate (@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto){
-        return borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
+    public ResponseEntity<FineFeeForCustomerDTO> fineFeeForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
+        return ResponseEntity.ok(borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto));
     }
+
     @GetMapping("/book_analytic")
-    public List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook (@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
-                                                                  @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2){
-        return borrowNoteDetailService.getMaxBorrowBook(date1, date2);
+    public ResponseEntity<List<BookAnalyticForAmountOfTimeDTO>> getMaxBorrowBook(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
+                                                                                 @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
+        return ResponseEntity.ok(borrowNoteDetailService.getMaxBorrowBook(date1, date2));
     }
 
     @GetMapping("/lost_book")
-    public FineFeeForCustomerDTO lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        return borrowNoteDetailService.lostBook(returnBookByCustomerDto);
+    public ResponseEntity<FineFeeForCustomerDTO> lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
+        return ResponseEntity.ok(borrowNoteDetailService.lostBook(returnBookByCustomerDto));
     }
 
     @GetMapping("/cus1")
-    public List<BorrowNoteDetail> getBookListOfACustomer1(@RequestParam Long customerID){
-        return borrowNoteDetailService.getBookListOfACustomer1(customerID);
+    public ResponseEntity<List<BorrowNoteDetail>> getBookListOfACustomer1(@RequestParam Long customerID) {
+        return ResponseEntity.ok(borrowNoteDetailService.getBookListOfACustomer1(customerID));
     }
+
     @GetMapping("/borrowNote")
-    public List<BorrowNoteDetailDTO> getBorowNoteDetailByBorrowNoteID (@RequestParam Long borrowID){
-        return borrowNoteDetailService.getBorowNoteDetailByBorrowNoteID(borrowID);
+    public ResponseEntity<List<BorrowNoteDetailDTO>> getBorowNoteDetailByBorrowNoteID(@RequestParam Long borrowID) {
+        return ResponseEntity.ok(borrowNoteDetailService.getBorowNoteDetailByBorrowNoteID(borrowID));
     }
+
     @GetMapping("/br_id")
-    public List<BorrowNoteDetailDTO> getBookListOfACustomer2(@RequestParam Long customerID){
-        return borrowNoteDetailService.getBookListOfACustomer2(customerID);
+    public ResponseEntity<List<BorrowNoteDetailDTO>> getBookListOfACustomer2(@RequestParam Long customerID) {
+        return ResponseEntity.ok(borrowNoteDetailService.getBookListOfACustomer2(customerID));
     }
 
     @GetMapping("/null2")
-    public List<BorrowNoteDetailDTO> getListOfCustomerStillBorrowBook2(){
-        return borrowNoteDetailService.getListOfCustomerStillBorrowBook2();
+    public ResponseEntity<List<BorrowNoteDetailDTO>> getListOfCustomerStillBorrowBook2() {
+        return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerStillBorrowBook2());
     }
+
     @GetMapping("/null3")
-    public List<CustomerDTO> getListOfCustomerStillBorrowBook3(){
-        return borrowNoteDetailService.getListOfCustomerStillBorrowBook3();
+    public ResponseEntity<List<CustomerDTO>> getListOfCustomerStillBorrowBook3() {
+        return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerStillBorrowBook3());
     }
 
     @GetMapping("/own")
-    public ResponseEntity<List<CustomerDTO>> getListOfCustomerOwnBook(){
+    public ResponseEntity<List<CustomerDTO>> getListOfCustomerOwnBook() {
         return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerOwnBook());
 
     }

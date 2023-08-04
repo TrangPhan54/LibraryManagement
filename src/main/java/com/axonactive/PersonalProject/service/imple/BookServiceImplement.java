@@ -22,9 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
-
 
 @Service
 @Transactional
@@ -36,24 +34,26 @@ public class BookServiceImplement implements BookService {
     private final BookMapper bookMapper;
     @PersistenceContext
     private final EntityManager entityManager;
-    public void saveBook (Book book){
+
+    public void saveBook(Book book) {
         entityManager.persist(book);
     }
-    public Book findBookByID(Long id){
-        return entityManager.find(Book.class,id);
+
+    public Book findBookByID(Long id) {
+        return entityManager.find(Book.class, id);
     }
-    public List<BookDTO> getBookByAuthorFirstName2 (String firstName){
+
+    public List<BookDTO> getBookByAuthorFirstName2(String firstName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
         Root<Book> root = query.from(Book.class);
         Predicate condition = criteriaBuilder.and(
-                criteriaBuilder.equal(root.get("author").get("firstName"), firstName )
+                criteriaBuilder.equal(root.get("author").get("firstName"), firstName)
         );
         query.select(root).where(condition);
         List<Book> books = entityManager.createQuery(query).getResultList();
         return bookMapper.toDtos(books);
     }
-
 
     @Override
     public List<BookDTO> getAllBook() {
@@ -111,8 +111,6 @@ public class BookServiceImplement implements BookService {
         if (bookDTO.getContentSummary().isBlank()) {
             throw LibraryException.badRequest("EmptySummary", "Summary Must Have At Least 255 Characters");
         }
-
-
         if (bookDTO.getDatePublish().isAfter(LocalDate.now()))
             throw LibraryException.badRequest("WrongDate", "Date Publish Must Be Before Now");
         Book book = bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound);
@@ -120,7 +118,6 @@ public class BookServiceImplement implements BookService {
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
         book.setDatePublish(bookDTO.getDatePublish());
-//        book.setPublishingHouse(publishingHouseRepository.findById(bookDTO.getPublishingHouseID()).orElseThrow(LibraryException::PublishingHouseNotFound));
         book.setAuthor(authorRepository.findById(bookDTO.getAuthorID()).orElseThrow(LibraryException::AuthorNotFound));
         book = bookRepository.save(book);
         return bookMapper.toDto(book);
@@ -130,7 +127,6 @@ public class BookServiceImplement implements BookService {
     public void deleteBookById(Long bookID) {
         Book book = bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound);
         bookRepository.delete(book);
-
     }
 
     @Override
@@ -149,26 +145,31 @@ public class BookServiceImplement implements BookService {
     public List<BookDTO> getByName(String name) {
         return bookMapper.toDtos(bookRepository.findByName(name));
     }
+
     // find book by author first name
     @Override
     public List<BookDTO> getBookByAuthorFirstName(String authorFirstName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorFirstName(authorFirstName));
     }
+
     // find book by author last name
     @Override
     public List<BookDTO> getBookByAuthorLastName(String authorLastName) {
         return bookMapper.toDtos(bookRepository.findBookByAuthorLastName(authorLastName));
     }
+
     // find content summary by book title
     @Override
     public BookContentDTO findContentSummaryByBookName(String bookName) {
         return bookRepository.findContentSummaryByBookName(bookName);
     }
+
     // find book name by book title containing
     @Override
     public BookContentDTO findContentSummaryByBookNameContaining(String bookName) {
         return bookRepository.findContentSummaryByBookNameContaining("%" + bookName + "%");
     }
+
     //find book name by author last name containing
     @Override
     public List<BookDTO> getBookByAuthorLastNameContaining(String partOfName) {
@@ -220,8 +221,9 @@ public class BookServiceImplement implements BookService {
                 ));
         return bookMapper.toDtos(entityManager.createQuery(query).getResultList());
     }
+
     // Use criteria builder to get books that were published before 2000
-    public List<BookDTO> getBookPublishBefore2000 (){
+    public List<BookDTO> getBookPublishBefore2000() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
         Root<Book> root = query.from(Book.class);
@@ -232,43 +234,43 @@ public class BookServiceImplement implements BookService {
         List<Book> books = entityManager.createQuery(query).getResultList();
         return bookMapper.toDtos(books);
     }
+
     // use criteria builder to find book by author first name
-    public List<BookDTO> getBookByAuthorFirstName1 (String firstName){
+    public List<BookDTO> getBookByAuthorFirstName1(String firstName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
         Root<Book> root = query.from(Book.class);
         Predicate condition = criteriaBuilder.and(
-                criteriaBuilder.equal(root.get("author").get("firstName"), firstName )
+                criteriaBuilder.equal(root.get("author").get("firstName"), firstName)
         );
         query.select(root).where(condition);
         List<Book> books = entityManager.createQuery(query).getResultList();
         return bookMapper.toDtos(books);
     }
+
     // use criteria builder to find book by genre name
-    public List<BookDTO> getBookByGenreName (String genreName){
+    public List<BookDTO> getBookByGenreName(String genreName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GenreBook> query = criteriaBuilder.createQuery(GenreBook.class);
         Root<GenreBook> root = query.from(GenreBook.class);
         Predicate condition = criteriaBuilder.and(
-                criteriaBuilder.equal(root.get("genre").get("name"), genreName )
+                criteriaBuilder.equal(root.get("genre").get("name"), genreName)
         );
         query.select(root).where(condition);
         List<Book> books = entityManager.createQuery(query).getResultList().stream().map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(books);
     }
+    //use 2 criteria to find a book
 
-    public List<BookDTO> getBookByCriteria (String bookName, String firstName){
+    public List<BookDTO> getBookByCriteria(String bookName, String firstName) {
         CriteriaBuilder cr = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = cr.createQuery(Book.class);
         Root<Book> root = query.from(Book.class);
-        Predicate condition1 = cr.like(root.get("name"),bookName);
+        Predicate condition1 = cr.like(root.get("name"), bookName);
         Predicate condition2 = cr.like(root.get("author").get("firstName"), firstName);
         Predicate pd = cr.and(condition1, condition2);
         query.where(pd);
-
         List<Book> books = entityManager.createQuery(query).getResultList();
         return bookMapper.toDtos(books);
-//        return null;
-
     }
 }

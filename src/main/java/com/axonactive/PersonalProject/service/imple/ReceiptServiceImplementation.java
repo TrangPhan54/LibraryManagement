@@ -35,7 +35,6 @@ public class ReceiptServiceImplementation implements ReceiptService {
         return receiptMapper.toDtos(receiptRepository.findAll());
     }
 
-
     // function: create receipt for liquidation books
     @Override
     public ReceiptDTO createReceipt(CreateReceiptDTO createReceiptDTO) {
@@ -64,36 +63,4 @@ public class ReceiptServiceImplementation implements ReceiptService {
         receiptDTO.setLiquidationFee(totalFee);
         return receiptDTO;
     }
-
-    //    @Override
-//    public ReceiptDTO createReceipt(ListOfPhysicalBookDTO listOfPhysicalBookDTO, Long customerID) {
-//        Customer customer = customerRepository.findById(customerID).orElseThrow(LibraryException::CustomerNotFound);
-//        Receipt receipt = Receipt.builder().customer(customer).build();
-//        double totalFee = 0.0;
-//        List<ReceiptDetail> receiptDetailList = new ArrayList<>();
-//        for (Long physicalBookId : listOfPhysicalBookDTO.getPhysicalBookIds()) {
-//            PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).get();
-//            ReceiptDetail receiptDetail = new ReceiptDetail();
-//            receiptDetail.setReceipt(receipt);
-//            receiptDetail.setLiquidationFee(physicalBook.getImportPrice() * LIQUIDATION_COEFFICIENT);
-//            physicalBook.setStatus(Status.SOLD);
-//            totalFee += receiptDetail.getLiquidationFee();
-//            receiptDetail.setPhysicalBook(physicalBook);
-//            receiptDetailList.add(receiptDetail);
-//        }
-//        receipt.setReceiptDetailList(receiptDetailList);
-//        receipt = receiptRepository.save(receipt);
-//        ReceiptDTO receiptDTO = new ReceiptDTO();
-//        receiptDTO.setId(receipt.getId());
-//        receiptDTO.setCustomerID(receipt.getCustomer().getId());
-//        receiptDTO.setCustomerFirstName(receipt.getCustomer().getFirstName());
-//        receiptDTO.setCustomerLastName(receipt.getCustomer().getLastName());
-//        receiptDTO.setPhysicalBookList(physicalBookRepository.findAllById(listOfPhysicalBookDTO.getPhysicalBookIds()));
-////        receiptDTO.setPhysicalBookIdList(createReceiptDTO.getPhysicalBookIdList());
-//        receiptDTO.setLiquidationFee(totalFee);
-//        return receiptDTO;
-//    }
-
-
-
 }

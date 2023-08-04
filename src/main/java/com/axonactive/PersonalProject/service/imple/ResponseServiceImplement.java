@@ -93,6 +93,4 @@ public class ResponseServiceImplement implements ResponseService {
                                    .stream().map(Response::getResponseContent).findFirst();
         return response.stream().collect(Collectors.joining(","));
     }
-
-
 }

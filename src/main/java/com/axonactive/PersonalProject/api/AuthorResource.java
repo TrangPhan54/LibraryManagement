@@ -52,7 +52,6 @@ public class AuthorResource {
     @GetMapping (value = "/author_first_name")
     public ResponseEntity<AuthorDTO> getAuthorByFirstName (@RequestParam ("firstName") String firstName){
         log.info("get author by first name {}",firstName);
-
         return ResponseEntity.ok(authorService.getAuthorByFirstName(firstName));
     }
 }

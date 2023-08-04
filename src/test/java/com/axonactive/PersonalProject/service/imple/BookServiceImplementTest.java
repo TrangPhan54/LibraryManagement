@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -22,15 +23,14 @@ class BookServiceImplementTest {
 
     @Test
     void findAllById() {
-        Iterable<Long> ids = List.of(21L,22L);
+        Iterable<Long> ids = List.of(21L, 22L);
         List<BookDTO> re = bookService.findAllById(ids);
         System.out.println(re);
-
     }
 
     @Test
     void numberOfBookBaseOnTitle() {
-        List <BookAnalyticDTO> numOfBooks = bookService.getBookAnalytic();
+        List<BookAnalyticDTO> numOfBooks = bookService.getBookAnalytic();
         numOfBooks.forEach(System.out::println);
     }
 }

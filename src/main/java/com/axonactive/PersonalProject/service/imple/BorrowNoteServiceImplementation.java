@@ -94,9 +94,7 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     public BorrowNoteDTO getBorrowNoteById(Long borrowNoteID) {
         return borrowNoteBookMapper.toDto(borrowNoteRepository.findById(borrowNoteID).orElseThrow(LibraryException::BorrowNoteNotFound));
     }
-
     //Find Borrowing History By Borrow Date
-
     @Override
     public List<BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate(LocalDate borrowDate) {
         return borrowNoteBookMapper.toDtos(borrowNoteRepository.findBorrowNoteHistoryByBorrowDate(borrowDate));

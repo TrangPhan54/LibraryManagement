@@ -1,7 +1,5 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.BorrowNoteDetail;
-import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.repository.BorrowNoteDetailRepository;
 import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
@@ -36,16 +34,11 @@ class BorrowNoteDetailServiceImplementationTest {
     void getNumberOfBookByCustomerId() {
         Long numberOfBorrowedBooks = borrowNoteDetailService.getNumberOfBookByCustomerId(21L);
         System.out.println(numberOfBorrowedBooks);
-
-//        assertEquals(numberOfBorrowedBooks, 2);
     }
-
-
-
 
     @Test
     void nameOfBookRemaining() {
-        List<Long> ids = List.of(1L,2L);
+        List<Long> ids = List.of(1L, 2L);
         List<String> tempList = borrowNoteDetailService.nameOfBookRemaining(1L, ids);
         tempList.forEach(System.out::println);
     }
@@ -57,16 +50,10 @@ class BorrowNoteDetailServiceImplementationTest {
         List<Long> physicalBookIds = new ArrayList<>();
         physicalBookIds.add(40L);
         physicalBookIds.add(12L);
-
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
         borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto);
-//
-        Customer customer = customerRepository.findById(1L).get();
-//        System.out.println(customer.get);
     }
-
-
 
     @Test
     void fineFeeForReturningBookLate() {
@@ -87,9 +74,8 @@ class BorrowNoteDetailServiceImplementationTest {
         String date2String = "2024/01/01";
         LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
         LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
-        List<BookAnalyticForAmountOfTimeDTO> re = borrowNoteDetailService.getMaxBorrowBook(date1,date2);
+        List<BookAnalyticForAmountOfTimeDTO> re = borrowNoteDetailService.getMaxBorrowBook(date1, date2);
         re.forEach(System.out::println);
-
     }
 
     @Test
@@ -99,7 +85,7 @@ class BorrowNoteDetailServiceImplementationTest {
         String date2String = "2024/01/01";
         LocalDate date1 = LocalDate.parse(date1String, dateTimeFormatter);
         LocalDate date2 = LocalDate.parse(date2String, dateTimeFormatter);
-        List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> re = borrowNoteDetailService.getMaxCustomer(date1,date2);
+        List<CustomerWithNumberOfPhysicalCopiesBorrowDTO> re = borrowNoteDetailService.getMaxCustomer(date1, date2);
         re.forEach(System.out::println);
     }
 
@@ -108,14 +94,4 @@ class BorrowNoteDetailServiceImplementationTest {
         Long id = 15L;
         borrowNoteDetailService.getBookListOfACustomer(id);
     }
-
-
-
-//    @Test
-//    void createBorrowNoteDetail() {
-//        Long phyID = 40L;
-//        Long borrowNoteID = 30L;
-//        BorrowNoteDetailDTO re = borrowNoteDetailService.createBorrowNoteDetail(phyID,borrowNoteID);
-//        System.out.println(re);
-//    }
 }

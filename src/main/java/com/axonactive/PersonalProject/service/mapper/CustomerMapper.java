@@ -10,14 +10,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
-//    @Mapping(target= "customerID", source = "customer.id")
-//    @Mapping(target= "customerFirstName", source = "customer.firstName")
-//    @Mapping(target= "customerLastName", source = "customer.lastName")
-//    @Mapping(target= "customerAddress", source = "customer.address")
-//    @Mapping(target= "customerPhoneNumber", source = "customer.phoneNumber")
 
+    CustomerDTO toDto(Customer customer);
 
-
-    CustomerDTO toDto (Customer customer);
-    List<CustomerDTO> toDtos (List <Customer> customers);
+    List<CustomerDTO> toDtos(List<Customer> customers);
 }

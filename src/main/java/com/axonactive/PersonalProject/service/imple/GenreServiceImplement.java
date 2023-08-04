@@ -64,9 +64,4 @@ public class GenreServiceImplement implements GenreService {
     public GenreDTO getGenreById(Long genreID) {
         return genreMapper.toDto(genreRepository.findById(genreID).orElseThrow(LibraryException::GenreNotFound));
     }
-//    private void genreException (GenreDTO genreDTO){
-//        if (!isAlpha(genreDTO.getName()) || genreDTO.getName().isBlank()){
-//            throw LibraryException.badRequest("WrongGenreFormat","Genre Should Contains Only Letters And Not Be Empty");
-//        }
-//    }
 }

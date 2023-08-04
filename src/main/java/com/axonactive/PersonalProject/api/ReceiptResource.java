@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.api;
 
-import com.axonactive.PersonalProject.service.BorrowNoteService;
 import com.axonactive.PersonalProject.service.ReceiptService;
 import com.axonactive.PersonalProject.service.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +22,7 @@ public class ReceiptResource {
     public ResponseEntity<List<ReceiptDTO>> getAllReceipt() {
         return ResponseEntity.ok(receiptService.getAllReceipt());
     }
-//    @PostMapping
-//    public ResponseEntity<ReceiptDTO> createReceipt(@RequestBody ListOfPhysicalBookDTO listOfPhysicalBookDTO, Long customerID) {
-//        ReceiptDTO receipt = receiptService.createReceipt(listOfPhysicalBookDTO,customerID);
-//        return ResponseEntity.created(URI.create("/auth/receipts" + receipt.getId())).body(receipt);
-//    }
+
     @PostMapping
     public ResponseEntity<ReceiptDTO> createReceipt(@RequestBody CreateReceiptDTO createReceiptDTO) {
         ReceiptDTO receipt = receiptService.createReceipt(createReceiptDTO);

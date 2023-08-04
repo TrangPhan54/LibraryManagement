@@ -1,10 +1,7 @@
 package com.axonactive.PersonalProject.service.imple;
 
-import com.axonactive.PersonalProject.entity.Customer;
 import com.axonactive.PersonalProject.service.BorrowNoteService;
 import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDTO;
-import com.axonactive.PersonalProject.service.dto.CreateBorrowNoteDetailDTO;
-import com.axonactive.PersonalProject.service.dto.CustomerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +21,6 @@ class BorrowNoteServiceImplementationTest {
     @Autowired
     private BorrowNoteService borrowNoteService;
 
-
     @Test
     void createBorrowNote() {
         Long cusID = 21L;
@@ -37,7 +33,7 @@ class BorrowNoteServiceImplementationTest {
         Long book7 = 7L;
         Long book8 = 8L;
         Long book9 = 9L;
-        List <Long> physicalBookIDList = new ArrayList<>();
+        List<Long> physicalBookIDList = new ArrayList<>();
         physicalBookIDList.add(book1);
         physicalBookIDList.add(book2);
         physicalBookIDList.add(book3);

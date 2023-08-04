@@ -66,6 +66,4 @@ public class CustomerResource {
     public ResponseEntity<List<CustomerDTO>> getCustomerByLastNameContaining (@RequestParam ("partOfName") String partOfName){
         return ResponseEntity.ok(customerService.getCustomerByLastNameContaining(partOfName));
     }
-
-
 }
