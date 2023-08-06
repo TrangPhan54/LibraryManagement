@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PhysicalBookServiceImplement implements PhysicalBookService {
+public class PhysicalBookServiceImplementation implements PhysicalBookService {
     private final PublishingHouseRepository publishingHouseRepository;
     private final PhysicalBookRepository physicalBookRepository;
     private final PhysicalBookMapper physicalBookMapper;

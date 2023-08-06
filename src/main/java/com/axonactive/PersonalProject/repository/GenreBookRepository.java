@@ -10,10 +10,12 @@ import java.util.List;
 
 @Repository
 public interface GenreBookRepository extends JpaRepository<GenreBook, Long> {
-    // 1.Tim sach boi ten the loai
+    // 1.find book by genre name
     List<GenreBook> findByGenreNameContaining (String name);
-    // 2. Tim sach boi ten the loai va ten sach co chua ki tu nao do
+    // 2. find book by genre name and book name containing
     List<GenreBook> findByGenreNameContainingAndBookNameContaining (String genreName, String bookName);
+
+    // 3. find book have same genre
     @Query (value = "select b" +
             "from genre g join genre_book gb  " +
             "on g.id = gb.genre_id  " +

@@ -10,9 +10,7 @@ public interface PublishingHouseService {
     PublishingHouseDTO updatePublishingHouse (Long publishingHouseID, PublishingHouseDTO publishingHouseDTO);
     void deletePublishingHouseByID (Long publishingHouseID);
 
-
     List<PublishingHouseDTO> getPublishingHouseByName (String name);
-
 
     PublishingHouseDTO getPublishingHouseById (Long publishingHouseID);
 }

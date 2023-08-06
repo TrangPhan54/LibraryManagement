@@ -18,7 +18,7 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isNumberOnl
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CustomerServiceImplement implements CustomerService {
+public class CustomerServiceImplementation implements CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 

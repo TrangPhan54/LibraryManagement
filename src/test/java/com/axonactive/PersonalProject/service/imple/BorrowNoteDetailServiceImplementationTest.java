@@ -5,6 +5,7 @@ import com.axonactive.PersonalProject.repository.CustomerRepository;
 import com.axonactive.PersonalProject.service.BorrowNoteDetailService;
 import com.axonactive.PersonalProject.service.dto.customedDto.BookAnalyticForAmountOfTimeDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.CustomerWithNumberOfPhysicalCopiesBorrowDTO;
+import com.axonactive.PersonalProject.service.dto.customedDto.FineFeeForCustomerDTO;
 import com.axonactive.PersonalProject.service.dto.customedDto.ReturnBookByCustomerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,13 +59,15 @@ class BorrowNoteDetailServiceImplementationTest {
     @Test
     void fineFeeForReturningBookLate() {
         ReturnBookByCustomerDTO returnBookByCustomerDto = new ReturnBookByCustomerDTO();
-        returnBookByCustomerDto.setCustomerId(21L);
+        FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
+        returnBookByCustomerDto.setCustomerId(1L);
         List<Long> physicalBookIds = new ArrayList<>();
-        physicalBookIds.add(43L);
-        physicalBookIds.add(13L);
+        physicalBookIds.add(1L);
+        physicalBookIds.add(2L);
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
         borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
+        System.out.println(fineFeeForCustomerDTO.getFineFee());
     }
 
     @Test

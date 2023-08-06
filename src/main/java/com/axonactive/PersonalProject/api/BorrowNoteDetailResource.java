@@ -23,7 +23,6 @@ public class BorrowNoteDetailResource {
     @Autowired
     private final BorrowNoteDetailService borrowNoteDetailService;
 
-
     @GetMapping
     public ResponseEntity<List<BorrowNoteDetailDTO>> getAllBorrowNotedetail() {
         return ResponseEntity.ok(borrowNoteDetailService.getAllBorrowNoteDetail());

@@ -17,7 +17,7 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AuthorServiceImplement implements AuthorService {
+public class AuthorServiceImplementation implements AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
 

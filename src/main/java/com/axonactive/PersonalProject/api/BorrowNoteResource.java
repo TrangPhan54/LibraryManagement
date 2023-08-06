@@ -22,13 +22,12 @@ import java.util.List;
 public class BorrowNoteResource {
     @Autowired
     private final BorrowNoteService borrowNoteService;
-//    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping
     public ResponseEntity<List<BorrowNoteDTO>> getAllBorrowNote() {
         return ResponseEntity.ok(borrowNoteService.getAllBorrowNote());
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CreateBorrowNoteResponseDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
         CreateBorrowNoteResponseDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);

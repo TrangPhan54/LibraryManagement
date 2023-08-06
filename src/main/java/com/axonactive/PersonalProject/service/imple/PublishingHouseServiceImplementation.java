@@ -16,7 +16,7 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PublishingHouseServiceImplement implements PublishingHouseService {
+public class PublishingHouseServiceImplementation implements PublishingHouseService {
     private final PublishingHouseRepository publishingHouseRepository;
     private final PublishingHouseMapper publishingHouseMapper;
     @Override

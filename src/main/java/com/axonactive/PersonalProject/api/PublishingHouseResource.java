@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/auth/publishingHouses")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
 
 public class PublishingHouseResource {
     @Autowired
