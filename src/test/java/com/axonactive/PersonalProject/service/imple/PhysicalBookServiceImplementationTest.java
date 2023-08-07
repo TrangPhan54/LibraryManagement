@@ -13,7 +13,7 @@ import java.util.List;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class PhysicalBookServiceImplementTest {
+class PhysicalBookServiceImplementationTest {
     @Autowired
     private PhysicalBookService physicalBookService;
 

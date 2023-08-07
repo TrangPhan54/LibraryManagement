@@ -27,7 +27,7 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BookServiceImplement implements BookService {
+public class BookServiceImplementation implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublishingHouseRepository publishingHouseRepository;

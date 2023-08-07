@@ -1,7 +1,7 @@
 package com.axonactive.PersonalProject.finecalculator;
 
 public class FineCalculator {
-    private static final Double BASE_FEE = 2.0;
+    private static final Double BASE_FEE = 4.0;
     private static final Double FINE_PER_DAY = 0.5;
     private static final Double BONUS_FACTOR = 1.02;
     private static final Double PENALTY_FACTOR = Math.pow(BONUS_FACTOR, 2);

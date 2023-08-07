@@ -209,7 +209,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 }
             }
         }
-
         customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }
@@ -233,12 +232,13 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }
+    // method to define if the books are returned late or not
 
     private boolean isOverDueDate(LocalDate returnDate) {
         Predicate<LocalDate> testOverDue = x -> x.isBefore(LocalDate.now());
         return testOverDue.test(returnDate);
     }
-
+    // method to define if customer return book late over limitation
     private boolean numberOfTimeReturnLateOverLimitation(Customer customer) {
         Predicate<Long> numberOfTimeReturnLate = x -> x < LIMITATION_OVERDUE_TIMES;
         return numberOfTimeReturnLate.test(customer.getNumberOfTimeReturnLate());
@@ -250,11 +250,10 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDto);
         double totalFee = 0;
         for (BorrowNoteDetail noteDetail : bookListReturnOfCustomer) {
-            Predicate<LocalDate> testOverdue = x -> x.isBefore(LocalDate.now());
             LocalDate dueDate = noteDetail.getBorrowNote().getDueDate();
-            if (testOverdue.test(dueDate)) { // test if customer return book after due date
+            if (isOverDueDate(dueDate)) { // test if customer return book after due date
                 Long overdueDays = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
-                noteDetail.setFineFee(paymentGateway.processPayment(overdueDays));
+                noteDetail.setFineFee(paymentGateway.processPayment(overdueDays)); // using Adapter
                 totalFee += noteDetail.getFineFee();
             }
         }

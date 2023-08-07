@@ -17,7 +17,7 @@ import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class GenreServiceImplement implements GenreService {
+public class GenreServiceImplementation implements GenreService {
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
     @Override

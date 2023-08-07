@@ -13,6 +13,7 @@ import com.axonactive.PersonalProject.service.dto.PhysicalBookDTO;
 
 import com.axonactive.PersonalProject.service.mapper.PhysicalBookMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PhysicalBookServiceImplement implements PhysicalBookService {
+public class PhysicalBookServiceImplementation implements PhysicalBookService {
+
     private final PublishingHouseRepository publishingHouseRepository;
     private final PhysicalBookRepository physicalBookRepository;
     private final PhysicalBookMapper physicalBookMapper;
