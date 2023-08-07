@@ -1,15 +1,18 @@
-package com.axonactive.PersonalProject.authenticate.impl;
+package com.axonactive.PersonalProject.security.user;
 
+import com.axonactive.PersonalProject.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationRequest {
+public class User {
     private String email;
-    String password;
+    private String password;
+    private Role role;
+
 }
