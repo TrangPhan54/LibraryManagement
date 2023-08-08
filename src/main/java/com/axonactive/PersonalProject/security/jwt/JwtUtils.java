@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 @Component
 public class JwtUtils implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-    public static final long JWT_TOKEN_VALIDITY = 12 * 60 * 60;
+    public static final long JWT_TOKEN_VALIDITY = 1;
     @Value("${jwt.secret}")
     private String jwtSecret;
 
