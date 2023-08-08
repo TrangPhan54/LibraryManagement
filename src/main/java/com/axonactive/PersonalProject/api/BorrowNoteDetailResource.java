@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -41,32 +42,38 @@ public class BorrowNoteDetailResource {
     }
 
     @GetMapping("/remain")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CustomerDTO> banAccountForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return ResponseEntity.ok(borrowNoteDetailService.banAccountForReturningBookLate(returnBookByCustomerDto));
     }
     @GetMapping("/remain1")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CustomerDTO> banAccountForReturningBookLate1(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return ResponseEntity.ok(borrowNoteDetailService.banAccountForReturningBookLate1(returnBookByCustomerDto));
     }
 
     @GetMapping("/max_customer")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CustomerWithNumberOfPhysicalCopiesBorrowDTO>> getMaxCustomer(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
                                                                                             @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
         return ResponseEntity.ok(borrowNoteDetailService.getMaxCustomer(date1, date2));
     }
 
     @GetMapping("/fine_fee")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FineFeeForCustomerDTO> fineFeeForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return ResponseEntity.ok(borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto));
     }
 
     @GetMapping("/book_analytic")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BookAnalyticForAmountOfTimeDTO>> getMaxBorrowBook(@RequestParam("date1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date1,
                                                                                  @RequestParam("date2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date2) {
         return ResponseEntity.ok(borrowNoteDetailService.getMaxBorrowBook(date1, date2));
     }
 
     @GetMapping("/lost_book")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FineFeeForCustomerDTO> lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
         return ResponseEntity.ok(borrowNoteDetailService.lostBook(returnBookByCustomerDto));
     }

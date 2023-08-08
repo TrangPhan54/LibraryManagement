@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -28,6 +29,7 @@ public class BookResource {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO) {
         log.info("create book");
         BookDTO book = bookService.createBook(createBookDTO);
@@ -35,6 +37,7 @@ public class BookResource {
     }
 
     @PutMapping(value = "/{bookId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long bookID,
                                               @RequestBody BookDTO bookDTO) {
         log.info("update book by id {}", bookID);
@@ -43,7 +46,7 @@ public class BookResource {
     }
 
     @DeleteMapping(value = "/{bookId}")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> deleteBook(@PathVariable("bookId") Long bookID) {
         log.info("delete book by id {}", bookID);
         bookService.deleteBookById(bookID);
@@ -112,6 +115,7 @@ public class BookResource {
     }
 
     @GetMapping("/book_analytic")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BookAnalyticDTO>> getBookAnalytic() {
         return ResponseEntity.ok(bookService.getBookAnalytic());
     }

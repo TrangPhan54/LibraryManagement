@@ -5,6 +5,7 @@ import com.axonactive.PersonalProject.security.jwt.JwtRequest;
 import com.axonactive.PersonalProject.security.jwt.JwtResponse;
 import com.axonactive.PersonalProject.security.jwt.JwtUtils;
 import com.axonactive.PersonalProject.security.service.impl.UserDetailsImpl;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,23 +25,20 @@ public class AuthControllerImpl implements AuthController {
 
     private final JwtUtils jwtUtils;
 
-    public ResponseEntity<?> authenticateUser(JwtRequest loginRequest) {
-
+    public ResponseEntity<?> authenticateUser(JwtRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getCustomerEmail(), loginRequest.getCustomerPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities()
+        List<String> role = userDetails.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getUsername(),
-                roles));
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), role));
     }
 
 

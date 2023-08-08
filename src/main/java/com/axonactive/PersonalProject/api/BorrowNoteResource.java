@@ -29,12 +29,14 @@ public class BorrowNoteResource {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CreateBorrowNoteResponseDTO> createBorrowNote(@RequestBody CreateBorrowNoteDTO createBorrowNoteDTO) {
         CreateBorrowNoteResponseDTO book = borrowNoteService.createBorrowNote(createBorrowNoteDTO);
         return ResponseEntity.created(URI.create("/api/orderBooks" + book.getId())).body(book);
     }
 
     @PutMapping(value = "/{borrowNoteId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BorrowNoteDTO> updateBorrowNote(@PathVariable("orderBookId") Long borrowNoteID,
                                                          @RequestBody BorrowNoteDTO borrowNoteDTO) {
         BorrowNoteDTO book = borrowNoteService.updateBorrowNote(borrowNoteID, borrowNoteDTO);
@@ -42,7 +44,7 @@ public class BorrowNoteResource {
     }
 
     @DeleteMapping(value = "/{borrowAndNoteId}")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BorrowNoteDTO> deleteBorrowNote(@PathVariable("orderAndBookId") Long borrowAndNoteID) {
         borrowNoteService.deleteBorrowNoteByID(borrowAndNoteID);
         return ResponseEntity.noContent().build();
@@ -54,6 +56,7 @@ public class BorrowNoteResource {
     }
 
     @GetMapping("/borrow_date")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity <List<BorrowNoteDTO>> getBorrowNoteHistoryByBorrowDate (@RequestParam ("borrowDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate borrowDate){
         return ResponseEntity.ok(borrowNoteService.getBorrowNoteHistoryByBorrowDate(borrowDate));
     }
