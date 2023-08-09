@@ -62,7 +62,7 @@ public class BorrowNoteDetailResource {
     @GetMapping("/fine_fee")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FineFeeForCustomerDTO> fineFeeForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        return ResponseEntity.ok(borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto));
+        return ResponseEntity.ok(borrowNoteDetailService.customerWithfineFeeForReturningBookLate(returnBookByCustomerDto));
     }
 
     @GetMapping("/book_analytic")

@@ -60,7 +60,7 @@ class BorrowNoteDetailServiceImplementationTest {
         physicalBookIds.add(1L);
         physicalBookIds.add(2L);
         returnBookByCustomerDto.setPhysicalBookIds(physicalBookIds);
-        borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto);
+        borrowNoteDetailService.customerWithfineFeeForReturningBookLate(returnBookByCustomerDto);
         System.out.println(returnBookByCustomerDto.getPhysicalBookIds());
         System.out.println(fineFeeForCustomerDTO.getFineFee());
     }

@@ -22,7 +22,7 @@ public interface BorrowNoteDetailService {
 
     CustomerDTO banAccountForReturningBookLate1(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
-    FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
+    FineFeeForCustomerDTO customerWithfineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
     List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2);
 
