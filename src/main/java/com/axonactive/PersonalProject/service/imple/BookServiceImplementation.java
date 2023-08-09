@@ -103,8 +103,6 @@ public class BookServiceImplementation implements BookService {
     public BookDTO updateBook(Long bookID, BookDTO bookDTO) {
         if (bookDTO.getName().isBlank() || !isAlpha(bookDTO.getName()))
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
-
-
         if (bookDTO.getBookImage().isBlank()) {
             throw LibraryException.badRequest("WrongImage", "Book Must Have An Image To Describe");
         }

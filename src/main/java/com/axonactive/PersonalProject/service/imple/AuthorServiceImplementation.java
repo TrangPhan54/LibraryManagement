@@ -34,11 +34,9 @@ public class AuthorServiceImplementation implements AuthorService {
                 authorDTO.getFirstName().isBlank() || !isAlpha(authorDTO.getFirstName())) {
             throw LibraryException.badRequest("Wrong format name", "Name should contain only letters");
         }
-
         if (isDuplicated(authorDTO.getFirstName(), authorDTO.getLastName())) {
             throw LibraryException.badRequest("Duplicated author", "Name should be different");
         }
-
         Author author = Author.builder()
                 .lastName(authorDTO.getLastName())
                 .firstName(authorDTO.getFirstName())
@@ -47,12 +45,11 @@ public class AuthorServiceImplementation implements AuthorService {
         author = authorRepository.save(author);
         return authorMapper.toDto(author);
     }
+
     // method to check if an author name is already existed
     private boolean isDuplicated(String firstName, String lastName) {
         return authorRepository.findAuthorByFirstName(firstName).isPresent() && authorRepository.findAuthorByLastName(lastName).isPresent();
     }
-
-
     @Override
     public AuthorDTO updateAuthor(Long authorID, AuthorDTO authorDTO) {
         Author author = authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound);
@@ -68,7 +65,6 @@ public class AuthorServiceImplementation implements AuthorService {
         authorRepository.delete(author);
 
     }
-
     @Override
     public AuthorDTO getAuthorByID(Long authorID) {
         return authorMapper.toDto(authorRepository.findById(authorID).orElseThrow(LibraryException::AuthorNotFound));
@@ -76,6 +72,8 @@ public class AuthorServiceImplementation implements AuthorService {
 
     @Override
     public AuthorDTO getAuthorByFirstName(String firstName) {
-        return null;
+        return authorMapper.toDto(authorRepository.findAuthorByFirstName(firstName).orElseThrow(LibraryException::AuthorNotFound));
     }
+
+
 }

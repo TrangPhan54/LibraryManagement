@@ -264,18 +264,19 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         fineFeeForCustomerDTO.setFineFee(totalFee);
         return fineFeeForCustomerDTO;
     }
+    public List<Book> getTitleOfBestBorrowBook (LocalDate date1, LocalDate date2){
+        List<BorrowNoteDetail> borrowListBaseOnAmountOfTime = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
+        return borrowListBaseOnAmountOfTime.stream()
+                .map(BorrowNoteDetail::getPhysicalBook)
+                .map(PhysicalBook::getBook)
+                .collect(Collectors.toList());
+
+    }
 
     //6. Book statistics for an amount of time
     @Override
     public List<BookAnalyticForAmountOfTimeDTO> getMaxBorrowBook(LocalDate date1, LocalDate date2) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
-        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
-        javax.persistence.criteria.Predicate condition = criteriaBuilder.and(
-                criteriaBuilder.between(root.get("borrowNote").get("borrowDate"), date1, date2)
-        );
-        query.select(root).where(condition);
-        List<BorrowNoteDetail> borrowListBaseOnDate = entityManager.createQuery(query).getResultList();
+        List<BorrowNoteDetail> borrowListBaseOnDate = borrowNoteDetailRepository.findByBorrowNoteBorrowDateBetween(date1, date2);
         List<Book> bookList = borrowListBaseOnDate.stream()
                 .map(BorrowNoteDetail::getPhysicalBook)
                 .map(PhysicalBook::getBook)
@@ -310,6 +311,8 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         }
         return bookAnalyticForAmountOfTimeDTOS;
     }
+
+
 
     //7. Customer statistics for an amount of time
     @Override
