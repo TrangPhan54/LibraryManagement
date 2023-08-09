@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 import static com.axonactive.PersonalProject.exception.BooleanMethod.isAlpha;
 
@@ -30,15 +31,27 @@ public class AuthorServiceImplementation implements AuthorService {
     @Override
     public AuthorDTO createAuthor(AuthorDTO authorDTO) {
         if (authorDTO.getLastName().isBlank() || !isAlpha(authorDTO.getLastName()) ||
-                authorDTO.getFirstName().isBlank() || !isAlpha(authorDTO.getFirstName()))
+                authorDTO.getFirstName().isBlank() || !isAlpha(authorDTO.getFirstName())) {
             throw LibraryException.badRequest("Wrong format name", "Name should contain only letters");
+        }
+
+        if (isDuplicated(authorDTO.getFirstName(), authorDTO.getLastName())) {
+            throw LibraryException.badRequest("Duplicated author", "Name should be different");
+        }
+
         Author author = Author.builder()
                 .lastName(authorDTO.getLastName())
                 .firstName(authorDTO.getFirstName())
                 .build();
+
         author = authorRepository.save(author);
         return authorMapper.toDto(author);
     }
+    // method to check if an author name is already existed
+    private boolean isDuplicated(String firstName, String lastName) {
+        return authorRepository.findAuthorByFirstName(firstName).isPresent() && authorRepository.findAuthorByLastName(lastName).isPresent();
+    }
+
 
     @Override
     public AuthorDTO updateAuthor(Long authorID, AuthorDTO authorDTO) {
@@ -63,6 +76,6 @@ public class AuthorServiceImplementation implements AuthorService {
 
     @Override
     public AuthorDTO getAuthorByFirstName(String firstName) {
-        return authorMapper.toDto(authorRepository.findAuthorByFirstName(firstName));
+        return null;
     }
 }

@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class UserDetailsImpl implements UserDetails {
     private Long id;
-    private String customerEmail;
+    private String email;
 
     @JsonIgnore
     private String password;
@@ -52,7 +52,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return customerEmail;
+        return email;
     }
 
     @Override

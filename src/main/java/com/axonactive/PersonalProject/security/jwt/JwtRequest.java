@@ -11,6 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtRequest implements Serializable {
-    private String customerEmail;
-    private String customerPassword;
+    private String email;
+    private String password;
 }

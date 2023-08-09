@@ -28,14 +28,15 @@ public class AuthorResource {
         return ResponseEntity.ok(authorService.getAllAuthor());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> createAuthor (@RequestBody AuthorDTO authorDTO){
         log.info("create author");
         AuthorDTO author = authorService.createAuthor(authorDTO);
         return ResponseEntity.created(URI.create("/api/authors/" + author.getId())).body(author);
     }
     @PutMapping(value = "/{authorID}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> updateAuthor (@PathVariable ("authorID") Long authorID ,@RequestBody AuthorDTO authorDTO){
         log.info("update author by id {}",authorID);
         AuthorDTO author = authorService.updateAuthor(authorID,authorDTO);
@@ -44,6 +45,7 @@ public class AuthorResource {
 
     }
     @DeleteMapping(value = "/{authorID}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> deleteAuthor (@PathVariable("authorID") Long authorID){
         log.info("delete author by id {}",authorID);
         authorService.deleteAuthorByID(authorID);
