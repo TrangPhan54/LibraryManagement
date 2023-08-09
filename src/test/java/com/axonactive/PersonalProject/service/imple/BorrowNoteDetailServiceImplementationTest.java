@@ -37,12 +37,7 @@ class BorrowNoteDetailServiceImplementationTest {
         System.out.println(numberOfBorrowedBooks);
     }
 
-    @Test
-    void nameOfBookRemaining() {
-        List<Long> ids = List.of(1L, 2L);
-        List<String> tempList = borrowNoteDetailService.nameOfBookRemaining(1L, ids);
-        tempList.forEach(System.out::println);
-    }
+
 
     @Test
     void returnBookByCustomer() {

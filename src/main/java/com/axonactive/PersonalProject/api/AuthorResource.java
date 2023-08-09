@@ -28,7 +28,6 @@ public class AuthorResource {
         return ResponseEntity.ok(authorService.getAllAuthor());
     }
 
-
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> createAuthor (@RequestBody AuthorDTO authorDTO){

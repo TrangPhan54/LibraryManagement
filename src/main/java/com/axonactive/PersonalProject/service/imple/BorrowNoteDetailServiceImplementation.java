@@ -139,25 +139,29 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
 
     // 3. Returning book service (customer lost book)
-    public FineFeeForCustomerDTO lostBook(ReturnBookByCustomerDTO returnBookByCustomerDTO) {
-        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDTO.getCustomerId());
-        double totalFee = 0;
-        for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
-            Long physicalBookId = noteDetail.getPhysicalBook().getId();
-            if (returnBookByCustomerDTO.getPhysicalBookIds().contains(physicalBookId)) {
-                PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).get();
-                noteDetail.setFineFee(paymentGateway.processFineBookLost(physicalBook.getImportPrice()));
-                noteDetail.setReturnDate(LocalDate.now());
-                noteDetail.setCondition(Condition.LOST);
-                totalFee += noteDetail.getFineFee();
-            }
-        }
+    public FineFeeForCustomerDTO feeForLostBook(ReturnBookByCustomerDTO returnBookByCustomerDTO) {
+        double totalFee = returnConditionLostBook(returnBookByCustomerDTO);
         Customer customer = customerRepository.findById(returnBookByCustomerDTO.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
         fineFeeForCustomerDTO.setFirstName(customer.getFirstName());
         fineFeeForCustomerDTO.setLastName(customer.getLastName());
         fineFeeForCustomerDTO.setFineFee(totalFee);
         return fineFeeForCustomerDTO;
+    }
+    private double returnConditionLostBook(ReturnBookByCustomerDTO returnBookByCustomerDTO){
+        List<BorrowNoteDetail> borrowNoteDetailListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDTO.getCustomerId());
+        double totalFee = 0;
+        for(BorrowNoteDetail borrowNoteDetail : borrowNoteDetailListOfCustomer){
+            Long physicalBookId = borrowNoteDetail.getPhysicalBook().getId();
+            if(returnBookByCustomerDTO.getPhysicalBookIds().contains(physicalBookId)){
+                PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).get();
+                borrowNoteDetail.setFineFee(paymentGateway.processFineBookLost(physicalBook.getImportPrice()));
+                borrowNoteDetail.setReturnDate(LocalDate.now());
+                borrowNoteDetail.setCondition(Condition.LOST);
+                totalFee += borrowNoteDetail.getFineFee();
+            }
+        }
+        return totalFee;
     }
 
     // 4. Returning book service. If a customer return book late for 20 times, customer cannot borrow book in library anymore
