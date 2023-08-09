@@ -11,9 +11,6 @@ import java.util.List;
 
 public interface BorrowNoteDetailService {
     List<BorrowNoteDetailDTO> getAllBorrowNoteDetail();
-
-    BorrowNoteDetailDTO createBorrowNoteDetail(CreateBorrowNoteDetailDTO createBorrowNoteDetailDTO);
-
     void deleteBorrowNoteDetailByID(Long borrowNoteDetailID);
 
     BorrowNoteDetailDTO getBorrowNoteDetailId(Long borrowNoteDetailId);
@@ -21,14 +18,9 @@ public interface BorrowNoteDetailService {
     // 1.Tinh so sach duoc muon boi 1 khach hang cu the
     Long getNumberOfBookByCustomerId(Long customerId);
 
-    Long customerReturnBook(Long customerId, Long numberOfBooksReturned);
-
-    List<String> nameOfBookRemaining(Long customerId, List<Long> physicalBookIds);
-
-    //    void returnBookByCustomer(Long customerId, List<Long> physicalBookId);
     CustomerDTO banAccountForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
-    CustomerDTO banAccountForReturningBookLate1(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
+    CustomerDTO banAccountForReturningBookLate1(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
     FineFeeForCustomerDTO fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto);
 
@@ -47,8 +39,6 @@ public interface BorrowNoteDetailService {
     List<BorrowNoteDetailDTO> getBookListOfACustomer2(Long customerID);
 
     List<BorrowNoteDetailDTO> getListOfCustomerStillBorrowBook2();
-
-    List<CustomerDTO> getListOfCustomerStillBorrowBook3();
 
     List<CustomerDTO> getListOfCustomerOwnBook();
 

@@ -98,11 +98,6 @@ public class BorrowNoteDetailResource {
         return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerStillBorrowBook2());
     }
 
-    @GetMapping("/null3")
-    public ResponseEntity<List<CustomerDTO>> getListOfCustomerStillBorrowBook3() {
-        return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerStillBorrowBook3());
-    }
-
     @GetMapping("/own")
     public ResponseEntity<List<CustomerDTO>> getListOfCustomerOwnBook() {
         return ResponseEntity.ok(borrowNoteDetailService.getListOfCustomerOwnBook());
