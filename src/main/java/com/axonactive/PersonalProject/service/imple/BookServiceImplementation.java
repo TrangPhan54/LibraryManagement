@@ -60,30 +60,24 @@ public class BookServiceImplementation implements BookService {
         List<Book> books = bookRepository.findAll();
         return bookMapper.toDtos(books);
     }
-
-    // Create book title and physical books with number if copies
-    @Override
-    public BookDTO createBook(CreateBookDTO createBookDTO) {
-        PublishingHouse publishingHouse = publishingHouseRepository.findById(createBookDTO.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);
+    public Book createBookTitle(CreateBookDTO createBookDTO){
         Author author = authorRepository.findById(createBookDTO.getAuthorID()).orElseThrow();
-        if (createBookDTO.getName().isBlank() || createBookDTO.getName().trim().isEmpty() || createBookDTO.getName() == null)
-            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
-
-        if (createBookDTO.getBookImage().isBlank()) {
-            throw LibraryException.badRequest("WrongImage", "Book Must Have An Image To Describe");
-        }
-        if (createBookDTO.getContentSummary().isBlank()) {
-            throw LibraryException.badRequest("EmptySummary", "Summary Must Have At Least 255 Characters");
-        }
-        if (createBookDTO.getDatePublish().isAfter(LocalDate.now()))
-            throw LibraryException.badRequest("WrongDate", "Date Publish Must Be Before Now");
-        Book book = Book.builder()
+        verifyBook(createBookDTO);
+        return Book.builder()
                 .bookImage(createBookDTO.getBookImage())
                 .name(createBookDTO.getName())
                 .contentSummary(createBookDTO.getContentSummary())
                 .datePublish(createBookDTO.getDatePublish())
                 .author(author)
                 .build();
+
+    }
+
+    // Create book title and physical books with number if copies
+    @Override
+    public BookDTO createBookWithPhysicalBookCopies(CreateBookDTO createBookDTO) {
+        PublishingHouse publishingHouse = publishingHouseRepository.findById(createBookDTO.getPublishingHouseId()).orElseThrow(LibraryException::PublishingHouseNotFound);
+        Book book = createBookTitle(createBookDTO);
         List<PhysicalBook> physicalBooksList = new ArrayList<>();
         for (long i = 0; i < createBookDTO.getNumberOfPhysicalBook(); i++) {
             PhysicalBook physicalBook = PhysicalBook.builder()
@@ -99,8 +93,21 @@ public class BookServiceImplementation implements BookService {
         return bookMapper.toDto(book);
     }
 
+    private void verifyBook(CreateBookDTO createBookDTO){
+        if (createBookDTO.getName().isBlank() || createBookDTO.getName().trim().isEmpty() || createBookDTO.getName() == null)
+            throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
+        if (createBookDTO.getBookImage().isBlank()) {
+            throw LibraryException.badRequest("WrongImage", "Book Must Have An Image To Describe");
+        }
+        if (createBookDTO.getContentSummary().isBlank()) {
+            throw LibraryException.badRequest("EmptySummary", "Summary Must Have At Least 255 Characters");
+        }
+        if (createBookDTO.getDatePublish().isAfter(LocalDate.now()))
+            throw LibraryException.badRequest("WrongDate", "Date Publish Must Be Before Now");
+    }
+
     @Override
-    public BookDTO updateBook(Long bookID, BookDTO bookDTO) {
+    public BookDTO updateBook(BookDTO bookDTO) {
         if (bookDTO.getName().isBlank() || !isAlpha(bookDTO.getName()))
             throw LibraryException.badRequest("WrongNameOfBookFormat", "Name Of Book Should only contains letters");
         if (bookDTO.getBookImage().isBlank()) {
@@ -111,7 +118,7 @@ public class BookServiceImplementation implements BookService {
         }
         if (bookDTO.getDatePublish().isAfter(LocalDate.now()))
             throw LibraryException.badRequest("WrongDate", "Date Publish Must Be Before Now");
-        Book book = bookRepository.findById(bookID).orElseThrow(LibraryException::BookNotFound);
+        Book book = bookRepository.findById(bookDTO.getId()).orElseThrow(LibraryException::BookNotFound);
         book.setName(bookDTO.getName());
         book.setContentSummary(bookDTO.getContentSummary());
         book.setBookImage(bookDTO.getBookImage());
@@ -258,8 +265,7 @@ public class BookServiceImplementation implements BookService {
         List<Book> books = entityManager.createQuery(query).getResultList().stream().map(GenreBook::getBook).collect(Collectors.toList());
         return bookMapper.toDtos(books);
     }
-    //use 2 criteria to find a book
-
+    // use 2 criteria to find a book
     public List<BookDTO> getBookByCriteria(String bookName, String firstName) {
         CriteriaBuilder cr = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = cr.createQuery(Book.class);

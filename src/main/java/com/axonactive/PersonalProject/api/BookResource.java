@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.api;
 
-import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.service.BookService;
 import com.axonactive.PersonalProject.service.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +31,16 @@ public class BookResource {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> createBook(@RequestBody CreateBookDTO createBookDTO) {
         log.info("create book");
-        BookDTO book = bookService.createBook(createBookDTO);
+        BookDTO book = bookService.createBookWithPhysicalBookCopies(createBookDTO);
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
 
     @PutMapping(value = "/{bookId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long bookID,
+    public ResponseEntity<BookDTO> updateBook(
                                               @RequestBody BookDTO bookDTO) {
-        log.info("update book by id {}", bookID);
-        BookDTO book = bookService.updateBook(bookID, bookDTO);
+        log.info("update book by id {}");
+        BookDTO book = bookService.updateBook(bookDTO);
         return ResponseEntity.created(URI.create("/api/books" + book.getId())).body(book);
     }
 

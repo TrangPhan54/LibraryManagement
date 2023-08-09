@@ -1,6 +1,5 @@
 package com.axonactive.PersonalProject.service;
 
-import com.axonactive.PersonalProject.entity.Book;
 import com.axonactive.PersonalProject.service.dto.BookAnalyticDTO;
 import com.axonactive.PersonalProject.service.dto.BookContentDTO;
 import com.axonactive.PersonalProject.service.dto.BookDTO;
@@ -11,9 +10,9 @@ import java.util.List;
 public interface BookService {
     List<BookDTO> getAllBook();
 
-    BookDTO createBook(CreateBookDTO createBookDTO);
+    BookDTO createBookWithPhysicalBookCopies(CreateBookDTO createBookDTO);
 
-    BookDTO updateBook(Long bookID, BookDTO bookDTO);
+    BookDTO updateBook(BookDTO bookDTO);
 
     void deleteBookById(Long bookID);
 
