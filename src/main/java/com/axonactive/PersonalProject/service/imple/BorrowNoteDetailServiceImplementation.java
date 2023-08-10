@@ -39,20 +39,15 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     private final BorrowNoteDetailRepository borrowNoteDetailRepository;
     private final PhysicalBookRepository physicalBookRepository;
     private final BorrowNoteRepository borrowNoteRepository;
-
     private final BorrowNoteDetailMapper borrowNoteDetailMapper;
-
     private final CustomerRepository customerRepository;
     private final EntityManager entityManager;
     private final BookMapper bookMapper;
     private final CustomerMapper customerMapper;
     private static final Double LIMITATION_OVERDUE_TIMES = 20.0;
-
     private static final Long LIMITATION_OVERDUE_DAYS = 100L;
-
     FineCalculator fineCalculator = new FineCalculator(); // create object of service class
     PaymentGateway paymentGateway = new PaymentGatewayAdapter(fineCalculator); //PaymentGatewayAdapter class wraps an instance of FineCalculator and implements the PaymentGateway interface
-
 
     @Override
     public List<BorrowNoteDetailDTO> getAllBorrowNoteDetail() {
@@ -82,6 +77,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     public BorrowNoteDetailDTO getBorrowNoteDetailId(Long borrowNoteDetailId) {
         return borrowNoteDetailMapper.toDto(borrowNoteDetailRepository.findById(borrowNoteDetailId).orElseThrow(LibraryException::BorrowNoteDetailNotFound));
     }
+
     //1. Count number of borrowing books of a customer
 
     @Override
@@ -124,12 +120,12 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
     }
     // 2. Returning book service (customer return book ontime)
 
-    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDto.getCustomerId());
+    public List<BorrowNoteDetail> returnBook(ReturnBookByCustomerDTO returnBookByCustomerDTO) {
+        List<BorrowNoteDetail> bookListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDTO.getCustomerId());
         List<BorrowNoteDetail> bookListReturnOfCustomer = new ArrayList<>();
         for (BorrowNoteDetail noteDetail : bookListOfCustomer) {
             Long physicalBookId = noteDetail.getPhysicalBook().getId();
-            if (returnBookByCustomerDto.getPhysicalBookIds().contains(physicalBookId)) {
+            if (returnBookByCustomerDTO.getPhysicalBookIds().contains(physicalBookId)) {
                 noteDetail.setReturnDate(LocalDate.now());
                 noteDetail.setCondition(Condition.NORMAL);
                 bookListReturnOfCustomer.add(noteDetail);
@@ -199,7 +195,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return customerMapper.toDto(customer);
     }
     // method to define if the books are returned late or not
-
     private boolean isOverDueDate(LocalDate returnDate) {
         Predicate<LocalDate> testOverDue = x -> x.isBefore(LocalDate.now());
         return testOverDue.test(returnDate);
@@ -238,7 +233,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .map(BorrowNoteDetail::getPhysicalBook)
                 .map(PhysicalBook::getBook)
                 .collect(Collectors.toList());
-
     }
 
     public Map<Book, Long> getBooksWithPhysicalCopiedBorrowed(LocalDate date1, LocalDate date2) {
@@ -282,7 +276,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toList());
     }
     // get customer with number of physical book copies borrow
-
     private Map<Customer, Long> getCustomerWithNumberOfPhysicalCopiesBorrow(LocalDate date1, LocalDate date2) {
         Map<Customer, Long> customerWithNumberOfPhysicalCopiesBorrow = new HashMap<>();
         List<Customer> customerList = getCustomerBorrowListBaseOnAmountOfTime(date1, date2);
@@ -297,7 +290,6 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (a, b) -> a, LinkedHashMap::new));
     }
-
 
     // Customer statistics for an amount of time
     @Override
@@ -352,6 +344,4 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         query.select(root).where(condition);
         return entityManager.createQuery(query).getResultList();
     }
-
-
 }
