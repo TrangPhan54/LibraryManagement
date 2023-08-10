@@ -99,14 +99,4 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     public List<BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate(LocalDate borrowDate) {
         return borrowNoteBookMapper.toDtos(borrowNoteRepository.findBorrowNoteHistoryByBorrowDate(borrowDate));
     }
-
-    // Find Name Of Customer Returning Book Late
-    @Override
-    public List<String> nameOfCustomerReturnBookLate() {
-        return borrowNoteRepository.findAll().stream()
-                .filter(br -> LocalDate.now().isAfter(br.getDueDate()))
-                .map(BorrowNote::getCustomer)
-                .map(Customer::getFirstName)
-                .collect(Collectors.toList());
-    }
 }

@@ -62,7 +62,7 @@ public class BorrowNoteDetailResource {
     @GetMapping("/fine_fee")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FineFeeForCustomerDTO> fineFeeForReturningBookLate(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        return ResponseEntity.ok(borrowNoteDetailService.fineFeeForReturningBookLate(returnBookByCustomerDto));
+        return ResponseEntity.ok(borrowNoteDetailService.customerWithfineFeeForReturningBookLate(returnBookByCustomerDto));
     }
 
     @GetMapping("/book_analytic")
@@ -75,7 +75,7 @@ public class BorrowNoteDetailResource {
     @GetMapping("/lost_book")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FineFeeForCustomerDTO> lostBook(@RequestBody ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        return ResponseEntity.ok(borrowNoteDetailService.lostBook(returnBookByCustomerDto));
+        return ResponseEntity.ok(borrowNoteDetailService.feeForLostBook(returnBookByCustomerDto));
     }
 
     @GetMapping("/cus1")

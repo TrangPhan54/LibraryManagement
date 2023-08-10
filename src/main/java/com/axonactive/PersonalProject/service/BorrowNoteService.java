@@ -14,5 +14,4 @@ public interface BorrowNoteService {
     BorrowNoteDTO getBorrowNoteById (Long borrowNoteID);
 
     List <BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate (LocalDate borrowDate);
-    List<String> nameOfCustomerReturnBookLate ();
 }
