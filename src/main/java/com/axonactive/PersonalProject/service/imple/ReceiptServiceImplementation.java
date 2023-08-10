@@ -63,4 +63,6 @@ public class ReceiptServiceImplementation implements ReceiptService {
         receiptDTO.setLiquidationFee(totalFee);
         return receiptDTO;
     }
+
+
 }

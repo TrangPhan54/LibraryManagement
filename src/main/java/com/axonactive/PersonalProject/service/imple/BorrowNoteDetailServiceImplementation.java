@@ -87,6 +87,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         return borrowNoteDetailList.stream()
                 .filter(brd -> Objects.equals(brd.getBorrowNote().getCustomer().getId(), customerId)).count();
     }
+
     public List<BorrowNoteDetail> getBookListOfACustomer(Long customerID) {
         return borrowNoteDetailRepository.findByBorrowNoteCustomerId(customerID);
     }
@@ -145,12 +146,13 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         fineFeeForCustomerDTO.setFineFee(totalFee);
         return fineFeeForCustomerDTO;
     }
-    private double returnConditionLostBook(ReturnBookByCustomerDTO returnBookByCustomerDTO){
+
+    private double returnConditionLostBook(ReturnBookByCustomerDTO returnBookByCustomerDTO) {
         List<BorrowNoteDetail> borrowNoteDetailListOfCustomer = getBookListOfACustomer1(returnBookByCustomerDTO.getCustomerId());
         double totalFee = 0;
-        for(BorrowNoteDetail borrowNoteDetail : borrowNoteDetailListOfCustomer){
+        for (BorrowNoteDetail borrowNoteDetail : borrowNoteDetailListOfCustomer) {
             Long physicalBookId = borrowNoteDetail.getPhysicalBook().getId();
-            if(returnBookByCustomerDTO.getPhysicalBookIds().contains(physicalBookId)){
+            if (returnBookByCustomerDTO.getPhysicalBookIds().contains(physicalBookId)) {
                 PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).get();
                 borrowNoteDetail.setFineFee(paymentGateway.processFineBookLost(physicalBook.getImportPrice()));
                 borrowNoteDetail.setReturnDate(LocalDate.now());
@@ -199,6 +201,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
         customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }
+
     // method to define if the books are returned late or not
     private boolean isOverDueDate(LocalDate returnDate) {
         Predicate<LocalDate> testOverDue = x -> x.isBefore(LocalDate.now());
@@ -213,21 +216,22 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
 
     //5. Returning book service. (using Adapter design pattern). Customer have to pay fee and the fee base on number of overdue days
     @Override
-    public FineFeeForCustomerDTO customerWithfineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDto) {
-        double totalFee = fineFeeForReturningBookLate(returnBookByCustomerDto);
-        Customer customer = customerRepository.findById(returnBookByCustomerDto.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
+    public FineFeeForCustomerDTO customerWithfineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDTO) {
+        double totalFee = fineFeeForReturningBookLate(returnBookByCustomerDTO);
+        Customer customer = customerRepository.findById(returnBookByCustomerDTO.getCustomerId()).orElseThrow(LibraryException::CustomerNotFound);
         FineFeeForCustomerDTO fineFeeForCustomerDTO = new FineFeeForCustomerDTO();
         fineFeeForCustomerDTO.setFirstName(customer.getFirstName());
         fineFeeForCustomerDTO.setLastName(customer.getLastName());
         fineFeeForCustomerDTO.setFineFee(totalFee);
         return fineFeeForCustomerDTO;
     }
-    private double fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDTO){
+
+    private double fineFeeForReturningBookLate(ReturnBookByCustomerDTO returnBookByCustomerDTO) {
         List<BorrowNoteDetail> bookListReturnOfCustomer = returnBook(returnBookByCustomerDTO);
         double totalFee = 0;
-        for(BorrowNoteDetail borrowNoteDetail : bookListReturnOfCustomer){
+        for (BorrowNoteDetail borrowNoteDetail : bookListReturnOfCustomer) {
             LocalDate dueDate = borrowNoteDetail.getBorrowNote().getDueDate();
-            if(isOverDueDate(dueDate)){
+            if (isOverDueDate(dueDate)) {
                 Long overDueDays = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
                 borrowNoteDetail.setFineFee(paymentGateway.processPayment(overDueDays));
                 totalFee += borrowNoteDetail.getFineFee();
@@ -284,6 +288,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .map(BorrowNote::getCustomer)
                 .collect(Collectors.toList());
     }
+
     // get customer with number of physical book copies borrow
     private Map<Customer, Long> getCustomerWithNumberOfPhysicalCopiesBorrow(LocalDate date1, LocalDate date2) {
         Map<Customer, Long> customerWithNumberOfPhysicalCopiesBorrow = new HashMap<>();

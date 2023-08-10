@@ -42,22 +42,7 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     // function: create borrow note and borrow note detail for customer
     @Override
     public CreateBorrowNoteResponseDTO createBorrowNote(CreateBorrowNoteDTO createBorrowNoteDTO) {
-        Customer customer = customerRepository.findById(createBorrowNoteDTO.getCustomerID()).orElseThrow(LibraryException::CustomerNotFound);
-        BorrowNote borrowNote = BorrowNote.builder()
-                .customer(customer)
-                .borrowDate(createBorrowNoteDTO.getBorrowDate())
-                .dueDate(createBorrowNoteDTO.getDueDate())
-                .build();
-        List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
-        for (Long physicalBookId : createBorrowNoteDTO.getPhysicalBookIdList()) {
-            BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
-            PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).orElseThrow(LibraryException::PhysicalBookNotFound);
-            borrowNoteDetail.setBorrowNote(borrowNote);
-            borrowNoteDetail.setPhysicalBook(physicalBook);
-            borrowNoteDetailList.add(borrowNoteDetail);
-        }
-        borrowNote.setBorrowNoteDetailList(borrowNoteDetailList);
-        borrowNote = borrowNoteRepository.save(borrowNote);
+        BorrowNote borrowNote = createBorrowNoteWithSpecificBorrowNoteDetail(createBorrowNoteDTO);
         CreateBorrowNoteResponseDTO createBorrowNoteResponseDTO = borrowNoteBookMapper.toResponseDto(borrowNote);
         List<BorrowNoteDetailDTO> borrowNoteDetailDTOList = new ArrayList<>();
         for (BorrowNoteDetail borrowNoteDetail : borrowNote.getBorrowNoteDetailList()) {
@@ -66,6 +51,30 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
         }
         createBorrowNoteResponseDTO.setBorrowNoteDetailDTOList(borrowNoteDetailDTOList);
         return createBorrowNoteResponseDTO;
+    }
+    // create empty borrow note for a specific customer
+    private BorrowNote createEmptyBorrowNote(CreateBorrowNoteDTO createBorrowNoteDTO) {
+        Customer customer = customerRepository.findById(createBorrowNoteDTO.getCustomerID()).orElseThrow(LibraryException::CustomerNotFound);
+        return BorrowNote.builder()
+                .customer(customer)
+                .borrowDate(createBorrowNoteDTO.getBorrowDate())
+                .dueDate(createBorrowNoteDTO.getDueDate())
+                .build();
+    }
+    // create borrow note with specific detail (each detail hold a specific physical book)
+
+    private BorrowNote createBorrowNoteWithSpecificBorrowNoteDetail(CreateBorrowNoteDTO createBorrowNoteDTO) {
+        List<BorrowNoteDetail> borrowNoteDetailList = new ArrayList<>();
+        BorrowNote borrowNote = createEmptyBorrowNote(createBorrowNoteDTO);
+        for (Long physicalBookId : createBorrowNoteDTO.getPhysicalBookIdList()){
+            BorrowNoteDetail borrowNoteDetail = new BorrowNoteDetail();
+            PhysicalBook physicalBook = physicalBookRepository.findById(physicalBookId).orElseThrow(LibraryException::PhysicalBookNotFound);
+            borrowNoteDetail.setPhysicalBook(physicalBook);
+            borrowNoteDetail.setBorrowNote(borrowNote);
+            borrowNoteDetailList.add(borrowNoteDetail);
+        }
+        borrowNote.setBorrowNoteDetailList(borrowNoteDetailList);
+        return borrowNoteRepository.save(borrowNote);
     }
 
     @Override
@@ -94,6 +103,7 @@ public class BorrowNoteServiceImplementation implements BorrowNoteService {
     public BorrowNoteDTO getBorrowNoteById(Long borrowNoteID) {
         return borrowNoteBookMapper.toDto(borrowNoteRepository.findById(borrowNoteID).orElseThrow(LibraryException::BorrowNoteNotFound));
     }
+
     //Find Borrowing History By Borrow Date
     @Override
     public List<BorrowNoteDTO> getBorrowNoteHistoryByBorrowDate(LocalDate borrowDate) {

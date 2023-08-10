@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor
 public class ResponseException extends RuntimeException{
-
     @Getter
     private Responsebody responsebody;
     public ResponseException (String messageKey, String message, HttpStatus httpStatus){

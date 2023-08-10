@@ -60,7 +60,7 @@ public class BookServiceImplementation implements BookService {
         List<Book> books = bookRepository.findAll();
         return bookMapper.toDtos(books);
     }
-    public Book createBookTitle(CreateBookDTO createBookDTO){
+    private Book createBookTitle(CreateBookDTO createBookDTO){
         Author author = authorRepository.findById(createBookDTO.getAuthorID()).orElseThrow();
         verifyBook(createBookDTO);
         return Book.builder()
@@ -70,7 +70,6 @@ public class BookServiceImplementation implements BookService {
                 .datePublish(createBookDTO.getDatePublish())
                 .author(author)
                 .build();
-
     }
 
     // Create book title and physical books with number if copies

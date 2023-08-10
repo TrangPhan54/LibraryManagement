@@ -17,9 +17,6 @@ public class LibraryException {
     private static final String BOOK_NOT_FOUND_MSG = "Book Not Found";
     private static final String RESPONSE_NOT_FOUND_MSG_KEY = "ResponseNotExisted";
     private static final String RESPONSE_NOT_FOUND_MSG = "ResponseNotFound";
-    private static final String BOOKPUBLISH_NOT_FOUND_MSG_KEY = "BookPublishNotExisted";
-    private static final String BOOKPUBLISH_NOT_FOUND_MSG = "Book Publish Not Found";
-
     private static final String GENREBOOK_NOT_FOUND_MSG_KEY = "GenreBookNotExisted";
     private static final String GENREBOOK_NOT_FOUND_MSG = "Genre Book Not Found";
     private static final String BORROW_NOTE_DETAIL_NOT_FOUND_MSG_KEY = "BorrowNoteDetailNotExisted";
@@ -76,5 +73,4 @@ public class LibraryException {
     public static ResponseException PhysicalBookNotFound (){
         return notFound(PHYSICAL_BOOK_NOT_FOUND_MSG_KEY,PHYSICAL_BOOK_NOT_FOUND_MSG);
     }
-
 }
