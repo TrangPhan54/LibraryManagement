@@ -248,7 +248,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toList());
     }
 
-    public Map<Book, Long> getBooksWithPhysicalCopiedBorrowed(LocalDate date1, LocalDate date2) {
+    private Map<Book, Long> getBooksWithPhysicalCopiedBorrowed(LocalDate date1, LocalDate date2) {
         List<Book> bookList = getBookBorrowListBaseOnAmountOfTime(date1, date2);
         Map<Book, Long> booksWithPhysicalCopiedBorrowed = new HashMap<>();
         for (Book book : bookList) {
