@@ -422,5 +422,23 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toList());
         return customerMapper.toDtos(customerOwnBook);
     }
+    public List<CustomerDTO> getListOfCustomerOwnBook3() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
+        Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
+        javax.persistence.criteria.Predicate condition =
+                criteriaBuilder.and(
+                        criteriaBuilder.isNull(root.get("returnDate")),
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("borrowNote").get("dueDate"), LocalDate.now().minusDays(LIMITATION_OVERDUE_DAYS))
+
+                );
+        query.select(root).where(condition);
+        List<BorrowNoteDetail> listBorrowNoteDetail = entityManager.createQuery(query).getResultList();
+        List<Customer> customerOwnBook = listBorrowNoteDetail.stream()
+                .map(BorrowNoteDetail::getBorrowNote)
+                .map(BorrowNote::getCustomer)
+                .collect(Collectors.toList());
+        return customerMapper.toDtos(customerOwnBook);
+    }
 
 }
