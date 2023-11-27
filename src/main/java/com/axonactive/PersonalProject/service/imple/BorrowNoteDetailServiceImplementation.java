@@ -404,7 +404,7 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toList());
         return customerMapper.toDtos(customerOwnBook);
     }
-    public List<CustomerDTO> getListOfCustomerOwnBook1() {
+    public List<CustomerDTO> getListOfCustomerOwnBook2() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<BorrowNoteDetail> query = criteriaBuilder.createQuery(BorrowNoteDetail.class);
         Root<BorrowNoteDetail> root = query.from(BorrowNoteDetail.class);
@@ -422,4 +422,5 @@ public class BorrowNoteDetailServiceImplementation implements BorrowNoteDetailSe
                 .collect(Collectors.toList());
         return customerMapper.toDtos(customerOwnBook);
     }
+
 }
